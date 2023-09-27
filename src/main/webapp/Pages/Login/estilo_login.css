@@ -1,0 +1,29 @@
+.campos_login{
+    display:flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.campos_login .col-md-6 {
+    width: auto;
+}
+
+section#top{
+    background-image: url(../../img/viajesfondo.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    text-align: center;
+}
+
+
+.page-direction-button{
+    margin-top:20rem !important;
+}
+
+.mensajes .error{
+    background-color:#ce4c00;
+    color:rgb(255, 255, 255);
+    text-align:center;
+    text-transform:uppercase;
+}
