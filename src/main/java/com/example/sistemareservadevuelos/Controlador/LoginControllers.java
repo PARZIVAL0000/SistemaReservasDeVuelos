@@ -1,11 +1,12 @@
 package com.example.sistemareservadevuelos.Controlador;
 
-import Modelo.Perfil;
-import Modelo.Usuario_Perfil;
-import Modelo.Usuarios;
-import ModeloDAO.PerfilDAO;
-import ModeloDAO.Usuario_PerfilDAO;
-import ModeloDAO.UsuariosDAO;
+
+import com.example.sistemareservadevuelos.ModeloDAO.UsuariosDAO;
+import com.example.sistemareservadevuelos.ModeloDAO.Usuario_PerfilDAO;
+import com.example.sistemareservadevuelos.ModeloDAO.PerfilDAO;
+import com.example.sistemareservadevuelos.Modelo.Usuarios;
+import com.example.sistemareservadevuelos.Modelo.Usuario_Perfil;
+import com.example.sistemareservadevuelos.Modelo.Perfil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -91,8 +92,8 @@ public class LoginControllers extends HttpServlet {
                     
                     request.setAttribute("error", mensaje);
                 }else if(email != null && password != null){
-                    //cuando el usuario haya introducido los valores 
-                    
+                    //cuando el usuario haya introducido los valores
+
                     //1.-vamos a traernos el registro del usuario.
                     Usuarios us = new Usuarios();
                     us.setCorreo(email);
@@ -100,13 +101,13 @@ public class LoginControllers extends HttpServlet {
                     
                     List<Usuarios> verificar = ud.filtroLogin(us);
                     
-                    if(verificar.size() != 0){
+                    if(!verificar.isEmpty()){
                         int id = verificar.get(0).getId(); //tenemos el id del cliente o usuario...
                         //2.- con el id usuario vamos a traernos el id del perfil dentro de nuestra tabla intermedia usuario_perfil;
                         List<Usuario_Perfil> registro = upd.filtrarRegistro(id);
                         
                         //debemos hacer una validacion dentro de este punto...
-                        if(registro.size() != 0){
+                        if(!registro.isEmpty()){
                         
                             int idPerfil = registro.get(0).getPerfil_id();
                             //3.- con el idPerfil vamos a sacarnos el registro de la tabla perfil.
@@ -189,22 +190,22 @@ public class LoginControllers extends HttpServlet {
                     int id_perfil = perfil.get(0).getPerfil_id();
 
                     switch (id_perfil) {
-                        case 1 -> {
+                        case 1 : {
                             path = "Pages/Boleteria/perfil.jsp";
                             //boletariado...
                             return path;
                         }
-                        case 2 -> {
+                        case 2 : {
                             path = "Pages/Administrador";
                             //administrador...
                             return path;
                         }
-                        case 3 -> {
+                        case 3 : {
                             path = "Pages/Cliente/index.jsp";
                             //cliente...
                             return path;
                         }
-                        default -> {
+                        default : {
                         }
                     }
                 }

@@ -4,14 +4,14 @@
  */
 package com.example.sistemareservadevuelos.Controlador;
 
-import Modelo.Genero;
-import Modelo.Provincia;
-import Modelo.TipoPasajeros;
-import Modelo.Usuarios;
-import ModeloDAO.GeneroDAO;
-import ModeloDAO.ProvinciaDAO;
-import ModeloDAO.TipoPasajerosDAO;
-import ModeloDAO.UsuariosDAO;
+import com.example.sistemareservadevuelos.Modelo.Genero;
+import com.example.sistemareservadevuelos.Modelo.Provincia;
+import com.example.sistemareservadevuelos.Modelo.TipoPasajeros;
+import com.example.sistemareservadevuelos.Modelo.Usuarios;
+import com.example.sistemareservadevuelos.ModeloDAO.GeneroDAO;
+import com.example.sistemareservadevuelos.ModeloDAO.ProvinciaDAO;
+import com.example.sistemareservadevuelos.ModeloDAO.TipoPasajerosDAO;
+import com.example.sistemareservadevuelos.ModeloDAO.UsuariosDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

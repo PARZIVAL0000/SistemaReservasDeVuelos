@@ -4,14 +4,14 @@
  */
 package com.example.sistemareservadevuelos.Controlador;
 
-import Modelo.Aerolineas;
-import Modelo.Pais;
-import Modelo.Pasajes;
-import Modelo.Vuelos;
-import ModeloDAO.AerolineasDAO;
-import ModeloDAO.PaisDAO;
-import ModeloDAO.PasajesDAO;
-import ModeloDAO.VuelosDAO;
+import com.example.sistemareservadevuelos.Modelo.Aerolineas;
+import com.example.sistemareservadevuelos.Modelo.Pais;
+import com.example.sistemareservadevuelos.Modelo.Pasajes;
+import com.example.sistemareservadevuelos.Modelo.Vuelos;
+import com.example.sistemareservadevuelos.ModeloDAO.AerolineasDAO;
+import com.example.sistemareservadevuelos.ModeloDAO.PaisDAO;
+import com.example.sistemareservadevuelos.ModeloDAO.PasajesDAO;
+import com.example.sistemareservadevuelos.ModeloDAO.VuelosDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

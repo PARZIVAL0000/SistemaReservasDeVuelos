@@ -1,0 +1,289 @@
+.formulario_reservacion{
+    margin:2rem 20rem;
+}
+.header_seccion{
+    text-align:center;
+    margin-top:2rem;
+    font-weight: bold;
+    font-size:3.5rem;
+}
+
+#titulo_principal{
+    background-color:#1f3646;
+    color:rgb(255, 255, 255);
+}
+
+.datos_personales{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:2rem;
+}
+
+.datos_personales--campo{
+    width:10rem;
+}
+
+legend{
+    text-transform: uppercase;
+    padding-bottom:2rem;
+    font-weight:lighter;
+}
+
+.vuelos{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:2rem;
+}
+
+.campo_vuelo{
+    padding:0rem;
+    width:100%;
+}
+
+select{
+    height:4.5rem;
+}
+
+input[type="text"], input[type="number"]{
+    height:4.5rem;
+}
+
+.boton_registro_reserva{
+    margin-top:1.2rem;
+    text-transform: uppercase;
+    font-size:1.2rem;
+}
+
+.mensaje_error{
+    display:none;
+    color: #d71414;
+    font-size: 1rem;
+    font-weight: bold;
+    position: absolute;
+    top: 100%;
+}
+
+.error{
+   border-color:#d71414;
+}
+
+
+/* Vamos a ingresar otro tipo de mensaje de error. */
+.errorTipoPasajero{
+    background-color: #e4030391;
+    color: rgb(255, 255, 255);
+    padding: 0rem 1.9rem;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+    border-left: 9px solid #d71414;
+}
+
+.mensaje_error2{
+    display:none;
+    color: #d71414;
+    font-size: 1rem;
+    font-weight: bold;
+    position: absolute;
+    top: 100%;
+}
+
+.errorCampo{
+    background-color: #e4030391;
+    color: rgb(255, 255, 255);
+    padding: 0rem 1.9rem;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+    border-left: 9px solid #d71414;
+}
+
+
+/*===================================*/
+/*  ESTILOS A FORMULARIO AUTOMATICO  */
+/*===================================*/
+#Login_true{
+    background-color: rgb(0 0 0 / 63%);
+    position: fixed;
+    top: 0%;
+    bottom: 0%;
+    right: 0%;
+    left: 0%;
+    z-index: 9;
+}
+
+.hidden{
+    display:none;
+}
+
+.seccion_formulario .contenedor{
+    width: 57rem;
+    margin: 63px auto;
+    height: 84%;
+    background-color: #025159;
+    border-radius:.5rem;
+}
+
+.seccion_formulario .contenedor .cabecera{
+    
+}
+
+.seccion_formulario .contenedor .cabecera .t1{
+    padding-bottom: 1.5rem;
+}
+
+.seccion_formulario .contenedor .cabecera .t1 .close{
+    background-image: url("../../img/borrar.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 46px;
+    height: 46px;
+    display: inline;
+    position: absolute;
+    right: 30%;
+    top: 10%;
+    opacity: .6;
+    transition:opacity 360ms ease;
+}
+
+.seccion_formulario .contenedor .cabecera .t1 .close:hover{
+    opacity: 2;
+}
+
+.seccion_formulario .contenedor .cabecera h2{
+    text-align:center;
+    color:rgb(255, 255, 255);
+    padding-top:1.5rem;
+    text-transform:uppercase;
+    font-size:2rem;
+    font-weight:bold;
+}
+
+.seccion_formulario .contenedor .cabecera p{
+    color:rgb(255, 255, 255);
+    text-align:center;
+    padding:.9rem;
+    background-color:#F28705;
+    margin:1rem;
+    margin-top:2rem;
+    border-radius:.9rem;
+}
+
+.seccion_formulario .contenedor .formulario_login{
+    padding-top: 8rem;
+    margin: 0rem 2rem;
+}
+
+.seccion_formulario .contenedor .formulario_login legend{
+    color:rgb(255, 255, 255);
+    padding-top:1.5rem;
+    text-align: center;
+}
+
+
+.seccion_formulario .contenedor .formulario_login .campo:nth-child(1){
+    padding-top:3rem;
+}
+
+.seccion_formulario .contenedor .formulario_login .campo{
+    display:flex;
+    flex-direction:column;
+    padding-top:2rem;
+}
+
+
+.seccion_formulario .contenedor .formulario_login .campo label{
+    color:rgb(255, 255, 255);
+    font-size:1.3rem;
+    font-weight: 100;
+    text-align: center;
+}
+
+.seccion_formulario .contenedor .formulario_login .campo input{
+    height: 3.5rem;
+    border-radius: 0.9rem;
+    padding-left: 1.2rem;
+    margin: 0.2rem 0rem;
+}
+
+.seccion_formulario .contenedor .formulario_login .boton{
+    width: 100%;
+    margin-top: 3.3rem;
+    border-radius: .5rem;
+    height: 3.2rem;
+    font-size: 1.2rem;
+    background-color:#ffce3a;
+    transition:background-color 360ms ease;
+}
+
+.seccion_formulario .contenedor .formulario_login .boton:hover{
+    cursor:pointer;
+    background-color:rgb(255, 255, 255);
+}
+
+/*==========================*/
+/* ESTILOS  PARA  MENSAJES  */
+/*==========================*/
+
+.mensajes-flotante{
+    position: absolute;
+    top: 5%;
+    right: 0%;
+    width: 29rem;
+    background-color: rgb(255 0 0);
+    border-radius: .3rem;
+    opacity:.7;
+    transition: opacity 360ms ease;
+}
+
+.mensajes-flotante .error{
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    padding: 1rem;
+    margin: 0rem;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 1.2rem;
+}
+
+/* --------------- Estilo para texto info -------------- */
+.formulario__input-error {
+	font-size: 12px;
+	margin-bottom: 0;
+	display: none;
+}
+
+.formulario__input-error-activo {
+	display: block;
+        color:#f44336;
+        font-weight: bold;
+        padding-left: 1rem;
+}
+
+/* --------------- Estilo para mostrar icono ----------- */
+.formulario__validacion-estado {
+	position: absolute;
+	right: 10px;
+	bottom: 15px;
+	z-index: 100;
+	font-size: 16px;
+	opacity: 0;
+}
+
+/* --------------- Estilos para validaciones ----------- */
+
+.formulario__grupo-correcto .formulario__validacion-estado {
+	color: #1ed12d;
+	opacity: 1;
+}
+
+.formulario__grupo-incorrecto .formulario__label {
+	color: #bb2929;
+}
+
+.formulario__grupo-incorrecto .formulario__validacion-estado {
+	color: #bb2929;
+	opacity: 1;
+}
+
+.formulario__grupo-incorrecto .formulario__input {
+	border: 3px solid #bb2929;
+}

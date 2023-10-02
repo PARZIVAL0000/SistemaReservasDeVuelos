@@ -1,7 +1,7 @@
 
 package com.example.sistemareservadevuelos.Interfaces;
 
-import Modelo.Usuarios;
+import com.example.sistemareservadevuelos.Modelo.Usuarios;
 
 import java.util.List;
 /**

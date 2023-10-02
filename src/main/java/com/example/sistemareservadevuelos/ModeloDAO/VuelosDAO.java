@@ -1,9 +1,9 @@
 package com.example.sistemareservadevuelos.ModeloDAO;
 
-import Config.Conexion;
-import Interfaces.VuelosInterface;
-import Modelo.CarteleraViajes;
-import Modelo.Vuelos;
+import com.example.sistemareservadevuelos.Config.Conexion;
+import com.example.sistemareservadevuelos.Interfaces.VuelosInterface;
+import com.example.sistemareservadevuelos.Modelo.CarteleraViajes;
+import com.example.sistemareservadevuelos.Modelo.Vuelos;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -4,7 +4,7 @@
  */
 package com.example.sistemareservadevuelos.Interfaces;
 
-import Modelo.Pais;
+import com.example.sistemareservadevuelos.Modelo.Pais;
 
 import java.util.List;
 

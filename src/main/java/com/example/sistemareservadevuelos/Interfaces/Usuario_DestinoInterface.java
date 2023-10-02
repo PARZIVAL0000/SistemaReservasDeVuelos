@@ -4,7 +4,7 @@
  */
 package com.example.sistemareservadevuelos.Interfaces;
 
-import Modelo.Usuario_Destino;
+import com.example.sistemareservadevuelos.Modelo.Usuario_Destino;
 
 /**
  *

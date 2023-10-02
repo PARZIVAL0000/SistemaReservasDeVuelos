@@ -4,8 +4,8 @@
  */
 package com.example.sistemareservadevuelos.Interfaces;
 
-import Modelo.CarteleraViajes;
-import Modelo.Vuelos;
+import com.example.sistemareservadevuelos.Modelo.CarteleraViajes;
+import com.example.sistemareservadevuelos.Modelo.Vuelos;
 
 import java.util.List;
 

@@ -1,0 +1,35 @@
+.aeroiluminaty_logo{
+    color:rgb(255, 255, 255);
+}
+
+.aeroiluminaty_logo h1{
+    margin:0;
+}
+
+.pasajeros .pasajeros_opcion #psj{
+    background-color:red;
+}
+
+#form-submit .pasajero{
+    border: none;
+    background-color: #00000014;
+    border-radius: 0rem;
+    margin: 4rem 0rem 0rem 0rem
+}
+
+#form-submit{
+    margin-top:4rem;
+}
+
+/* Vamos agregar estilos para nuestro mensaje de error generado*/
+.error_mensaje{
+    background-color: #ba0f0f70;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+}
+
+
+.hidden{
+    visibility: hidden;
+}

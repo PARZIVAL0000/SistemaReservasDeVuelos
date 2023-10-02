@@ -4,8 +4,8 @@
  */
 package com.example.sistemareservadevuelos.Controlador;
 
-import Modelo.*;
-import ModeloDAO.*;
+import com.example.sistemareservadevuelos.Modelo.*;
+import com.example.sistemareservadevuelos.ModeloDAO.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -128,7 +128,7 @@ public class ReservaControllers extends HttpServlet {
                 errores.add("Todos los campos son obligatorios");
                 
                 switch(opcionVuelo){
-                    case "Ida" -> {
+                    case "Ida" : {
                         String origen = (request.getParameter("from").equals("")) ? "" : request.getParameter("from");
                         String destino = (request.getParameter("to").equals("")) ? "" : request.getParameter("to");
                         String fecha_salida = (request.getParameter("deparure").equals("")) ? "" : request.getParameter("deparure");
@@ -151,7 +151,7 @@ public class ReservaControllers extends HttpServlet {
                         break;
                     }
                     
-                    case "Ida-Regreso" -> {
+                    case "Ida-Regreso" : {
                         //vamos a ir recolectando los datos pasados por el usuario...
                         String origen = (request.getParameter("from").equals("")) ? "" : request.getParameter("from");
                         String destino = (request.getParameter("to").equals("")) ? "" : request.getParameter("to");
@@ -176,7 +176,7 @@ public class ReservaControllers extends HttpServlet {
                         break;
                     }
                     
-                    default -> {
+                    default : {
                         break;
                     }
                 }

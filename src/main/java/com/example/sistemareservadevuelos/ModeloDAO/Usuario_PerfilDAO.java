@@ -4,8 +4,8 @@
  */
 package com.example.sistemareservadevuelos.ModeloDAO;
 
-import Config.Conexion;
-import Modelo.Usuario_Perfil;
+import com.example.sistemareservadevuelos.Config.Conexion;
+import com.example.sistemareservadevuelos.Modelo.Usuario_Perfil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

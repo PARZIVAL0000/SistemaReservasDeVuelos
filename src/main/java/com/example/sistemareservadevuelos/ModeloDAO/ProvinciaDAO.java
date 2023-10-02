@@ -1,7 +1,7 @@
 package com.example.sistemareservadevuelos.ModeloDAO;
 
-import Config.Conexion;
-import Modelo.Provincia;
+import com.example.sistemareservadevuelos.Config.Conexion;
+import com.example.sistemareservadevuelos.Modelo.Provincia;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

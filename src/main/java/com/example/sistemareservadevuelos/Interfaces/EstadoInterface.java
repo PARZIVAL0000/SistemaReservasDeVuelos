@@ -1,6 +1,6 @@
 package com.example.sistemareservadevuelos.Interfaces;
 
-import Modelo.Estado;
+import com.example.sistemareservadevuelos.Modelo.Estado;
 
 import java.util.List;
 /**

@@ -4,8 +4,8 @@
  */
 package com.example.sistemareservadevuelos.Controlador;
 
-import Modelo.Pais;
-import ModeloDAO.PaisDAO;
+import com.example.sistemareservadevuelos.Modelo.Pais;
+import com.example.sistemareservadevuelos.ModeloDAO.PaisDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
