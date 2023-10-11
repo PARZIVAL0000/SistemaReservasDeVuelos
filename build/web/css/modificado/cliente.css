@@ -1,0 +1,125 @@
+.listado-opciones{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:1rem;
+}
+
+.listado-opciones .opcion{
+    margin: 0 auto;
+    padding: 3rem;
+    border-radius: 1.9rem;
+    width: 100%;
+    
+    /*aplicamos un flex*/
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.listado-opciones .opcion-1{
+    background-color:#ffc107;
+    transition:background-color 360ms ease;
+}
+
+.listado-opciones .opcion-2{
+    background-color:#ff5722;
+    transition:background-color 360ms ease;
+}
+
+.listado-opciones .opcion-3{
+    background-color:#198754c4;
+    transition:background-color 360ms ease;
+}
+
+/*Introducir imagenes*/
+.listado-opciones .opcion-1 .img .img-hangar{
+    background-image: url("../../Pages/Cliente/assets/images/hangar.png");
+    background-repeat:no-repeat;
+    width:45px;
+    height: 40px;
+    background-size:cover;
+}
+
+.listado-opciones .opcion-2 .img .img-vueloOrigen{
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAZlJREFUSEvt1D1rVFEQxvHfakAQO0mRKBjBb2FjIIKkMGBjY2HpZ7AQhIiFdWwENUYRsRcCgdionY2VosQXiJVpYqPEFwbOhruH+7K77rpb7MAt7r3nzH+e58yZlhFFa0RcE/B/c35idW71QVzEFl4N8hzqrD6L2ziVgG+xmp7tfy2iDnwEt3Alg/zBBh7gKX5UFHEAp3EeJ3Edb9pru2muedzDiRLAdzxKRbzEISzgApZwtLBnHed6AcfaKvXFWj5gBocrHPhcLL4bxcU8oT4sPt7HGd/E1SrF0/iG3zWJQ/0TLHYB/4VnWEFYvR9FxcfwAntYTsryAqJJruESpmrAr1P3P8RO2boiOJonwFFAxHvcSAXEvybg19Rod/CuyY38jOcSfLaw8QviPYZJHj/TlYrODivrjqhjb1lz5crLio+rE8PkMXab1DVZXfxfBv+ENdxNI7QfXmlz5YnC9rAvZnRcoU3E1BpI9HqPBwKNJGMDDnsvD0xWZ6L7+Nj+lCs+k85yGOwYt8/HDjwMpaU5x6a5JoqH5sBfXZNFHxeyvKAAAAAASUVORK5CYII=");
+    background-repeat:no-repeat;
+    width:45px;
+    height: 40px;
+    background-size:cover;
+}
+
+.listado-opciones .opcion-3 .img .img-vueloDestino{
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAa9JREFUSEvt1E9LVkEUx/GPEIktI1qXRVRaVO6jCNtE9A6i6FUEGkmbWgatIkLBl9AiqEgEd+0KooiIcGFoK1cS/eHIKLdhHpj7XMoHauBy4dy5v+/vnDlzhuzQGtohrv/gv1b52lJPYh5f8BAPujqsBQfnLY7iB85iqQu8BB7Fx4LoDTxK8RWcxGq/8Bz8HgcxjneZ6DCWsS/FXyCO4Gc/8Bz8HBfwDBcLgjO41YjfRsRarxx8B1NJ5TKeZIr78RmRfazINoy+bEvOwZcasA84jm+Z6GNcb8S+Yix1fDU/B+9FCG2te41rtJYyjPN/nREWcT51fBW81NXRVEcKf39PXRx3+Rh2Z3vuYxrrNeQSeA5Xa37uYe4VouPjibu+UdIqgQ/hCs6kJ4ZGm0HT5AT0KW6mAbT9rUZwD05hIhmJd5R6V4uqvMGJ5v4acEk/rtPphpEwFpOsl5lPaTC1yrg2sWi2yCqOaKs6YSZM3k3l/iPgksERHEaU+rfR2m+pa6vQc9/AgA/gWud0ygKziCbbXHnG5/oZ+JVGY6QuDBy40nz3bQPTXN1TqVT49zL+BQp7RB/Nm3UpAAAAAElFTkSuQmCC");
+    background-repeat:no-repeat;
+    width:45px;
+    height: 40px;
+    background-size:cover;
+}
+
+.listado-opciones .opcion .enlace > a{
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    font-size: 1.9rem;
+    padding-right: 3.2rem;
+}
+
+.listado-opciones .opcion-1:hover{
+    background-color:#ebb103;
+}
+
+.listado-opciones .opcion-2:hover{
+    background-color:#db400ff7;
+}
+
+.listado-opciones .opcion-3:hover{
+    background-color:#0f6b41c4;
+}
+
+.listado-opciones .opcion .enlace > a:hover{
+    text-decoration:none;
+}
+
+.listado-opciones .opcion:hover{
+    cursor:pointer;
+}
+
+
+/*================================== */
+/* OPCIONES DE OCULTAR Y MOSTRAR     */
+/*================================== */
+.show{
+   display:block;
+}
+
+/*=====================================*/
+/* ESTILOS PARA CONTENIDO INFORMACION  */
+/*=====================================*/
+.contenedor-informacion-opciones .info{
+    display:none;
+}
+
+.contenedor-informacion-opciones .info .vuelo_origen-heading,
+.contenedor-informacion-opciones .info .vuelo_destino-heading,
+.contenedor-informacion-opciones .info .aerolinea-heading{
+    text-align: center;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 1.8rem;
+}
+
+.contenedor-informacion-opciones .info .aerolinea-heading{
+    background-color:#d6c000;
+    color:rgb(255, 255, 255);
+}
+
+.contenedor-informacion-opciones .info .vuelo_origen-heading{
+    background-color:#ff5722;
+    color:rgb(255, 255, 255);
+}
+
+.contenedor-informacion-opciones .info .vuelo_destino-heading{
+    background-color: #43a047;
+    color:rgb(255, 255, 255);
+}

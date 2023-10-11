@@ -1,0 +1,49 @@
+.submit-form {
+	text-align: left;
+	margin: 155px 0px;
+	background-color: rgba(250, 250, 250, 0.95);
+	padding: 30px;
+}
+
+/* Vamos agregar estilos para nuestro mensaje de error generado*/
+.formulario div.mensaje.mostrar,
+.formulario_reserva div.mensaje.mostrar{
+    color: rgb(181,32,32);
+    font-weight: bold;
+    display: block !important;
+}
+
+.formulario div.mensaje.ocultar,
+.formulario_reserva .div.mensaje.ocultar{
+    display: none !important;
+}
+
+.formulario .alerta_campo{
+    border:1px solid #bf050575 !important;
+}
+
+
+.aeroiluminaty_logo{
+    color:rgb(255, 255, 255);
+}
+
+.aeroiluminaty_logo h1{
+    margin:0;
+}
+
+.pasajeros .pasajeros_opcion #psj{
+    background-color:red;
+}
+
+.submit-form #form-submit .pasajero{
+    border: none;
+    background-color: #00000014;
+    border-radius: 0rem;
+    margin: 4rem 0rem 0rem 0rem
+}
+
+.submit-form #form-submit{
+    margin-top:4rem;
+}
+
+

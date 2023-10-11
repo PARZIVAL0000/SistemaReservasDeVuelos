@@ -1,0 +1,224 @@
+.body{
+    background-color:rgb(0, 0, 0);
+}
+
+
+.encabezado{
+    background-color:#275950;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 2rem;
+}
+
+.encabezado .encabezado_titulo{
+    display:flex;
+    align-items:center;
+    gap:2rem;
+    color:rgb(255, 255, 255);
+}
+
+.encabezado .encabezado_titulo h1 > span{
+    font-weight: lighter;
+    font-size:1rem;
+    text-decoration:overline;
+}
+
+.encabezado .encabezado_titulo p{
+    margin:0rem;
+    text-align: center;
+    font-weight: lighter;
+}
+
+.encabezado .navegacion nav > a{
+    text-decoration:none;
+    color:rgb(255, 255, 255);
+}
+
+.perfil{
+    background-color:#1f3646;
+    color:rgb(255, 255, 255);
+    height:auto;
+}
+
+.perfil h2{
+    text-align:center;
+    margin:0rem;
+    padding:.6rem;
+}
+
+.bg-color{
+    background-color:#1f3646;
+}
+
+.buscador{
+    width:30rem;
+}
+
+/* A continuacion lo que haremos es poner los estilos a la parte del perfil de boletariado*/
+/*.table{
+    border-collapse: separate;
+    border-spacing: 2px 2px;
+}*/
+
+#tlb{
+    border-bottom: none;
+    
+}
+
+.form-search{
+    display:flex;
+    gap:1rem;
+}
+
+
+.tabla_info{
+    box-shadow: 4px -5px 4px rgb(0 0 0 / 55%);
+    margin: 2rem;
+    border-radius: .9rem;
+    padding: 2rem;
+}
+
+.tabla_info .funcionalidades ul{
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tabla_info .funcionalidades ul li > a{
+    text-decoration:none;
+    font-size:1.5rem;
+    background-color:#1f3646;
+    color:rgb(255, 255, 255);
+    padding:1rem;
+    border-radius: 1.8rem;
+    transition:background-color 360ms ease;
+}
+
+.tabla_info .funcionalidades ul li > a:hover{
+    background-color:#af1418b5;
+    cursor:pointer;
+}
+
+
+.tabla_info .table tbody tr td > a{
+    text-decoration:none;
+    font-size:1.4rem;
+    color:rgb(255, 255, 255);
+}
+
+.tabla_info .table tbody tr .eliminar{
+    margin:1rem;
+    background-color:#591C21;
+    width: 3rem;
+    height: 4rem;
+    border-radius: 4.9rem;
+}
+
+.tabla_info .table tbody tr .actualizar{
+    background-color:#FA7F08;
+    margin:1rem;
+    width: 3rem;
+    height: 4rem;
+    border-radius: 4.9rem;
+}
+
+.tabla_info .table tbody tr td .eliminar_contenedor #eliminar{
+    padding: 0rem;
+    display: inline-block;
+    width: 8rem;
+    text-align: center;
+    margin: .9rem;
+    text-decoration:none;
+    color:rgb(255, 255, 255);
+    font-size:1.5rem;
+}
+
+.tabla_info .table tbody tr td .actualizar_contenedor #actualizar{
+    padding: 0rem;
+    display: inline-block;
+    width: 8rem;
+    text-align: center;
+    margin: .9rem;
+    text-decoration:none;
+    color:rgb(255, 255, 255);
+    font-size:1.5rem;
+}
+
+.tabla_info .table tbody tr{
+    gap:2rem;
+}
+
+.tabla_info .table tbody tr td .eliminar_contenedor{
+    
+}
+
+.tabla_info .table tbody tr td .actualizar_contenedor{
+    
+}
+
+/* Estilos para nuestro formulario de creacion de nueva reserva */
+.contenedor_creacion{
+    margin:2rem;
+}
+
+.contenedor_creacion p{
+    text-align:center;
+    text-transform:uppercase;
+    font-weight:lighter;
+    font-size:1.5rem;
+}
+
+.contenedor_creacion .reserva_creacion .funcionalidad_extra,
+.contenedor_creacion .reserva_actualizacion .funcionalidad_extra{
+    margin:1rem 0rem;
+}
+
+.contenedor_creacion .reserva_creacion .funcionalidad_extra > a,
+.contenedor_creacion .reserva_actualizacion .funcionalidad_extra > a{
+    width: 10rem;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.contenedor_creacion .reserva_creacion .formulario{
+    margin-top:4rem;
+}
+
+.contenedor_creacion .reserva_creacion .formulario .campos{
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+/* Vamos arreglar nuestros labels a continuacion */
+.formulario .campo .entrada{
+    display:flex;
+}
+
+.formulario .campo .entrada label,
+.formulario .campo .entrada span{
+    flex:2;
+    margin:0rem;
+    height: 4rem;
+    text-transform: uppercase;
+}
+
+.formulario .campo .entrada input,
+.formulario .campo .entrada select{
+    flex:20;
+    margin:0rem;
+    height:4rem;
+}
+
+.formulario .campos input[type="submit"]{
+    width: 14rem;
+}
+
+/* Vamos arreglar nusetros inputs a continuacion*/
+
+.grid-inputs{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:2rem;
+}
