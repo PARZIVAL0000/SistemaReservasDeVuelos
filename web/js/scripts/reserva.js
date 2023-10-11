@@ -14,9 +14,7 @@ function App(){
     VerificarCamposFechas2();
     
     InsertarAlertas();
-    //esta funcion nos permitira verificar por las cedulas incorrectas...    
-    */
-    
+    */    
 }
 
 //captura lo que escribe la persona.
