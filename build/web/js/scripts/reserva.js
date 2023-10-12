@@ -414,7 +414,7 @@ function ValidacionFormularioCliente(nFormularios){
                         
                         EscribirHTML2(i+1, value);
                         if(value === "Hombre" || value === "Mujer"){
-                            rellenarUltimosCampos(i);
+//                            rellenarUltimosCampos(i);
                             validacionOtrosCampos(i+1);
                         }
                         

@@ -158,305 +158,16 @@ public class ReservaControllers extends HttpServlet {
                     request.setAttribute("datos", datos);
                 }
                 case "perfil_vuelo" -> {
-                    //debemos validar un tema importante dentro del codigo...
-                    //informacion de vuelo....
-                    ArrayList<String> informacion = new ArrayList<>();
-                    String tipoVuelo = request.getParameter("TipoVuelo");
-                    if(!tipoVuelo.isEmpty()){
-                        if(tipoVuelo.equals("Origen")){
-                            
-                            //pais vuelo
-                            String origen = request.getParameter("from");
-                            String destino = request.getParameter("to");
-                            //ciudad vuelo
-                            String ciudadOrigen = request.getParameter("ciudad_from");
-                            String ciudadDestino = request.getParameter("ciudad_to");
-                            //fechas vuelos
-                            String fecha_salida = request.getParameter("deparure");
-                            String numero_pasajeros = request.getParameter("pasajeros");
-                            
-                            if(!origen.isEmpty() && !destino.isEmpty() && !ciudadOrigen.isEmpty() && !ciudadDestino.isEmpty() && !fecha_salida.isEmpty() && !numero_pasajeros.isEmpty()){
-                                informacion.add(origen);
-                                informacion.add(destino);
-                                informacion.add(ciudadOrigen);
-                                informacion.add(ciudadDestino);
-                                informacion.add(fecha_salida);
-                                informacion.add(numero_pasajeros);
-                                
-                                ArrayList<Pasajeros> pasajeros_extra = new ArrayList<>();
-                                redireccionar = "ReservaControllers?accion=reservar&mensaje=error2"; //establecemos nuestro error.
-                                
-                                
-                                if(Integer.parseInt(numero_pasajeros) > 0){
-                                    for(int i = 0; i < Integer.parseInt(numero_pasajeros); i++){
-                                        //------------
-                                        int indice = i;
-                                        indice +=1;
-                                        
-                                        String id = request.getParameter("identificador-"+indice);
-                                        String nombre = (request.getParameter("Nombres-"+indice) == null) ? "" : request.getParameter("Nombres-"+indice);
-                                        String apellido = (request.getParameter("Apellidos-"+indice) == null) ? "" : request.getParameter("Apellidos-"+indice);
-                                        String cedula = (request.getParameter("Cedula-"+indice) == null) ? "" : request.getParameter("Cedula-"+indice);
-                                        String tipo_pasajero = (request.getParameter("tipo_pasajero-"+indice) == null) ? "" : request.getParameter("tipo_pasajero-"+indice);
-                                        String genero = (request.getParameter("genero-"+indice) == null) ? "" : request.getParameter("genero-"+indice);
-                                        String email = (request.getParameter("Email-"+indice) == null) ? "" : request.getParameter("Email-"+indice);
-                                        String celular = (request.getParameter("Celular-"+indice) == null) ? "" : request.getParameter("Celular-"+indice);
-                                        
-                                        
-                                        if(!id.isEmpty() && !nombre.isEmpty() && !apellido.isEmpty() && !cedula.isEmpty() && !tipo_pasajero.isEmpty() && !genero.isEmpty() && !email.isEmpty() && !celular.isEmpty()){
-                                            Usuarios usuarioCedula = new Usuarios();
-                                            usuarioCedula.setCedula(cedula);
-                                            List<Usuarios> existeCliente = ud.filtrarRegistro(usuarioCedula);
-                                            
-                                            
-                                            //procesaremos cedulas que aun no se encuentran registrados en nuestro sistema. 
-                                            if(!existeCliente.isEmpty()){
-                                                redireccionar = "ReservaControllers?accion=reservar&mensaje=error";
-                                                break;
-                                            }else{
-                                                
-                                                /*ESTE ES NUESTRO INSTANCIA PRINCIPAL....*/                            
-                                                Pasajeros ps = null;
-                                                //es validar por el tipo de usuario....
-                                                switch(tipo_pasajero.toLowerCase()){
-                                                    case "hombre":
-                                                        //debemos validar por el numero de cedula....
-
-                                                        ps = new Pasajeros();
-                                                        ps.setId(indice);
-                                                        ps.setNombre(nombre);
-                                                        ps.setApellido(apellido);
-                                                        ps.setCedula(cedula);
-                                                        ps.setTipo_pasajero(tipo_pasajero);
-
-                                                        if(genero != null && email != null && celular != null){
-                                                            ps.setGenero(genero);
-                                                            ps.setCorreo(email);
-                                                            ps.setCelular(celular);
-                                                            pasajeros_extra.add(ps);
-                                                        }
-                                                        break;
-                                                    case "mujer":
-                                                        //debemos validar por el numero de cedula...
-                                                        ps = new Pasajeros();
-                                                        ps.setId(indice);
-                                                        ps.setNombre(nombre);
-                                                        ps.setApellido(apellido);
-                                                        ps.setCedula(cedula);
-                                                        ps.setTipo_pasajero(tipo_pasajero);
-
-                                                        if(genero != null && email != null && celular != null){
-                                                            ps.setGenero(genero);
-                                                            ps.setCorreo(email);
-                                                            ps.setCelular(celular);
-                                                            pasajeros_extra.add(ps);
-                                                        }
-
-                                                        break;
-                                                    case "nino":
-                                                        //debemos validar por el numero de cedula...
-                                                        ps = new Pasajeros();
-                                                        ps.setId(indice);
-                                                        ps.setNombre(nombre);
-                                                        ps.setApellido(apellido);
-                                                        ps.setCedula(cedula);
-                                                        ps.setTipo_pasajero(tipo_pasajero);
-
-                                                        if(genero != null){
-                                                            ps.setGenero(genero);
-                                                            ps.setCorreo(" ");
-                                                            ps.setCelular(" ");
-                                                            pasajeros_extra.add(ps);
-                                                        }
-
-                                                    default:
-                                                        break;
-                                                }//switch
-                                                
-                                                
-                                            }
-                                        }else{
-                                            //cambiar esto en caso de un error.
-                                            redireccionar = "ReservaControllers?accion=reservar";
-                                        }
-                                        
-                                    }//for
-                                    
-                                    
-                                    //vamos a comprobar por el numero de nuestros pasajeros registrados...
-                                    if(pasajeros_extra.size() == Integer.parseInt(numero_pasajeros)){
-                                        request.setAttribute("info_pasajeros", pasajeros_extra);
-                                        request.setAttribute("info", informacion);
-                                        redireccionar = "Pages/Reserva/vuelosIda.jsp"; //descomentar despues esta linea de codigo...
-                                        
-                                        //si el pasaje a viajar es una persona, debemos verificarlo...
-                                        if(pasajeros_extra.size() == 1){
-                                            //si la persona es un infante.
-                                            if(pasajeros_extra.get(0).getTipo_pasajero().equals("nino")){
-                                                //debemos generar unos cuantos cambios...
-                                                request.setAttribute("infoTipoPasajero", "errorTipoPasajero");
-                                                redireccionar = "ReservaControllers?accion=reservar";
-                                            }
-                                        }
-                                    }
-                                    
-                                    
-                                }else{
-                                    redireccionar = "ReservaControllers?accion=reservar";
-                                }
-                                
-                            }
-                            
-                            
-                        }else if(tipoVuelo.equals("Origen-Destino")){
-                            //pais vuelo
-                            String origen = request.getParameter("from");
-                            String destino = request.getParameter("to");
-                            //ciudad vuelo
-                            String ciudadOrigen = request.getParameter("ciudad_from");
-                            String ciudadDestino = request.getParameter("ciudad_to");
-                            //fechas vuelos
-                            String fecha_salida = request.getParameter("deparure");
-                            String fecha_retorno = request.getParameter("return");
-                            String numero_pasajeros = request.getParameter("pasajeros");
-                            
-                            
-                            if(!origen.isEmpty() && !destino.isEmpty() && !ciudadOrigen.isEmpty() && !ciudadDestino.isEmpty() && !fecha_salida.isEmpty() && !fecha_retorno.isEmpty() && !numero_pasajeros.isEmpty()){
-                                informacion.add(origen);
-                                informacion.add(destino);
-                                informacion.add(ciudadOrigen);
-                                informacion.add(ciudadDestino);
-                                informacion.add(fecha_salida);
-                                informacion.add(fecha_retorno);
-                                informacion.add(numero_pasajeros);
-                                
-                                ArrayList<Pasajeros> pasajeros_extra = new ArrayList<>();
-                                redireccionar = "ReservaControllers?accion=reservar&mensaje=error2"; //establecemos nuestro error.
-                                
-                                if(Integer.parseInt(numero_pasajeros) > 0){
-                                    for(int i = 0; i < Integer.parseInt(numero_pasajeros); i++){
-                                        //------------
-                                        int indice = i;
-                                        indice +=1;
-                                        
-                                        String id = request.getParameter("identificador-"+indice);
-                                        String nombre = (request.getParameter("Nombres-"+indice) == null) ? "" : request.getParameter("Nombres-"+indice);
-                                        String apellido = (request.getParameter("Apellidos-"+indice) == null) ? "" : request.getParameter("Apellidos-"+indice);
-                                        String cedula = (request.getParameter("Cedula-"+indice) == null) ? "" : request.getParameter("Cedula-"+indice);
-                                        String tipo_pasajero = (request.getParameter("tipo_pasajero-"+indice) == null) ? "" : request.getParameter("tipo_pasajero-"+indice);
-                                        String genero = (request.getParameter("genero-"+indice) == null) ? "" : request.getParameter("genero-"+indice);
-                                        String email = (request.getParameter("Email-"+indice) == null) ? "" : request.getParameter("Email-"+indice);
-                                        String celular = (request.getParameter("Celular-"+indice) == null) ? "" : request.getParameter("Celular-"+indice);
-                                        
-                                        
-                                        if(!id.isEmpty() && !nombre.isEmpty() && !apellido.isEmpty() && !cedula.isEmpty() && !tipo_pasajero.isEmpty() && !genero.isEmpty() && !email.isEmpty() && !celular.isEmpty()){
-                                            Usuarios usuarioCedula = new Usuarios();
-                                            usuarioCedula.setCedula(cedula);
-                                            List<Usuarios> existeCliente = ud.filtrarRegistro(usuarioCedula);
-                                            
-                                            
-                                            //procesaremos cedulas que aun no se encuentran registrados en nuestro sistema. 
-                                            if(!existeCliente.isEmpty()){
-                                                redireccionar = "ReservaControllers?accion=reservar&mensaje=error";
-                                                break;
-                                            }else{
-                                                
-                                                /*ESTE ES NUESTRO INSTANCIA PRINCIPAL....*/                            
-                                                Pasajeros ps = null;
-                                                //es validar por el tipo de usuario....
-                                                switch(tipo_pasajero.toLowerCase()){
-                                                    case "hombre":
-                                                        //debemos validar por el numero de cedula....
-
-                                                        ps = new Pasajeros();
-                                                        ps.setId(indice);
-                                                        ps.setNombre(nombre);
-                                                        ps.setApellido(apellido);
-                                                        ps.setCedula(cedula);
-                                                        ps.setTipo_pasajero(tipo_pasajero);
-
-                                                        if(genero != null && email != null && celular != null){
-                                                            ps.setGenero(genero);
-                                                            ps.setCorreo(email);
-                                                            ps.setCelular(celular);
-                                                            pasajeros_extra.add(ps);
-                                                        }
-                                                        break;
-                                                    case "mujer":
-                                                        //debemos validar por el numero de cedula...
-                                                        ps = new Pasajeros();
-                                                        ps.setId(indice);
-                                                        ps.setNombre(nombre);
-                                                        ps.setApellido(apellido);
-                                                        ps.setCedula(cedula);
-                                                        ps.setTipo_pasajero(tipo_pasajero);
-
-                                                        if(genero != null && email != null && celular != null){
-                                                            ps.setGenero(genero);
-                                                            ps.setCorreo(email);
-                                                            ps.setCelular(celular);
-                                                            pasajeros_extra.add(ps);
-                                                        }
-
-                                                        break;
-                                                    case "nino":
-                                                        //debemos validar por el numero de cedula...
-                                                        ps = new Pasajeros();
-                                                        ps.setId(indice);
-                                                        ps.setNombre(nombre);
-                                                        ps.setApellido(apellido);
-                                                        ps.setCedula(cedula);
-                                                        ps.setTipo_pasajero(tipo_pasajero);
-
-                                                        if(genero != null){
-                                                            ps.setGenero(genero);
-                                                            ps.setCorreo(" ");
-                                                            ps.setCelular(" ");
-                                                            pasajeros_extra.add(ps);
-                                                        }
-
-                                                    default:
-                                                        break;
-                                                }//switch
-                                                
-                                                
-                                            }
-                                        }else{
-                                            //cambiar esto en caso de un error.
-                                            redireccionar = "ReservaControllers?accion=reservar";
-                                        }
-                                        
-                                    }//for
-                                    
-                                    
-                                    //vamos a comprobar por el numero de nuestros pasajeros registrados...
-                                    if(pasajeros_extra.size() == Integer.parseInt(numero_pasajeros)){
-                                        request.setAttribute("info_pasajeros", pasajeros_extra);
-                                        request.setAttribute("info", informacion);
-                                        redireccionar = "Pages/Reserva/vuelos.jsp"; //descomentar despues esta linea de codigo...
-                                        
-                                        //si el pasaje a viajar es una persona, debemos verificarlo...
-                                        if(pasajeros_extra.size() == 1){
-                                            //si la persona es un infante.
-                                            if(pasajeros_extra.get(0).getTipo_pasajero().equals("nino")){
-                                                //debemos generar unos cuantos cambios...
-                                                request.setAttribute("infoTipoPasajero", "errorTipoPasajero");
-                                                redireccionar = "ReservaControllers?accion=reservar";
-                                            }
-                                        }
-                                    }
-                                    
-                                    
-                                }else{
-                                    redireccionar = "ReservaControllers?accion=reservar";
-                                }
-                            }else{
-                                redireccionar = "ReservaControllers?accion=reservar";
-                            }
-                            
-                        }
+                    String tipoVuelo = request.getParameter("TipoVuelos");
+                    redireccionar = "Pages/Reserva/vuelos.jsp";
+                    
+                    if(tipoVuelo.equals("Ida") || tipoVuelo.equals("Ida-Regreso")){
+                        List<List<String>> informacion = InformacionFormulario(request, tipoVuelo);
+                        request.setAttribute("InformacionPasajeros", informacion);
                     }
+
                 }
+                
                 case "pagar" -> {
                     //vamos a obtener la mayoria de todos los datos de nuestro formulario para realizar el proceso de introducirlo dentro de
                     //nuestra base de datos...
@@ -888,6 +599,82 @@ public class ReservaControllers extends HttpServlet {
     }
     
     
+    public List<List<String>> InformacionFormulario(HttpServletRequest request, String tipo){
+        List<List<String>> informacion = new ArrayList<>();
+        
+        List<String> infoVuelo = new ArrayList<>();
+        String from = request.getParameter("from");
+        String to = request.getParameter("to");
+        String estado_from = request.getParameter("ciudad_from");
+        String estado_to = request.getParameter("ciudad_to");
+        String nPasajeros = request.getParameter("pasajeros");
+        String fechaSalida = request.getParameter("deparure");
+        
+        infoVuelo.add(from);
+        infoVuelo.add(to);
+        infoVuelo.add(estado_from);
+        infoVuelo.add(estado_to);
+        infoVuelo.add(nPasajeros);
+        infoVuelo.add(fechaSalida);
+        
+        switch(tipo){
+            case "Ida" -> {
+                informacion.add(infoVuelo);
+                List<List<String>> informacionFormulario = this.formPasajeros(request, Integer.parseInt(infoVuelo.get(4))+1);
+                for(List<String> j : informacionFormulario){
+                    informacion.add(j);
+                }
+            }
+            
+            case "Ida-Regreso" -> {
+                String fechaRegreso = request.getParameter("deparure");
+                infoVuelo.add(fechaRegreso);
+                informacion.add(infoVuelo);
+                
+                List<List<String>> informacionFormulario = this.formPasajeros(request, Integer.parseInt(infoVuelo.get(4))+1);
+                for(List<String> j : informacionFormulario){
+                    informacion.add(j);
+                }
+                
+            }
+        }
+        
+        return informacion;
+    }
+    
+    
+    public List<List<String>> formPasajeros(HttpServletRequest request, int limite){
+        //informacion pasajeros
+        List<List<String>> lista = new ArrayList<>();
+        for(int i = 1; i < limite; i++){
+            List<String> formPasajero1 = new ArrayList<>();
+            String nombres = request.getParameter("Nombres-"+Integer.toString(i));
+            String apellidos = request.getParameter("Apellidos-"+Integer.toString(i));
+            String cedula = request.getParameter("Cedula-"+Integer.toString(i));
+            String tipoPasajero = request.getParameter("tipo_pasajero-"+Integer.toString(i));
+
+            formPasajero1.add(nombres);
+            formPasajero1.add(apellidos);
+            formPasajero1.add(cedula);
+            formPasajero1.add(tipoPasajero);
+            
+            if(tipoPasajero.equals("Hombre") || tipoPasajero.equals("Mujer")){
+                String email = request.getParameter("Email-"+Integer.toString(i));
+                String celular = request.getParameter("Celular-"+Integer.toString(i));
+                
+                formPasajero1.add(email);
+                formPasajero1.add(celular);
+            }else{
+                formPasajero1.add("false");
+            }
+
+            lista.add(formPasajero1);
+        }
+
+        return lista;
+    }
+    
+    
     public void setAlmacenar(List<String> almacenar){
         this.almacenar.add(almacenar);
     }
@@ -944,10 +731,4 @@ public class ReservaControllers extends HttpServlet {
         
     }
 
-    //esta funcion sera la encargada de generarnos una validacion correspondiente.
-    public boolean ValidarCedula(){
-        
-        
-        return true;
-    }
 }
