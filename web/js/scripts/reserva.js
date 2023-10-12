@@ -3,19 +3,14 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function App(){
+    CopiaEstados();
     ValidacionCamposFormulario();
     VerificarBotonEnviar();
-    
-    /*
-    Redireccionar();
-    //CompletarEntradas(); //completa los 4 primeros campos.
-    CopiarCiudades();
-    VerificarCamposFechas();
-    VerificarCamposFechas2();
-    
-    InsertarAlertas();
-    */    
 }
+
+const copiaEstados = [];
+let estadoFiltrado = []; //aqui se guarda los estados que corresponde solamente al pais especifico (el que fue seleccionado)
+
 
 //captura lo que escribe la persona.
 let entrada = [];
@@ -71,6 +66,64 @@ const formPasajero2 = {
     '4' : [false, false]
 };
 
+function sacarId(e, flag){
+    let nodeOption = "";
+    if(flag){
+        nodeOption = e.querySelectorAll("option");
+    }else{
+       nodeOption = e.target.querySelectorAll('option');
+    }
+    
+    let identificador = "";
+    for(let i = 0; i < nodeOption.length; i++){
+        if(nodeOption[i].selected){
+            identificador=nodeOption[i].id;
+            break;
+        }
+    }
+    
+    return identificador;
+}
+
+function CopiaEstados(){
+    const select = document.getElementById('ciudad_desde');
+    const options = document.querySelectorAll('#ciudad_desde > option');
+    //copia de nodos...
+    for(let i = 0; i < options.length; i++){
+        copiaEstados.push(options[i]);
+    }
+}
+
+//Introducimos los estados filtrados... en pocas solamente mostramos los estados que tengan relacion con el pais seleccionado.
+function IntroducirEstados(id,tipo){
+    if(id !== ""){
+        let select = "";
+        if(tipo === "from"){
+            select = document.getElementById('ciudad_desde');
+        }else if(tipo === "to"){
+            select = document.getElementById('ciudad_a');
+        }
+        
+        //filtrado de nodos...
+        for(let i = 0; i < copiaEstados.length; i++){
+
+            if(parseInt(copiaEstados[i].id) === parseInt(id)){
+                estadoFiltrado.push(copiaEstados[i]);
+            }
+        }
+
+        //limpieza de html...
+        select.innerHTML = '';
+
+        //insercion de nuevo html...
+        estadoFiltrado.forEach(estado => {
+            select.appendChild(estado);
+        });
+
+        //limpiarFiltrado
+        estadoFiltrado = [];
+    }
+}
 
 function ValidacionCamposFormulario(){
     const selects = document.querySelectorAll("select");
@@ -81,19 +134,23 @@ function ValidacionCamposFormulario(){
     const validarSelect = (e, flag=false) => {
         let name = "";
         let value = "";
+        let id = "";
         
         if(flag){
             name = e.name;
             value = e.value;
+            id = sacarId(e,flag);
         }else{
             name = e.target.name;
             value = e.target.value;
+            id = sacarId(e,flag);
         }
         
         switch(name){
             case "from":
                 if(value.trim() !== ''){
                     form_reserva.desde = true;
+                    FiltrarEstados(id, "from");
                     mostrarAlerta(false, 'mensaje_desde', 'from');
                 }else{
                     form_reserva.desde = false;
@@ -104,6 +161,7 @@ function ValidacionCamposFormulario(){
             case "to":
                 if(value.trim() !== ''){
                     form_reserva.a = true;
+                    FiltrarEstados(id, "to");
                     mostrarAlerta(false, 'mensaje_a', 'to');
                 }else{
                     form_reserva.a = false;
@@ -201,6 +259,7 @@ function ValidacionCamposFormulario(){
     
     selects.forEach(select => {
         select.addEventListener("blur", validarSelect);
+        select.addEventListener("input", validarSelect);
         
         validarSelect(select, true);
     });
@@ -216,6 +275,21 @@ function ValidacionCamposFormulario(){
 }
 
 
+
+function FiltrarEstados(id, tipo){
+    switch(tipo){
+        case "from":
+            IntroducirEstados(id,tipo);
+            break;
+            
+        case "to":
+            IntroducirEstados(id,tipo);
+            break;
+            
+        default:
+            break;
+    }
+}
 
 
 function ValidacionFormularioCliente(nFormularios){
@@ -725,146 +799,6 @@ function EscribirHTML2(i, value){
     }
 }
 
-
-let ciudades = {
-    "ESTADOS" : []
-};
-
-
-function CopiarCiudades(){
-    //vamos hacer una copia de los datos encontrados en el html...
-     //encontrado nombre pais y el identificador unico... vamos a generar unos cuantos cambios en el campo de "ciudad desde"
-    let datos = [];
-    let opcionCampoCiudadDesde = document.querySelectorAll("#ciudad_desde > option");
-    opcionCampoCiudadDesde.forEach(ciudad => {
-        let l = {"ID" : "", "VUELO" : ""};
-        
-        let id = ciudad.id;
-        let vuelo = ciudad.value;
-        
-        l.ID = id;
-        l.VUELO = vuelo;
-        
-        datos.push(l);
-    });
-    
-    ciudades.ESTADOS = [...datos];
-}
-
-
-//proposito de la funcion: cuando el usuario escoge su pais de origen, en el campo de "ciudad desde" debe aparecer
-//solo las ciudades respectivas de ese pais escogido y no otras ciudades que no pertenezcan
-//lo mismo se aplica para el campo de pais destino y sus ciudades respectivas... 
-function VerificarCamposFechas(){
-    let campoPaisDesde = document.querySelector("select#from");
-    
-    campoPaisDesde.addEventListener("change", (e) => {
-        let pais = e.target.value;
-        FiltrarCiudades1(pais);
-    });
-    
-    let pais = campoPaisDesde.value;
-    FiltrarCiudades1(pais);
-}
-
-
-function FiltrarCiudades1(p){
-    let pais = p;
-    let id = 0;
-
-    let opcionesCiudadDesde = document.querySelectorAll("select#from > option");
-
-    opcionesCiudadDesde.forEach(ciudad => {
-        if(ciudad.value === pais){
-           id = parseInt(ciudad.id);
-        }
-    });
-
-
-    //a continuacion vamos hacer uso de nuestra lista de datos hecho una copia.
-    let contenedor = document.querySelector("#ciudad_desde");
-
-    //dentro de nuestro contenedor vamos a limpiar los elementos...
-    document.querySelectorAll("#ciudad_desde > option").forEach(elemento => {
-        elemento.remove();
-    });
-
-    ciudades.ESTADOS.forEach(estado => {
-
-        let idCiudad = parseInt(estado.ID);
-        if(id === idCiudad){
-            let opcion = document.createElement('OPTION');
-            opcion.id = estado.ID;
-            opcion.value = estado.VUELO;
-            opcion.textContent = estado.VUELO;
-
-            contenedor.appendChild(opcion); 
-        }
-    });
-}
-
-
-//el mismo proceso de nuestra funcion VerificarCamposFecha() -> lo haremos dentro de esta funcion...
-function VerificarCamposFechas2(){
-    //este es nuestro campo segundo de "vuelo a"
-    let campoPaisA = document.querySelector("select#to");
-
-    campoPaisA.addEventListener("change", (e) => {
-        let pais = e.target.value;
-        FiltrarCiudades2(pais);
-    });
-    
-    let pais = campoPaisA.value;
-    FiltrarCiudades2(pais);
-}
-
-function FiltrarCiudades2(p){
-    let pais = p;
-    let id = 0;
-    let opcionesPaisA = document.querySelectorAll("select#to > option");
-    opcionesPaisA.forEach(ciudad => {
-        if(ciudad.value === pais){
-           id = parseInt(ciudad.id);
-        }
-    });
-
-    //a continuacion vamos hacer uso de nuestra lista de datos hecho una copia.
-    let contenedor = document.querySelector("#ciudad_a");
-
-    //dentro de nuestro contenedor vamos a limpiar los elementos...
-    document.querySelectorAll("#ciudad_a > option").forEach(elemento => {
-        elemento.remove();
-    });
-
-    ciudades.ESTADOS.forEach(estado => {
-
-        let idCiudad = parseInt(estado.ID);
-        if(id === idCiudad){
-            let opcion = document.createElement('OPTION');
-            opcion.id = estado.ID;
-            opcion.value = estado.VUELO;
-            opcion.textContent = estado.VUELO;
-
-            contenedor.appendChild(opcion); 
-        }
-    });
-}
-
-
-//proposito: => verificar por el tipo de pasajero que es. Niño, Hombre, Mujer....
-//en base a eso... la funcion desplegara campos adicionales para que el cliente
-//los llene...
-function TipoPasajeroCampo(){
-    //uno de los fallos que tenemos en el codigo es que debemos ir actualizando las acciones que realiza un cliente...
-    //debemos estar pendientes de cuando realizar un tipo de accion espeficio...
-    let campoNumeroPasajeros = document.querySelector("#Pasajeros");
-    
-    campoNumeroPasajeros.addEventListener("input", (e) => {
-        EscribirHTML2();
-    });
-    
-    EscribirHTML2();
-}
 
 function VerificarBotonEnviar(){
     //cuando el usuario de click en enviar... lo que haremos a continuacion 

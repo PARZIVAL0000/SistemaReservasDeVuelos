@@ -319,5 +319,5 @@ input[type="text"], input[type="number"], input[type="tel"], input[type="email"]
 .campo-grupo .mensaje p{
     font-size: 1.2rem;
     text-transform: lowercase;
-    font-weight: 400;
+    font-weight: bold;
 }
