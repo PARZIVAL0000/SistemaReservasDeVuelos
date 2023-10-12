@@ -398,6 +398,7 @@ function validacionOtrosCampos(i){
                 if(value.trim() !== ""){
                     
                     if(expresiones.correo.test(value)){
+                        guardarInformacion(i-1,value, "Email");
                         mostrarAlerta(false, `emailCliente-${i}`, `Eml-${i}`);
                         //cambiar a true en la matriz de la persona.
                         formPasajero2[`${i}`][0] = true; 
@@ -408,6 +409,7 @@ function validacionOtrosCampos(i){
                     
                 }else{
                     mostrarAlerta(true, `emailCliente-${i}`, `Eml-${i}`);
+                    formPasajero2[`${i}`][0] = false;
                 }
                 break;
                 
@@ -417,6 +419,7 @@ function validacionOtrosCampos(i){
                     
                    
                     if(expresiones.celular.test(value)){
+                        guardarInformacion(i-1,value, "Celular");
                         mostrarAlerta(false, `celularCliente-${i}`, `Cel-${i}`);
                         formPasajero2[`${i}`][1] = true;
                     }else{
@@ -426,6 +429,7 @@ function validacionOtrosCampos(i){
                     
                 }else{
                     mostrarAlerta(true, `celularCliente-${i}`, `Cel-${i}`);
+                    formPasajero2[`${i}`][1] = false;
                 }
                 break;
                 
@@ -522,11 +526,15 @@ function rellenarCampos(nFormularios){
 }
 
 function introducirValue(i){
-    const id = parseInt(entrada[i]["id"]);
-    const nombres = entrada[i]["Nombres"];
-    const apellidos = entrada[i]["Apellidos"];
-    const cedula = entrada[i]["Cedula"];
-    const tipoPasajero = entrada[i]["tipoPasajero"];
+    const id = parseInt(entrada[i].id);
+    const nombres = entrada[i].Nombres;
+    const apellidos = entrada[i].Apellidos;
+    const cedula = entrada[i].Cedula;
+    const tipoPasajero = entrada[i].tipoPasajero;
+    
+    //campos extras.
+    const email = entrada[i].Email;
+    const celular = entrada[i].Celular.toString();
     
     if(nombres !== undefined){
         document.getElementById(`Nombres-${id}`).value=nombres;
@@ -542,6 +550,14 @@ function introducirValue(i){
 
     if(tipoPasajero !== undefined){
         document.getElementById(`tipoPasajero-${id}`).value=tipoPasajero;
+    }
+    
+    if(email !== undefined){
+        document.getElementById(`Eml-${id}`).value=email;
+    }
+    
+    if(celular !== undefined){
+        document.getElementById(`Cel-${id}`).value=celular;
     }
 }
 
@@ -847,13 +863,15 @@ function VerificarBotonEnviar(){
             if(!form_reserva.desde || !form_reserva.a || !form_reserva.estado_desde || !form_reserva.estado_a || !form_reserva.fecha_ida || !form_reserva.numero_pasajeros){
                 e.preventDefault();
             }else{
+                
                 const respuesta = verificarInputsPasajeros(parseInt(document.getElementById("Pasajeros").value));
+                
                 if(!respuesta){
                     e.preventDefault();
                 }else{
                     //la ultima validacion aqui....
                     const respuesta2 = verificarCamposFinal(parseInt(document.getElementById("Pasajeros").value));
-                    
+                    console.log(respuesta2);
                     if(!respuesta2){
                         e.preventDefault();
                     }
