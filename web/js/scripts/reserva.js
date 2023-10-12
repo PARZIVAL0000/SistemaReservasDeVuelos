@@ -222,7 +222,6 @@ function ValidacionFormularioCliente(nFormularios){
     const inputs = document.querySelectorAll(".seccion_pasajeros .datos_personales input");
     const selects = document.querySelectorAll(".seccion_pasajeros .datos_personales select");
     
-    
     const validarInputs = (e, flag = false) => {
         let name = "";
         let value = "";
@@ -340,8 +339,8 @@ function ValidacionFormularioCliente(nFormularios){
                         guardarInformacion(i,value, "tipoPasajero");
                         
                         EscribirHTML2(i+1, value);
-                        
                         if(value === "Hombre" || value === "Mujer"){
+                            rellenarUltimosCampos(i);
                             validacionOtrosCampos(i+1);
                         }
                         
@@ -525,6 +524,27 @@ function rellenarCampos(nFormularios){
     }
 }
 
+/* esta funcion se encarga de rellenar los campos Email y Celular (si es que existen datos para llenar) */
+function rellenarUltimosCampos(i){
+    //campos extras.
+    const Email = entrada[i].Email;
+    const Celular = entrada[i].Celular;
+    
+    if(Email !== undefined && Email !== null){
+       const campo_email = document.getElementById(`Eml-${parseInt(entrada[i].id)}`);
+       if(campo_email !== null){
+           campo_email.value=Email;
+       }
+    }
+    
+    if(Celular !== undefined && Celular !== null){
+       const campo_celular = document.getElementById(`Cel-${parseInt(entrada[i].id)}`);
+       if(campo_celular !== null){
+           campo_celular.value=Celular.toString();
+       }
+    }
+}
+
 function introducirValue(i){
     const id = parseInt(entrada[i].id);
     const nombres = entrada[i].Nombres;
@@ -532,33 +552,25 @@ function introducirValue(i){
     const cedula = entrada[i].Cedula;
     const tipoPasajero = entrada[i].tipoPasajero;
     
-    //campos extras.
-    const email = entrada[i].Email;
-    const celular = entrada[i].Celular.toString();
     
-    if(nombres !== undefined){
+    if(nombres !== undefined && nombres !== null){
         document.getElementById(`Nombres-${id}`).value=nombres;
     }
 
-    if(apellidos !== undefined){
+    if(apellidos !== undefined && apellidos !== null){
         document.getElementById(`Apellidos-${id}`).value=apellidos;
     }
 
-    if(cedula !== undefined){
+    if(cedula !== undefined && cedula !== null){
         document.getElementById(`Cedula-${id}`).value=cedula;
     }
 
-    if(tipoPasajero !== undefined){
+    if(tipoPasajero !== undefined && tipoPasajero !== null){
         document.getElementById(`tipoPasajero-${id}`).value=tipoPasajero;
     }
     
-    if(email !== undefined){
-        document.getElementById(`Eml-${id}`).value=email;
-    }
     
-    if(celular !== undefined){
-        document.getElementById(`Cel-${id}`).value=celular;
-    }
+    rellenarUltimosCampos(i);
 }
 
 
@@ -586,6 +598,8 @@ function FormularioOtrosPasajeros(nFormularios){
     rellenarCampos(nFormularios);
     ValidacionFormularioCliente(nFormularios);
 }
+
+
 
 function limpiarFormCliente(){
     //esto limpia nuestro contenido anterior... reemplazandolo por uno nuevo.
