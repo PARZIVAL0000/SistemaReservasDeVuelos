@@ -414,7 +414,7 @@ function ValidacionFormularioCliente(nFormularios){
                         
                         EscribirHTML2(i+1, value);
                         if(value === "Hombre" || value === "Mujer"){
-//                            rellenarUltimosCampos(i);
+                            rellenarUltimosCampos(i);
                             validacionOtrosCampos(i+1);
                         }
                         
@@ -600,51 +600,60 @@ function rellenarCampos(nFormularios){
 
 /* esta funcion se encarga de rellenar los campos Email y Celular (si es que existen datos para llenar) */
 function rellenarUltimosCampos(i){
-    //campos extras.
-    const Email = entrada[i].Email;
-    const Celular = entrada[i].Celular;
-    
-    if(Email !== undefined && Email !== null){
-       const campo_email = document.getElementById(`Eml-${parseInt(entrada[i].id)}`);
-       if(campo_email !== null){
-           campo_email.value=Email;
-       }
-    }
-    
-    if(Celular !== undefined && Celular !== null){
-       const campo_celular = document.getElementById(`Cel-${parseInt(entrada[i].id)}`);
-       if(campo_celular !== null){
-           campo_celular.value=Celular.toString();
-       }
+    if(entrada.length !== 0){
+        //campos extras.
+        try{
+            const Email = entrada[i].Email;
+            const Celular = entrada[i].Celular;
+
+            if(Email !== undefined){
+               const campo_email = document.getElementById(`Eml-${parseInt(entrada[i].id)}`);
+               if(campo_email !== null){
+                   campo_email.value=Email;
+               }
+            }
+
+            if(Celular !== undefined){
+               const campo_celular = document.getElementById(`Cel-${parseInt(entrada[i].id)}`);
+               if(campo_celular !== null){
+                   campo_celular.value=Celular.toString();
+               }
+            }
+        }catch(TypeError){
+            //quitamos nuestro error
+        }
     }
 }
 
 function introducirValue(i){
-    const id = parseInt(entrada[i].id);
-    const nombres = entrada[i].Nombres;
-    const apellidos = entrada[i].Apellidos;
-    const cedula = entrada[i].Cedula;
-    const tipoPasajero = entrada[i].tipoPasajero;
-    
-    
-    if(nombres !== undefined && nombres !== null){
-        document.getElementById(`Nombres-${id}`).value=nombres;
-    }
+    try{
+        const id = parseInt(entrada[i].id);
+        const nombres = entrada[i].Nombres;
+        const apellidos = entrada[i].Apellidos;
+        const cedula = entrada[i].Cedula;
+        const tipoPasajero = entrada[i].tipoPasajero;
 
-    if(apellidos !== undefined && apellidos !== null){
-        document.getElementById(`Apellidos-${id}`).value=apellidos;
-    }
+        if(nombres !== undefined && nombres !== null){
+            document.getElementById(`Nombres-${id}`).value=nombres;
+        }
 
-    if(cedula !== undefined && cedula !== null){
-        document.getElementById(`Cedula-${id}`).value=cedula;
-    }
+        if(apellidos !== undefined && apellidos !== null){
+            document.getElementById(`Apellidos-${id}`).value=apellidos;
+        }
 
-    if(tipoPasajero !== undefined && tipoPasajero !== null){
-        document.getElementById(`tipoPasajero-${id}`).value=tipoPasajero;
+        if(cedula !== undefined && cedula !== null){
+            document.getElementById(`Cedula-${id}`).value=cedula;
+        }
+
+        if(tipoPasajero !== undefined && tipoPasajero !== null){
+            document.getElementById(`tipoPasajero-${id}`).value=tipoPasajero;
+        }
+
+
+        rellenarUltimosCampos(i);
+    }catch(TypeError){
+        //ayudamos a evitar nuestro error...
     }
-    
-    
-    rellenarUltimosCampos(i);
 }
 
 
