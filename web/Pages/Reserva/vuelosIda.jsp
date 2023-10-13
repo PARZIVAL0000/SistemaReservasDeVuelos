@@ -148,14 +148,14 @@
                                                 <button class="boton boton_cancelar" id="<%= j.getId() %>">Cancelar Vuelo</button>
                                             </div>
                                             <div class="hora">
-                                                <p class="fecha_salida"><%= j.getHoraSalida().split(":")[0] %>:<%= j.getHoraSalida().split(":")[1] %><span><%= j.getPaisOrigen() %></span><span style="font-weight:lighter;font-size:1.4rem;display:block;text-align:center;">Ciudad: <strong><%= ciudadOrigen %></strong></span></p>
-                                                <p class="fecha_llegada"><%= j.getHoraLlegada().split(":")[0] %>:<%= j.getHoraLlegada().split(":")[1] %><span><%= j.getPaisDestino() %></span><span style="font-weight:lighter;font-size:1.4rem;display:block;text-align:center;">Ciudad: <strong><%= ciudadDestino %></strong></span></p>
+                                                <p class="fecha_salida"><span id="horaSalida"><%= j.getHoraSalida().split(":")[0] %>:<%= j.getHoraSalida().split(":")[1] %></span><span id="paisSalida"><%= j.getPaisOrigen() %></span><span style="font-weight:lighter;font-size:1.4rem;display:block;text-align:center;">Ciudad: <strong><%= ciudadOrigen %></strong></span></p>
+                                                <p class="fecha_llegada"><span id="horaLlegada"><%= j.getHoraLlegada().split(":")[0] %>:<%= j.getHoraLlegada().split(":")[1] %></span><span id="paisLlegada"><%= j.getPaisDestino() %></span><span style="font-weight:lighter;font-size:1.4rem;display:block;text-align:center;">Ciudad: <strong><%= ciudadDestino %></strong></span></p>
                                             </div>
                                             <div class="fecha">
                                                 <p>Fecha Disponible <span><%= j.getFecha() %></span></p>
                                             </div>
                                             <div class="aerolinea">
-                                                <p>Aerolinea: <span><%= j.getAerolinea() %></span></p>
+                                                <p>Aerolinea: <span id="MiAerolinea"><%= j.getAerolinea() %></span></p>
                                             </div>
                                             <div class="seleccion">
                                                 <div class="form-check">

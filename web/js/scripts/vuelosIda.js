@@ -1,4 +1,4 @@
-(() => {
+
     
 let registro = {
     "IDA": {
@@ -33,6 +33,10 @@ let pagoVuelo = {
 };
 
 
+//Nuestra lista guardara un objeto con informacion recolectada de todo lo que hace el cliente.
+//con eso podemos analizar acciones y mostrar resultados.
+const informacionVuelo = [];
+
 document.addEventListener("DOMContentLoaded", () => {
     VuelosIDA();
 });
@@ -55,10 +59,86 @@ function CerrarVentanaEmergente(){
     }
 }
 
+function almacenarInformacion(key='',value=''){
+    
+    if(informacionVuelo.length !== 0){
+        if(informacionVuelo[0].registro === 1){
+            informacionVuelo[0][`${key}`] = value;
+        }
+        
+        return;
+    }
+    
+    
+    informacionVuelo.push( {"registro" : 1} );
+    
+}
+
+function actualizarCarritoCompra(valor){
+    let parrafoCarrito = document.querySelector("#tarifa");
+    parrafoCarrito.textContent = valor;
+}
 
 function ReservaVueloDeIda(){
+    almacenarInformacion();
+    
     const inputsRadio = document.querySelectorAll("input[type=radio]");
-    console.log(inputsRadio);
+    
+    const verificarAerolinea = (e) => {
+        const input = e.target;
+        const name = e.target.name;
+        const value = e.target.value;
+        
+        if(value === "true"){
+            const id = name.split("-")[1];
+            
+            const botonConfirmar = document.querySelector(`#id_${id} .boton_confirmar`);
+            botonConfirmar.addEventListener("click", (e) => {
+                const botonVuelo = e.target;
+                
+                almacenarInformacion("Aerolinea", document.querySelector(`#id_${id} #MiAerolinea`).textContent);
+                almacenarInformacion("NumeroPasajeros", parseInt(document.querySelector(".numeroPasajeros").textContent.split(":")[1]));
+                almacenarInformacion("PrecioVuelo", parseInt(document.querySelector(`#id_${id} #tarifa-${id}`).textContent));
+                almacenarInformacion("FechaDisponible", document.querySelector(`#id_${id} .fecha span`).textContent);
+                almacenarInformacion("HoraSalida", document.querySelector(`#id_${id} .hora #horaSalida`).textContent);
+                almacenarInformacion("HoraLlegada", document.querySelector(`#id_${id} .hora #horaLlegada`).textContent);
+                almacenarInformacion("PaisSalida", document.querySelector(`#id_${id} .hora #paisSalida`).textContent);
+                almacenarInformacion("PaisLlegada", document.querySelector(`#id_${id} .hora #paisLlegada`).textContent);
+                
+                //vamos a cambiar el valor del carrito de motod de interfaz...
+                actualizarCarritoCompra(informacionVuelo[0].PrecioVuelo);
+                
+                
+                //desactivamos los input[radio] solo de la opcion que el usuario eligio...
+                input.disabled="true";
+                input.parentNode.nextElementSibling.firstChild.nextElementSibling.disabled="true";
+                
+                 //desactivamos los demas botones de otros vuelos que ya no son necesarios por el momento.
+                let inputs = document.querySelectorAll("input[type=radio]");
+                inputs.forEach(entrada=>{
+                   if(parseInt(entrada.parentNode.id) !== parseInt(id)){
+                        entrada.disabled="true";
+                        entrada.style.cursor='no-drop';
+                    }
+                });
+                
+                //vamos a cambiar a cambiar el boton de confirmacion por un boton que diga "cancelar vuelo"
+                //los demas botones terminaran quedando desactivados.
+                botonVuelo.style.display='none';
+                botonVuelo.nextElementSibling.style.display='inline-block';
+                
+                //mostramos nuestro formulario de tipo de vuelo para los clientes....
+                FormularioClaseVuelos(id, "ida");
+                BotonCancelar("ida");
+            });
+            
+        }
+        
+    };
+    
+    inputsRadio.forEach(radio => {
+        radio.addEventListener("click", verificarAerolinea);
+    });
 }
 
 function ReservaVueloIda(){
@@ -201,73 +281,22 @@ function FormularioClaseVuelos(id, tipoVuelo){
                         //cuando se encuentren iguales....
                        if(botonReserva.id === "boton-claseTurista"){
                             if(tipoVuelo === "ida"){
-                                let numeroPersonas = document.querySelector(".numeroPasajeros");
-                                
-                                vuelos.IDA.CANTIDAD = "100";
-                                vuelos.IDA.ID = `${id}`;
-                                vuelos.IDA.CLASE = "turista";
-                                
-                                let totalPersonas = parseInt(vuelos.IDA.CANTIDAD)*parseInt(numeroPersonas.id);
-                                
-                                registro.IDA.CANTIDAD = parseFloat(registro.IDA.CANTIDAD) + parseFloat(totalPersonas);
-                                registro.TOTAL += parseInt(totalPersonas);
-                                
-                                //cuando nuesto usuario se disponga a sar un click lo que haremos es redireccionar a nuestro usuario.
-                                //vamos a cerrar el campo..
-                                let ventana1 = document.querySelector("#collapseOne");
-                                ventana1.classList.remove("show");
-                
-                                
-                                FormularioFinal();
+                                organizarTipoClaseVuelo(key=["Clase", "PrecioClase"], value=["turista", 100]);      
                             }
                             
                         }else if(botonReserva.id === "boton-clasePrimera"){
                             if(tipoVuelo === "ida"){
-                                let numeroPersonas = document.querySelector(".numeroPasajeros");
-                                vuelos.IDA.CANTIDAD = "350";
-                                vuelos.IDA.ID = `${id}`;
-                                vuelos.IDA.CLASE = "primera";
-                                
-                                //vamos ir aumentando nuestra cantidad....
-                                let totalPasajeros = parseInt(vuelos.IDA.CANTIDAD)*parseInt(numeroPersonas.id);
-                                registro.IDA.CANTIDAD = parseFloat(registro.IDA.CANTIDAD) + totalPasajeros;
-                                registro.TOTAL += parseFloat(totalPasajeros);
-                                
-                                let ventana1 = document.querySelector("#collapseOne");
-                                ventana1.classList.remove("show");
-                                
-                                
-                                FormularioFinal();
+                                organizarTipoClaseVuelo(key=["Clase", "PrecioClase"], value=["primera", 350]);
                             }
                         }else if(botonReserva.id === "boton-claseEjecutiva"){
                             if(tipoVuelo === "ida"){
-                                let numeroPersonas = document.querySelector(".numeroPasajeros");
-                                vuelos.IDA.CANTIDAD = "200";
-                                vuelos.IDA.ID = `${id}`;
-                                vuelos.IDA.CLASE = "ejecutiva";
-                                
-                                let totalPasajeros = parseInt(vuelos.IDA.CANTIDAD)*parseInt(numeroPersonas.id);
-                                registro.IDA.CANTIDAD = parseFloat(registro.IDA.CANTIDAD) + totalPasajeros;
-                                registro.TOTAL += parseFloat(totalPasajeros);
-                                
-                                let ventana1 = document.querySelector("#collapseOne");
-                                ventana1.classList.remove("show");
-                               
-                                
-                                FormularioFinal();
+                                organizarTipoClaseVuelo(key=["Clase", "PrecioClase"], value=["ejecutiva", 200]);
                             }
                         }
                         
                         
-                        //vamos a mostrar la cantidad de cada parte ... de ida y de vuela... 
-                        //no mostraremos el total de la suma de todos los vuelos recolectados.... 
-                        //ese total lo usaremos para el formulario final... el usuario solamente tendra que confirmar y ya estaria. 
-                        if(tipoVuelo === "ida"){
-                            //mostramos el valor de ida...
-                            let carritoIda = document.querySelector("#tarifa");
-                            carritoIda.textContent = `${registro.IDA.CANTIDAD.toString().slice(0, 6)}`;
-                        }
-
+                        actualizarCarritoCompra(informacionVuelo[0].PrecioVuelo);
+                        FormularioFinal();
                    }
                     
                     
@@ -275,6 +304,15 @@ function FormularioClaseVuelos(id, tipoVuelo){
             });
         }
     });
+}
+
+function organizarTipoClaseVuelo(key=[], value=[]){
+    almacenarInformacion(key[0], value[0]);
+    almacenarInformacion(key[1], value[1]);
+    informacionVuelo[0].PrecioVuelo += (informacionVuelo[0].PrecioClase*informacionVuelo[0].NumeroPasajeros);
+
+    let ventana1 = document.querySelector("#collapseOne");
+    ventana1.classList.remove("show");
 }
 
 //este boton se genera cuando el usuario escoge su aerolinea. Esta funcion
@@ -376,8 +414,8 @@ function FormularioFinal(){
     <ul>
         <li class="vuelo_info"><box-icon type='solid' name='plane-take-off'><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAZlJREFUSEvt1D1rVFEQxvHfakAQO0mRKBjBb2FjIIKkMGBjY2HpZ7AQhIiFdWwENUYRsRcCgdionY2VosQXiJVpYqPEFwbOhruH+7K77rpb7MAt7r3nzH+e58yZlhFFa0RcE/B/c35idW71QVzEFl4N8hzqrD6L2ziVgG+xmp7tfy2iDnwEt3Alg/zBBh7gKX5UFHEAp3EeJ3Edb9pru2muedzDiRLAdzxKRbzEISzgApZwtLBnHed6AcfaKvXFWj5gBocrHPhcLL4bxcU8oT4sPt7HGd/E1SrF0/iG3zWJQ/0TLHYB/4VnWEFYvR9FxcfwAntYTsryAqJJruESpmrAr1P3P8RO2boiOJonwFFAxHvcSAXEvybg19Rod/CuyY38jOcSfLaw8QviPYZJHj/TlYrODivrjqhjb1lz5crLio+rE8PkMXab1DVZXfxfBv+ENdxNI7QfXmlz5YnC9rAvZnRcoU3E1BpI9HqPBwKNJGMDDnsvD0xWZ6L7+Nj+lCs+k85yGOwYt8/HDjwMpaU5x6a5JoqH5sBfXZNFHxeyvKAAAAAASUVORK5CYII="/></box-icon><p>${vuelos.IDA.DESDE} a ${vuelos.IDA.A}</p></li>
         <li class="vuelo_fecha">
-            <p class="fecha_ida">${vuelos.IDA.FECHA_SALIDA}</p>
-            <p class="clase_ida">${vuelos.IDA.CLASE}</p>
+            <p class="fecha_ida">${informacionVuelo[0].FechaDisponible}</p>
+            <p class="clase_ida">${informacionVuelo[0].Clase}</p>
             <input type="hidden" name="VueloIda_desde" value="${vuelos.IDA.DESDE}" />
             <input type="hidden" name="VueloIda_fecha" value="${vuelos.IDA.FECHA_SALIDA}"/>
             <input type="hidden" name="VueloIda_horaSalida" value="${vuelos.IDA.HORA_SALIDA}"/>
@@ -554,6 +592,6 @@ function PagarVuelo(){
     });
 }
 
-})();
+
 
 
