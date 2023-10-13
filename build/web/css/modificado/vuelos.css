@@ -109,7 +109,8 @@ div#retorno{
 .listado_vuelos .vuelo .seccion1{
     display:flex;
     height:7rem;
-    
+    gap: 1rem;
+    align-items: baseline;
 }
 
 .listado_vuelos .vuelo .seccion1 .hora{
@@ -137,6 +138,8 @@ div#retorno{
     text-align: center;
     border-radius: 2rem;
     margin-top: 1.2rem;
+    display: flex;
+    align-items: center;
 }
 
 .listado_vuelos .vuelo .seccion1 .aerolinea > p{
@@ -144,6 +147,7 @@ div#retorno{
     color: rgb(255, 255, 255);
     text-transform: uppercase;
     font-weight: bold;
+    margin:0rem;
 }
 
 .listado_vuelos .vuelo .seccion1 .seleccion{
@@ -212,7 +216,7 @@ div#retorno{
 
 /*//estilos para un boton*/
 .boton-confirmar{
-    
+    height: 100%;
 }
 
 .boton-confirmar .boton_confirmar{
@@ -757,13 +761,21 @@ div#retorno{
     background-color:#107361;
     margin-top: .6rem;
     color:rgb(255, 255, 255);
-    padding-left: 2.5rem;
+    padding-left: 1rem;
+    border-radius: .2rem;
+}
+
+.informacion_pagoFinal p{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: .9rem .2rem;
 }
 
 .informacion_pagoFinal p > span{
     font-weight: bold;
     font-size:1.9rem;
-    padding-left: 27.5rem;
+    padding-right: .9rem;
 }
 
 .informacion_facturacion .boton{
@@ -798,7 +810,7 @@ div#retorno{
 /* FORMULARIO FINAL DE ENVIO */
 .accordion-body.inf{
     overflow-y: scroll;
-    height: 12rem;
+    max-height: 25rem;
 }
 
 .accordion-body.inf > p{

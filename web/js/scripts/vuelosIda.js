@@ -38,7 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function VuelosIDA(){
-    ReservaVueloIda();
+    ReservaVueloDeIda();
+//    ReservaVueloIda();
     CerrarVentanaEmergente();
 }
 
@@ -54,6 +55,11 @@ function CerrarVentanaEmergente(){
     }
 }
 
+
+function ReservaVueloDeIda(){
+    const inputsRadio = document.querySelectorAll("input[type=radio]");
+    console.log(inputsRadio);
+}
 
 function ReservaVueloIda(){
     //debemos leer a continuacion por los diferentes botones que se encuentran existentes
@@ -359,23 +365,6 @@ function BotonCancelar(tipo){
                 let parrafoCarrito = document.querySelector("#tarifa");
                 parrafoCarrito.textContent="0.0";
             }
-//            else if(tipo === "regreso"){
-//                //informacion sobre nuestra salida...
-//                vuelos.REGRESO.HORA_SALIDA = "";
-//                vuelos.REGRESO.DESDE = "";
-//                //informacion sobre nuestra llegada o destino... 
-//                vuelos.REGRESO.HORA_LLEGADA =  "";
-//                vuelos.REGRESO.A = ""; 
-//                //lo unico que nos faltaria seria la fecha... osea la fecha disponible de nuestro viaje....
-//                vuelos.REGRESO.FECHA_SALIDA = "";
-//                
-//                registro.REGRESO.CANTIDAD = "";
-//                registro.REGRESO.ID = "";
-//                
-//                //la parte del carrito volvemos a establecerlo en cero...
-//                let parrafoCarrito = document.querySelector("#carrito2 #tarifa2");
-//                parrafoCarrito.textContent="0.0";
-//            }
         });
     });
 }

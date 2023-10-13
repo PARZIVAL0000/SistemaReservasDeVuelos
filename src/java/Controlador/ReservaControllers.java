@@ -61,31 +61,31 @@ public class ReservaControllers extends HttpServlet {
         if(request.getRequestURI().equals("/ReservaDeVuelos/ReservaControllers")){
           
             String accion = request.getParameter("accion");
-            List<String> datos = new ArrayList<>();
             String redireccionar = "index.jsp";
             
             if(accion.equals("reservar")){
                 
-                //dentro de este punto lo que haremos 
-                System.out.println("el parametro pasado puede ser: " + request.getParameter("login"));
-                
-                //vamos a ir recolectando los datos pasados por el usuario...
+                String opcionVuelo = request.getParameter("OpcionVuelo");
+                List<String> datos = new ArrayList<>();
+
                 String origen = request.getParameter("from");
                 String destino = request.getParameter("to");
                 String fecha_salida = request.getParameter("deparure");
-                String fecha_retorno = request.getParameter("return");
                 String numero_pasajeros = request.getParameter("pasajeros");
-                
+
+                datos.add(opcionVuelo);
                 datos.add(origen);
                 datos.add(destino);
-                datos.add(fecha_salida);
-                datos.add(fecha_retorno);
                 datos.add(numero_pasajeros);
-                
-                this.setAlmacenar(datos);
-                
-                request.setAttribute("datos", datos);
+                datos.add(fecha_salida);
+
+                if(opcionVuelo.equals("Ida-Regreso")){
+                    String fecha_llegada = request.getParameter("return");    
+                    datos.add(fecha_llegada);
+                }
+
                 redireccionar = "Pages/Reserva/reserva.jsp";
+                request.setAttribute("datos", datos);
             }
             
             request.getRequestDispatcher(redireccionar).forward(request, response);

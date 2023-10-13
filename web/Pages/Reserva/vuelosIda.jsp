@@ -136,7 +136,7 @@
                                         <p class="mensaje_vuelos">Sin vuelos disponibles...</p>
                                    </div>
                                    <div class="regresar">
-                                        <a class="btn btn-primary rgrs" href="ReservaControllers?accion=reservar&to=<%= paisDestino %>&deparure=<%= fechaIda %>&pasajeros=<%= pTotal %>" role="button">Regresar</a>
+                                        <a class="btn btn-primary rgrs" href="ReservaControllers?accion=reservar&to=<%= paisDestino %>&from=<%= paisOrigen %>&deparure=<%= fechaIda %>&pasajeros=<%= pTotal %>&OpcionVuelo=Ida" role="button">Regresar</a>
                                    </div>
                                 <% }else{ %>
                                     <% for(CarteleraViajes j : viajesIda){ %>
@@ -159,13 +159,13 @@
                                             </div>
                                             <div class="seleccion">
                                                 <div class="form-check">
-                                                    <input class="form-check-input fly_from" type="radio" name="aerolineaIda-<%= j.getId() %>" value="<%= j.getId() %>" id="flexRadioDefault1" >
+                                                    <input class="form-check-input fly_from" type="radio" name="aerolineaIda-<%= j.getId() %>" value="true" id="flexRadioDefault1" >
                                                     <label class="form-check-label" for="flexRadioDefault1">
                                                         <p>Quiero <%= j.getAerolinea() %></p>
                                                     </label>
                                                 </div>
                                                 <div class="form-check">
-                                                    <input class="form-check-input fly_from" type="radio" name="aerolineaIda-<%= j.getId() %>" value="<%= j.getId() %>" id="flexRadioDefault2" checked>
+                                                    <input class="form-check-input fly_from" type="radio" name="aerolineaIda-<%= j.getId() %>" value="false" id="flexRadioDefault2" checked>
                                                     <label class="form-check-label" for="flexRadioDefault2">
                                                         <p>No Quiero <%= j.getAerolinea() %></p>
                                                     </label>
@@ -256,7 +256,7 @@
             <div class="mensaje_alerta" >
                 <div class="mensaje">
                     <h2 class="mensaje_titulo">!ERROR</h2>
-                    <p class="mensaje_parrafo">Para completar el proceso debes escoger un horario de salida</p>
+                    <p class="mensaje_parrafo">Para completar el proceso debes escoger una aerolínea</p>
                     <button type="button" id="errorAlerta" class="mensaje_botonCerrar">Cerrar</button>
                 </div>
             </div>
@@ -345,12 +345,28 @@
                                             
                                             <p>Numero de Pasajeros: <%= pTotal %></p>
                                             <hr/>
-                                            <% for(Pasajeros j : infoPasajeros){ %>
-                                            <p>Pasajero <%= j.getId() %></p>
+                                            <%  int i = 1;
+                                                for(Pasajeros j : infoPasajeros){ 
+                                            %>
+                                            <p>Pasajero <%= i %></p>
                                             <p>Nombres: <%= j.getNombre() %> <%= j.getApellido() %></p>
                                             <p>Cedula: <%= j.getCedula() %></p>
-                                            <hr/>
+                                            <%
+                                                if(!j.getTipo_pasajero().equals("nino")){
+                                            %>
+                                            <p>Tipo Pasajero: <%= j.getTipo_pasajero() %></p>
+                                            <p>Email: <%= j.getCorreo() %></p>
+                                            <p>Celular: <%= j.getCelular() %> </p>
+                                            <%
+                                                }else{
+                                            %>
+                                            <p>Tipo Pasajero: Niño</p>
                                             <% } %>
+                                            <hr/>
+                                            <% 
+                                                i++;
+                                            } 
+                                            %>
                                            
                                         </div>
                                       </div>
