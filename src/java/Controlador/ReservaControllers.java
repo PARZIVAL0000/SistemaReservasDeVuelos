@@ -158,11 +158,18 @@ public class ReservaControllers extends HttpServlet {
                     request.setAttribute("datos", datos);
                 }
                 case "perfil_vuelo" -> {
-                    String tipoVuelo = request.getParameter("TipoVuelos");
-                    redireccionar = "Pages/Reserva/vuelos.jsp";
+                    String tipoVuelo = request.getParameter("TipoVuelo");
+                    
+                    if(tipoVuelo.equals("Ida")){
+                        redireccionar = "Pages/Reserva/vuelosIda.jsp";
+                    }else if(tipoVuelo.equals("Ida-Regreso")){
+                        redireccionar = "Pages/Reserva/vuelos.jsp";
+                    }
                     
                     if(tipoVuelo.equals("Ida") || tipoVuelo.equals("Ida-Regreso")){
-                        List<List<String>> informacion = InformacionFormulario(request, tipoVuelo);
+                        List<Object> informacion = InformacionFormulario(request, tipoVuelo);
+                        
+                        
                         request.setAttribute("InformacionPasajeros", informacion);
                     }
 
@@ -599,8 +606,8 @@ public class ReservaControllers extends HttpServlet {
     }
     
     
-    public List<List<String>> InformacionFormulario(HttpServletRequest request, String tipo){
-        List<List<String>> informacion = new ArrayList<>();
+    public List<Object> InformacionFormulario(HttpServletRequest request, String tipo){
+        List<Object> informacion = new ArrayList<>();
         
         List<String> infoVuelo = new ArrayList<>();
         String from = request.getParameter("from");
@@ -620,8 +627,8 @@ public class ReservaControllers extends HttpServlet {
         switch(tipo){
             case "Ida" -> {
                 informacion.add(infoVuelo);
-                List<List<String>> informacionFormulario = this.formPasajeros(request, Integer.parseInt(infoVuelo.get(4))+1);
-                for(List<String> j : informacionFormulario){
+                List<Pasajeros> informacionFormulario = this.formPasajeros(request, Integer.parseInt(infoVuelo.get(4))+1);
+                for(Pasajeros j : informacionFormulario){
                     informacion.add(j);
                 }
             }
@@ -631,8 +638,8 @@ public class ReservaControllers extends HttpServlet {
                 infoVuelo.add(fechaRegreso);
                 informacion.add(infoVuelo);
                 
-                List<List<String>> informacionFormulario = this.formPasajeros(request, Integer.parseInt(infoVuelo.get(4))+1);
-                for(List<String> j : informacionFormulario){
+                List<Pasajeros> informacionFormulario = this.formPasajeros(request, Integer.parseInt(infoVuelo.get(4))+1);
+                for(Pasajeros j : informacionFormulario){
                     informacion.add(j);
                 }
                 
@@ -643,35 +650,53 @@ public class ReservaControllers extends HttpServlet {
     }
     
     
-    public List<List<String>> formPasajeros(HttpServletRequest request, int limite){
+    public List<Pasajeros> formPasajeros(HttpServletRequest request, int limite){
         //informacion pasajeros
         List<List<String>> lista = new ArrayList<>();
+        List<Pasajeros> lista_pasajeros = new ArrayList<>();
         for(int i = 1; i < limite; i++){
             List<String> formPasajero1 = new ArrayList<>();
+            Pasajeros pasajero = new Pasajeros();
             String nombres = request.getParameter("Nombres-"+Integer.toString(i));
             String apellidos = request.getParameter("Apellidos-"+Integer.toString(i));
             String cedula = request.getParameter("Cedula-"+Integer.toString(i));
             String tipoPasajero = request.getParameter("tipo_pasajero-"+Integer.toString(i));
 
+            
+            pasajero.setNombre(nombres);
+            pasajero.setApellido(apellidos);
+            pasajero.setCedula(cedula);
+            pasajero.setTipo_pasajero(tipoPasajero);
+            
+            
             formPasajero1.add(nombres);
             formPasajero1.add(apellidos);
             formPasajero1.add(cedula);
             formPasajero1.add(tipoPasajero);
             
             if(tipoPasajero.equals("Hombre") || tipoPasajero.equals("Mujer")){
+                
                 String email = request.getParameter("Email-"+Integer.toString(i));
                 String celular = request.getParameter("Celular-"+Integer.toString(i));
+                
+                pasajero.setCorreo(email);
+                pasajero.setCelular(celular);
                 
                 formPasajero1.add(email);
                 formPasajero1.add(celular);
             }else{
+                
+                pasajero.setCorreo("false");
+                pasajero.setCelular("false");
+                
                 formPasajero1.add("false");
             }
 
             lista.add(formPasajero1);
+            lista_pasajeros.add(pasajero);
         }
 
-        return lista;
+        return lista_pasajeros;
     }
     
     

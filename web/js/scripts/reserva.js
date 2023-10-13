@@ -243,9 +243,9 @@ function ValidacionCamposFormulario(){
                             value = e.target.value;
                         }
                     }
+                    
                     //insertar pequeños formularios por cada pasajero.
                     FormularioOtrosPasajeros(value);
-                    
                 }else{
                     form_reserva.numero_pasajeros = false;
                     mostrarAlerta(true, 'mensaje_pasajeros', 'Pasajeros');
@@ -413,8 +413,8 @@ function ValidacionFormularioCliente(nFormularios){
                         guardarInformacion(i,value, "tipoPasajero");
                         
                         EscribirHTML2(i+1, value);
+                        rellenarCampos(nFormularios);
                         if(value === "Hombre" || value === "Mujer"){
-                            rellenarUltimosCampos(i);
                             validacionOtrosCampos(i+1);
                         }
                         
@@ -672,6 +672,7 @@ function Redireccionar(){
     window.location.href='#formulario_reserva';
 }
 
+
 //este codigo de aqui nos permitira desplegar formulario... en base al numero
 //que pongamos dentro de nuestro input -> numero de pasajeros
 function FormularioOtrosPasajeros(nFormularios){
@@ -680,8 +681,9 @@ function FormularioOtrosPasajeros(nFormularios){
     //rellena con los datos guardados en cada uno de los minis formularios.
     rellenarCampos(nFormularios);
     ValidacionFormularioCliente(nFormularios);
+    
+    
 }
-
 
 
 function limpiarFormCliente(){
@@ -856,12 +858,17 @@ function VerificarBotonEnviar(){
 }
 
 function verificarCamposFinal(nPasajeros){
+    
     for(let i = 1; i < nPasajeros+1; i++){
-        const email = formPasajero2[i.toString()][0];
-        const celular = formPasajero2[i.toString()][1];
+        const tipoPasajero = entrada[i-1].tipoPasajero;
         
-        if(!email || !celular){
-            return false;
+        if(tipoPasajero !== "nino"){
+            const email = formPasajero2[i.toString()][0];
+            const celular = formPasajero2[i.toString()][1];
+
+            if(!email || !celular){
+                return false;
+            }
         }
     }
     

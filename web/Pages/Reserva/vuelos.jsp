@@ -39,6 +39,8 @@
     <body>
 
         <%
+            
+            
             //la parte de nuestro analisis es saber si en el request.setAttribute();
             //podemos definir varios de ellos con varios valoresl...
             //esta es la informacion de cada uno de los pasajeros.

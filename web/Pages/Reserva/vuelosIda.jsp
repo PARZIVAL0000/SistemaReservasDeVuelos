@@ -35,29 +35,32 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
         <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
         <link rel="stylesheet" href="css/modificado/vuelos.css"/>
+        <link href="css/modificado/style.css" rel="stylesheet"/>
+
     </head>
     <body>
         <%
+            List<Object> informacion = (ArrayList) request.getAttribute("InformacionPasajeros");
             
-            ArrayList<Pasajeros> infoPasajeros = (ArrayList) request.getAttribute("info_pasajeros");
-            // INFORMACION PARA NUESTRO TIPO DE VIAJE ESPECIFICO
-            ArrayList<String> info = (ArrayList) request.getAttribute("info");
+            List<String> infoViaje = (ArrayList) informacion.get(0);
+            String paisOrigen = infoViaje.get(0);
+            String paisDestino = infoViaje.get(1);
+            String ciudadOrigen = infoViaje.get(2);
+            String ciudadDestino = infoViaje.get(3);
+            String pTotal = infoViaje.get(4);
+            String fechaIda = infoViaje.get(5);
+            int mesIda = Integer.parseInt(fechaIda.split("/")[0]);
             
-            String paisOrigen = info.get(0);
-            String paisDestino = info.get(1);
-            String ciudadOrigen = info.get(2);
-            String ciudadDestino = info.get(3);
-            String fechaIda = info.get(4);
-            String pTotal = info.get(5);
+            informacion.remove(0);
+            List<Pasajeros> infoPasajeros = (ArrayList) informacion;
             
-            String mesIda = info.get(4).split("/")[0];
             
             VuelosDAO vd = new VuelosDAO();
-            ArrayList<CarteleraViajes> cv = (ArrayList) vd.listadoCarteleraViajes();
-            ArrayList<CarteleraViajes> viajesIda = new ArrayList<>();
-            
+            List<CarteleraViajes> cv = vd.listadoCarteleraViajes();
+            List<CarteleraViajes> viajesIda = new ArrayList<>();
+                        
             for(CarteleraViajes j : cv){
-                if(Integer.parseInt(j.getFecha().split("-")[1]) == Integer.parseInt(mesIda)){
+                if(Integer.parseInt(j.getFecha().split("-")[1]) == mesIda){
                     if(j.getPaisOrigen().equals(paisOrigen) && j.getPaisDestino().equals(paisDestino)){
                         viajesIda.add(j);
                     }
