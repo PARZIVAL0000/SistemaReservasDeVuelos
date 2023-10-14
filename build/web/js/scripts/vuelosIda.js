@@ -109,8 +109,7 @@ function ValidarCamposFormularioPago(){
         validarEntradasInput(input, true);
     });
     
-    
-    
+     
     selects.forEach(select => {
         select.addEventListener("input", validarEntradaSelect);
         select.addEventListener("blur", validarEntradaSelect);
@@ -118,6 +117,7 @@ function ValidarCamposFormularioPago(){
         validarEntradaSelect(select, true);
     });
 }
+
 
 function verificarPartesFecha(value, key , tipo){
     if(value.trim() !== ""){
@@ -129,11 +129,13 @@ function verificarPartesFecha(value, key , tipo){
     
     const resultado = verificarFechaCompleta();
     
-    if(!resultado){
-        introducirMensajeError(true,"fechaVencimientoMensaje", [tipo]);
-    }else{
-        introducirMensajeError(false,"fechaVencimientoMensaje", [tipo]);
-    }
+    console.log(resultado);
+//    
+//    if(!resultado){
+//        introducirMensajeError(true,"fechaVencimientoMensaje", [tipo]);
+//    }else{
+//        introducirMensajeError(false,"fechaVencimientoMensaje", [tipo]);
+//    }
 }
 
 
