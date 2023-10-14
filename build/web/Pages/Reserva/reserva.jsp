@@ -36,7 +36,6 @@
     </head>
 
     <body>
-
         <% 
             ArrayList<String> datos = (ArrayList) request.getAttribute("datos");
             String tipoVuelo = datos.get(0);

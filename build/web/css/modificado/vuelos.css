@@ -325,7 +325,7 @@ div#retorno{
     bottom: 0;
 }
 
-.mensaje{
+/*.mensaje{
     width: 30rem;
     margin: 0 auto;
     position: absolute;
@@ -334,7 +334,7 @@ div#retorno{
     right: 0;
     left: 0;
     height: 100%;
-}
+}*/
 
 .mensaje_titulo{
     text-align:center;

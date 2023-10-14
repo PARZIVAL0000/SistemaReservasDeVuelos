@@ -13,8 +13,21 @@
     display: block !important;
 }
 
+/*este estilo de aqui es para nuestro formulario final...*/
+.formulario_informacion div.mensaje.mostrar{
+    color: rgb(181,32,32);
+    font-weight: bold;
+    display: block !important;
+    background-color: rgb(246, 240, 240);
+    margin-top: .9rem;
+    padding: .2rem .3rem;
+    text-align: center;
+    border-radius: .9rem;
+}
+
 .formulario div.mensaje.ocultar,
-.formulario_reserva .div.mensaje.ocultar{
+.formulario_reserva div.mensaje.ocultar,
+.formulario_informacion div.mensaje.ocultar{
     display: none !important;
 }
 

@@ -36,7 +36,6 @@
         <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
         <link rel="stylesheet" href="css/modificado/vuelos.css"/>
         <link href="css/modificado/style.css" rel="stylesheet"/>
-
     </head>
     <body>
         <%
@@ -274,11 +273,14 @@
                         <div class="seccion1">
 
                             <div class="informacion_tarjeta">
+                                
                                 <h3>Datos de la tarjeta</h3>
                                 <div class="campo">
                                     <label for="dni">Número de Cédula: </label>
                                     <input type="text" id="dni" name="dniCompra" class="ver" placeholder="Introduce el número de cédula para la compra"/>
-                                    <p id="cedulaMensaje" class="formulario__input-error">El número de tarjeta no debe estar vacío y debe ser válido.</p>
+                                    <div class="mensaje ocultar" id="cedulaMensaje">
+                                        Debes introducir una cédula válida como referencia de pago.
+                                    </div>
                                 </div>
                                 <div class="campo">
                                     <label for="fecha">Fecha Vencimiento:</label>
@@ -293,30 +295,48 @@
                                             <option disabled="" selected>Año</option>
                                         </select>
                                     </div>
+                                    <div class="mensaje ocultar" id="fechaVencimientoMensaje">
+                                        Es obligatorio completar los campos de fecha de vencimiento.
+                                    </div>
                                 </div>
                                 
                             </div>
                             
                             <div class="informacion_facturacion">
                                 <div class="informacion_facturacion--checkbox">
-                                    <h3>Datos de facturacion</h3>
-                                    <p><input type="checkbox" value="cargarDatos" class="ver" name="cajaCheck" checked=true/> Cargar los datos del primer pasajero</p>
+                                    <h3>Datos de facturación</h3>
+                                    <p><input type="checkbox" value="cargarDatos" class="ver" id="cajaCheck" name="cajaCheck" checked=true/>Cargar los datos de cualquier pasajero</p>
                                 </div>
+                                <% 
+                                    for(Pasajeros pasajero : infoPasajeros){ 
+                                        if(!pasajero.getTipo_pasajero().equals("nino")){
+                                %>
                                 
                                 <div class="campo" id="nombreTitular">     
                                     <label for="nombre">Nombre del titular de la tarjeta: </label>
                                     <input type="text" id="nombre" class="ver" name="Names" value="<%= infoPasajeros.get(0).getNombre() %>" placeholder="Nombres Del Titular"/>
+                                
+                                    <div class="mensaje ocultar" id="NombreTitularMensaje">
+                                        Debes introducir el nombre de un propietario para el pago de tu vuelo.
+                                    </div>
                                 </div>
 
                                 <div class="campo" id="emailTitular">
                                     <label for="correo">Correo Electronico: </label>
                                     <input type="email" id="correo" class="ver" name="Emails" value="<%= infoPasajeros.get(0).getCorreo() %>" placeholder="Dirección Email"/>
+                                
+                                    <div class="mensaje ocultar" id="CorreoMensaje">
+                                        El correo es obligatorio para el recibo de notificaciones a futuro.
+                                    </div>
                                 </div>
                                 
                                 <div class="acciones">
                                     <input id="pagar" type="submit" value="Pagar Vuelo" class="boton vuelo_pagar" />
                                     <a id="cancelar" href="#" class="vuelo_cancelar">Cancelar Vuelo</a>
                                 </div>
+                                <% break;
+                                    }
+                                }%>
                             </div>
                         </div><!-- seccion1 -->
                         
@@ -378,30 +398,6 @@
                                
                             </div>
                         </div>
-                        
-                        <div class="listadoPasajerosExtra">
-                            <input type="hidden" name="NumeroPasajeros" value="<%= pTotal %>" />
-                            <% for(Pasajeros j : infoPasajeros){ %>
-                            <input type="hidden" name="Nombres-<%=j.getId() %>" value="<%= j.getNombre() %>"/>
-                            <input type="hidden" name="Apellidos-<%= j.getId() %>" value="<%= j.getApellido() %>"/>
-                            <input type="hidden" name="Correo-<%= j.getId() %>" value="<%= j.getCorreo() %>"/>
-                            <input type="hidden" name="Telefono-<%= j.getId() %>" value="<%= j.getCelular() %>"/>
-                            <input type="hidden" name="Cedula-<%= j.getId() %>" value="<%= j.getCedula() %>"/>
-                            <input type="hidden" name="Pasajeros-<%= j.getId() %>" value="<%= j.getTipo_pasajero() %>"/>
-                            <input type="hidden" name="Genero-<%= j.getId() %>" value="<%= j.getGenero() %>"/>
-                            <% } %>
-                        </div>
-                        
-                        <div class="listadoVuelos">
-                            
-                            <input type="hidden" name="PaisOrigen" value="<%= paisOrigen %>" />
-                            <input type="hidden" name="PaisDestino" value="<%= paisDestino %>" />
-                            <input type="hidden" name="ciudadOrigen" value="<%= ciudadOrigen %>" />
-                            <input type="hidden" name="ciudadDestino" value="<%= ciudadDestino %>" />
-                            <input type="hidden" name="fechaIda" value="<%= fechaIda %>" />
-                            <input type="hidden" name="pTotal" value="<%= pTotal %>" />
-                        </div>
-                        
                         
                     </div><!-- .secciones -->
                 </form>
@@ -481,6 +477,5 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 
         <script src="js/scripts/vuelosIda.js"></script>
-        <script src="Pages/Reserva/scripts/validacion.js"></script>
     </body>
 </html>
