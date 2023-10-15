@@ -286,13 +286,13 @@
                                     <label for="fecha">Fecha Vencimiento:</label>
                                     <div class="fecha_vencimiento">
                                         <select name="dia" id="days" class="ver">
-                                            <option disabled="" selected>Dia</option>
+                                            <option disabled="" value="" selected>Dia</option>
                                         </select>
                                         <select name="mes" id="months" class="ver">
-                                            <option disabled="" selected>Mes</option>
+                                            <option disabled="" value="" selected>Mes</option>
                                         </select>
                                         <select name="year" id="years" class="ver">
-                                            <option disabled="" selected>Año</option>
+                                            <option disabled="" value="" selected>Año</option>
                                         </select>
                                     </div>
                                     <div class="mensaje ocultar" id="fechaVencimientoMensaje">
@@ -305,7 +305,7 @@
                             <div class="informacion_facturacion">
                                 <div class="informacion_facturacion--checkbox">
                                     <h3>Datos de facturación</h3>
-                                    <p><input type="checkbox" value="cargarDatos" class="ver" id="cajaCheck" name="cajaCheck" checked=true/>Cargar los datos de cualquier pasajero</p>
+                                    <p><input type="checkbox" value="cargarDatos" class="ver" id="cajaCheck" name="cajaCheck" checked/>Cargar los datos de cualquier pasajero</p>
                                 </div>
                                 <% 
                                     for(Pasajeros pasajero : infoPasajeros){ 
@@ -314,7 +314,7 @@
                                 
                                 <div class="campo" id="nombreTitular">     
                                     <label for="nombre">Nombre del titular de la tarjeta: </label>
-                                    <input type="text" id="nombre" class="ver" name="Names" value="<%= infoPasajeros.get(0).getNombre() %>" placeholder="Nombres Del Titular"/>
+                                    <input type="text" id="nombre" class="ver bloquear-estilo" name="Names" value="<%= pasajero.getNombre() %>" placeholder="Nombres Del Titular" disabled/>
                                 
                                     <div class="mensaje ocultar" id="NombreTitularMensaje">
                                         Debes introducir el nombre de un propietario para el pago de tu vuelo.
@@ -323,7 +323,7 @@
 
                                 <div class="campo" id="emailTitular">
                                     <label for="correo">Correo Electronico: </label>
-                                    <input type="email" id="correo" class="ver" name="Emails" value="<%= infoPasajeros.get(0).getCorreo() %>" placeholder="Dirección Email"/>
+                                    <input type="email" id="correo" class="ver bloquear-estilo" name="Emails" value="<%= pasajero.getCorreo() %>" placeholder="Dirección Email" disabled/>
                                 
                                     <div class="mensaje ocultar" id="CorreoMensaje">
                                         El correo es obligatorio para el recibo de notificaciones a futuro.
@@ -334,7 +334,7 @@
                                     <input id="pagar" type="submit" value="Pagar Vuelo" class="boton vuelo_pagar" />
                                     <a id="cancelar" href="#" class="vuelo_cancelar">Cancelar Vuelo</a>
                                 </div>
-                                <% break;
+                                <%      break;
                                     }
                                 }%>
                             </div>

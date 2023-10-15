@@ -34,6 +34,41 @@ function VuelosIDA(){
     CerrarVentanaEmergente();
 }
 
+//este cambia dos estados de boton (Confirmar) y (Cancelar)
+function cambiarTipoBoton(boton, botonVuelo){
+    if(boton === "confirmar"){
+        //finalmente cambiamos el boton
+        botonVuelo.target.style.display='none';
+        botonVuelo.target.previousElementSibling.style.display='inline-block';
+    }else if(boton === "cancelar"){
+        //los demas botones terminaran quedando desactivados.
+        botonVuelo.style.display='none';
+        botonVuelo.nextElementSibling.style.display='inline-block';
+    }
+}
+
+function cambiarAccesoInputRadio(estado){
+    const opcionRadio = document.querySelectorAll("input[type=radio]");
+    
+    if(estado === "accesible"){
+        //desactivamos inputs (en general)
+        opcionRadio.forEach(radio => {radio.checked=false; radio.style.cursor='default'; });
+    }else if(estado === "inaccesible"){
+        //desactivamos los input[radio] solo de la opcion que el usuario eligio...
+        opcionRadio.forEach(radio => {radio.disabled = true; radio.style.cursor='no-drop';});
+    }
+}
+
+function cambiarAccesoBotonConfirmar(estado){
+    if(estado === "accesible"){
+        //desactivamos botones 
+        document.querySelectorAll(".boton_confirmar").forEach(boton => { boton.disabled=false; boton.style.cursor="default"; });
+       
+    }else if(estado === "inaccesible"){
+        //desactivamos botones 
+        document.querySelectorAll(".boton_confirmar").forEach(boton => { boton.disabled=true; boton.style.cursor="no-drop"; });
+    }
+}
 
 function ValidarCamposFormularioPago(){
     const inputs = document.querySelectorAll(".formulario_final input");
@@ -85,15 +120,15 @@ function ValidarCamposFormularioPago(){
         
         switch(name){
             case "dia":
-                verificarPartesFecha(value, "dia" , "days");
+                verificarPartesFecha(value, "dia");
                 break;
                 
             case "mes":
-                verificarPartesFecha(value, "mes" , "months");
+                verificarPartesFecha(value, "mes");
                 break;
                 
             case "year":
-                verificarPartesFecha(value, "ano" , "years");
+                verificarPartesFecha(value, "ano");
                 break;
                 
             default:
@@ -118,8 +153,7 @@ function ValidarCamposFormularioPago(){
     });
 }
 
-
-function verificarPartesFecha(value, key , tipo){
+function verificarPartesFecha(value, key){
     if(value.trim() !== ""){
         selectFecha[`${key}`] = true;
         informacionVuelo[0].InformacionPago[`${key}`] = value;
@@ -128,16 +162,13 @@ function verificarPartesFecha(value, key , tipo){
     }
     
     const resultado = verificarFechaCompleta();
-    
-    console.log(resultado);
-//    
-//    if(!resultado){
-//        introducirMensajeError(true,"fechaVencimientoMensaje", [tipo]);
-//    }else{
-//        introducirMensajeError(false,"fechaVencimientoMensaje", [tipo]);
-//    }
+  
+    if(!resultado){
+        introducirMensajeError(true,"fechaVencimientoMensaje", idCampo=["days", "months", "years"]);
+    }else{
+        introducirMensajeError(false,"fechaVencimientoMensaje", idCampo=["days", "months", "years"]);
+    }
 }
-
 
 function verificarFechaCompleta(){
     if(selectFecha.dia && selectFecha.mes && selectFecha.ano){
@@ -149,8 +180,7 @@ function verificarFechaCompleta(){
     return false;
 }
 
-
-function verificaryGuardarInfo(keyFormulario,key,value,validacion,idMensaje, idCampo=[]){
+function verificaryGuardarInfo(keyFormulario, key, value, validacion, idMensaje, idCampo=[]){
     
     if(value.trim() !== ""){
         if(expresion[`${validacion}`].test(value)){                    
@@ -179,20 +209,50 @@ function CerrarVentanaEmergente(){
 }
 
 function introducirMensajeError(estado,idMensaje, idCampo=[]){
+    let campo = [];
     const mensaje = document.getElementById(`${idMensaje}`);
-    const campo = document.getElementById(`${idCampo[0]}`);
+    
+    if(idCampo.length === 1){
+        campo.push(document.getElementById(`${idCampo[0]}`));
+    }else if(idCampo.length === 3){
+        campo = [];
+        for(let i = 0; i < idCampo.length; i++){
+            campo.push(document.getElementById(`${idCampo[i]}`));
+        }
+    }
     
     if(estado){
         mensaje.classList.add("mostrar");
         mensaje.classList.remove("ocultar");
         
-        campo.classList.add("alerta_campo");
+        if(campo.length === 3){
+            campo.forEach(nodo => {
+                
+                if(!nodo.classList.contains("alerta_campo")){
+                    nodo.classList.add("alerta_campo");
+                }
+            });
+            
+        }else if(campo.length === 1){
+            
+            campo[0].classList.add("alerta_campo");
+        }
+        
        
     }else{
         mensaje.classList.add("ocultar");
         mensaje.classList.remove("mostrar");
         
-        campo.classList.remove("alerta_campo");
+        if(campo.length === 3){
+            campo.forEach(nodo => {
+                if(nodo.classList.contains("alerta_campo")){
+                    nodo.classList.remove("alerta_campo");
+                }
+            });
+            
+        }else if(campo.length === 1){   
+            campo[0].classList.remove("alerta_campo");
+        }
     }
 }
 
@@ -242,31 +302,20 @@ function ReservaVueloDeIda(){
                 almacenarInformacion("PaisSalida", document.querySelector(`#id_${id} .hora #paisSalida`).textContent);
                 almacenarInformacion("PaisLlegada", document.querySelector(`#id_${id} .hora #paisLlegada`).textContent);
                 
-                //vamos a cambiar el valor del carrito de motod de interfaz...
+                //vamos a cambiar el valor del carrito de motod de interfaz.
                 actualizarCarritoCompra(informacionVuelo[0].PrecioVuelo);
                 
+                cambiarAccesoInputRadio("inaccesible");
+                     
+                cambiarTipoBoton("cancelar", botonVuelo);
                 
-                //desactivamos los input[radio] solo de la opcion que el usuario eligio...
-                input.disabled="true";
-                input.parentNode.nextElementSibling.firstChild.nextElementSibling.disabled="true";
+                cambiarAccesoBotonConfirmar("inaccesible");
                 
-                 //desactivamos los demas botones de otros vuelos que ya no son necesarios por el momento.
-                let inputs = document.querySelectorAll("input[type=radio]");
-                inputs.forEach(entrada=>{
-                   if(parseInt(entrada.parentNode.id) !== parseInt(id)){
-                        entrada.disabled="true";
-                        entrada.style.cursor='no-drop';
-                    }
-                });
+                //mostramos nuestro formulario de tipo de vuelo para los clientes.
+                FormularioClaseVuelos(id);
                 
-                //vamos a cambiar a cambiar el boton de confirmacion por un boton que diga "cancelar vuelo"
-                //los demas botones terminaran quedando desactivados.
-                botonVuelo.style.display='none';
-                botonVuelo.nextElementSibling.style.display='inline-block';
-                
-                //mostramos nuestro formulario de tipo de vuelo para los clientes....
-                FormularioClaseVuelos(id, "ida");
-                BotonCancelar("ida");
+                //verificamos cuando el usuario quiera cancelar la opcion que eligio.
+                BotonCancelar(id);
             });
             
         }
@@ -280,51 +329,35 @@ function ReservaVueloDeIda(){
 
 
 //esta funcion nos despliega la clase de vuelo, y el cliente debe escogerlo.
-function FormularioClaseVuelos(id, tipoVuelo){
-    //desplegamos un listado de formularios para cada vuelo
-    let formularios = document.querySelectorAll(".listado_claseVuelo");
-    
-    formularios.forEach(formulario => {
-        if(formulario.classList[1] === id){
-            //mostramos formulario especifico en base al identificador unico de cada ellos.
-            formulario.style.display='block';
-            
-            //escuchamos datos de nuestro formulario.
-            let botonesReserva = document.querySelectorAll(".botonClase");
-            
-            botonesReserva.forEach(botonReserva => {
-                
-                botonReserva.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    
-                    //escuchamos por los tres botones que son especificos de nuestro formulario. 
-                    if(e.target.classList[1] === id){
-                        
-                        //cuando se encuentren iguales....
-                       if(botonReserva.id === "boton-claseTurista"){
-                            if(tipoVuelo === "ida"){
-                                organizarTipoClaseVuelo(key=["Clase", "PrecioClase"], value=["turista", 100]);      
-                            }
-                            
-                        }else if(botonReserva.id === "boton-clasePrimera"){
-                            if(tipoVuelo === "ida"){
-                                organizarTipoClaseVuelo(key=["Clase", "PrecioClase"], value=["primera", 350]);
-                            }
-                        }else if(botonReserva.id === "boton-claseEjecutiva"){
-                            if(tipoVuelo === "ida"){
-                                organizarTipoClaseVuelo(key=["Clase", "PrecioClase"], value=["ejecutiva", 200]);
-                            }
-                        }
-                        
-                        
-                        actualizarCarritoCompra(informacionVuelo[0].PrecioVuelo);
-                        FormularioFinal();
-                   }
-                    
-                    
-                });
-            });
-        }
+function FormularioClaseVuelos(id){
+    const formulario = document.querySelector(`#id_${id} .listado_claseVuelo`);
+   
+    //mostramos clase de vuelos
+    formulario.style.display='block';
+
+    //escuchamos datos de nuestro formulario.
+    let botonesReserva = formulario.querySelectorAll(".botonClase");
+
+    botonesReserva.forEach(botonReserva => {
+
+        botonReserva.addEventListener("click", (e) => {
+            e.preventDefault();
+            const tipoBoton = e.target;
+
+            //cuando se encuentren iguales....
+           if(tipoBoton.id === "boton-claseTurista"){
+                    organizarTipoClaseVuelo(key=["Clase", "PrecioClase"], value=["turista", 100]);      
+
+            }else if(tipoBoton.id === "boton-clasePrimera"){
+                    organizarTipoClaseVuelo(key=["Clase", "PrecioClase"], value=["primera", 350]);
+
+            }else if(tipoBoton.id === "boton-claseEjecutiva"){
+                    organizarTipoClaseVuelo(key=["Clase", "PrecioClase"], value=["ejecutiva", 200]);
+            }
+
+            actualizarCarritoCompra(informacionVuelo[0].PrecioVuelo);
+            FormularioFinal();
+        });
     });
 }
 
@@ -337,157 +370,134 @@ function organizarTipoClaseVuelo(key=[], value=[]){
     ventana1.classList.remove("show");
 }
 
-//este boton se genera cuando el usuario escoge su aerolinea. Esta funcion
-//permite generar un boton para que el usuario pueda cancelar o eliminar dicha aerolinea,
-//y pueda escoger otra. 
-function BotonCancelar(tipo){
-    
-    let botonCancelar = document.querySelectorAll(".boton_cancelar");
-    botonCancelar.forEach(bc => {
-        bc.addEventListener("click", (e) => {
-            let idBtn = e.target.id;
-            let botonesRadio = "";
-            if(tipo === "ida"){
-                //vamos a desactivar nuestros inputs[radio]
-                botonesRadio = document.querySelectorAll("input[type=radio].fly_from");
-            }else if(tipo === "regreso"){
-                botonesRadio = document.querySelectorAll("input[type=radio].fly_to");
-            }
-           
-            
-            botonesRadio.forEach(btnRadio => {
-                if(idBtn === btnRadio.value){
-                    btnRadio.disabled=false;
-                    
-                    if(tipo === "ida"){
-                        if(btnRadio.id === "flexRadioDefault2"){
-                            btnRadio.checked=true;
-                        }
-                    }else if(tipo === "regreso"){
-                        if(btnRadio.id === "ViajeRetorno2"){
-                            btnRadio.checked=true;
-                        }
-                    }
-                }
-            });
-            
-            
-            //vamos a esconder el formulario nuevamente....
-            let formularios = document.querySelectorAll(".listado_claseVuelo");
-            formularios.forEach(formulario => {
-                let idForm = formulario.classList[1];
-                if(idBtn === idForm){
-                    formulario.style.display='none';
-                }
-            });
-            
-            //finalmente cambiamos el boton
-            e.target.style.display='none';
-            e.target.previousElementSibling.style.display='inline-block';
-            
-            //activamos nuevamente los demas botones que se encontraban desactivados...
-            let btns = "";
-            if(tipo === "ida"){
-                btns = document.querySelectorAll(".fly-from");
-            }else if(tipo === "regreso"){
-                btns = document.querySelectorAll(".vueloRetorno");
-               
-            }
-            
-            
-            btns.forEach(btn => {
-                let idbtn = btn.parentNode.id;
-                
-                if(idBtn !== idbtn){
-                    btn.disabled=false;
-                    btn.style.cursor="default";
-                }
-            });
-            
-            
-            //debemos restaurar cierta informacion a su fase inicial... debido a que el usuario cancelo su deseo de
-            //contratar o arrendar una aerolinea para poder ser llevada.
-            if(tipo === "ida"){
-                //informacion sobre nuestra salida...
-                vuelos.IDA.HORA_SALIDA = "";
-                vuelos.IDA.DESDE = "";
-                //informacion sobre nuestra llegada o destino... 
-                vuelos.IDA.HORA_LLEGADA =  "";
-                vuelos.IDA.A = ""; 
-                //lo unico que nos faltaria seria la fecha... osea la fecha disponible de nuestro viaje....
-                vuelos.IDA.FECHA_SALIDA = "";
-                
-                //volvemos a limpiar nuestro arreglo....
-                registro.IDA.CANTIDAD = "";
-                registro.IDA.ID = "";
-                
-                //la parte del carrito volvemos a establecerlo en cero....
-                let parrafoCarrito = document.querySelector("#tarifa");
-                parrafoCarrito.textContent="0.0";
-            }
+
+function BotonCancelar(id){
+    const btnCancelar = document.querySelector(`#id_${id} .boton_cancelar`);
+    btnCancelar.addEventListener("click", (e) => {
+        //esconder nuestro contenido de clases de vuelos.
+        claseVuelo(false, id);
+       
+        //cambiamos a nuestro boton de confirmar
+        cambiarTipoBoton("confirmar", e.target);
+        
+        //reseteamos nuestra lista que captura la informacion.
+        informacionVuelo = [];
+        
+        //accemos accesible todos nuestros input radios
+        cambiarAccesoInputRadio("accesible");
+      
+        cambiarAccesoBotonConfirmar("accesible");  
+    });
+}
+
+function claseVuelo(accion = true, id){
+    if(!accion){
+         //vamos a esconder el formulario nuevamente....
+        let clasesVuelo = document.querySelector(`#id_${id} .listado_claseVuelo`);
+        clasesVuelo.style.display='none';
+    }
+}
+
+function FormularioFinal(accion = true){
+    if(accion){
+        //vamos a generar el script para poder introducirlo dentro de nuestro formulario...
+        let vueloIda = document.querySelector(".vuelo_ida");
+        vueloIda.innerHTML = `
+        <ul>
+            <li class="vuelo_info"><box-icon type='solid' name='plane-take-off'><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAZlJREFUSEvt1D1rVFEQxvHfakAQO0mRKBjBb2FjIIKkMGBjY2HpZ7AQhIiFdWwENUYRsRcCgdionY2VosQXiJVpYqPEFwbOhruH+7K77rpb7MAt7r3nzH+e58yZlhFFa0RcE/B/c35idW71QVzEFl4N8hzqrD6L2ziVgG+xmp7tfy2iDnwEt3Alg/zBBh7gKX5UFHEAp3EeJ3Edb9pru2muedzDiRLAdzxKRbzEISzgApZwtLBnHed6AcfaKvXFWj5gBocrHPhcLL4bxcU8oT4sPt7HGd/E1SrF0/iG3zWJQ/0TLHYB/4VnWEFYvR9FxcfwAntYTsryAqJJruESpmrAr1P3P8RO2boiOJonwFFAxHvcSAXEvybg19Rod/CuyY38jOcSfLaw8QviPYZJHj/TlYrODivrjqhjb1lz5crLio+rE8PkMXab1DVZXfxfBv+ENdxNI7QfXmlz5YnC9rAvZnRcoU3E1BpI9HqPBwKNJGMDDnsvD0xWZ6L7+Nj+lCs+k85yGOwYt8/HDjwMpaU5x6a5JoqH5sBfXZNFHxeyvKAAAAAASUVORK5CYII="/></box-icon><p>${informacionVuelo[0].PaisSalida} a ${informacionVuelo[0].PaisLlegada}</p></li>
+            <li class="vuelo_fecha">
+                <p class="fecha_ida">${informacionVuelo[0].FechaDisponible}</p>
+                <p class="clase_ida">${informacionVuelo[0].Clase}</p>
+            </li>
+            <li class="vuelo_hora">
+                <p class="hora_salida"><span>Hora Salida: </span>${informacionVuelo[0].HoraSalida}</p>
+                <p class="hora_llegada"><span>Hora Llegada: </span>${informacionVuelo[0].HoraLlegada}</p>
+            </li>
+        </ul>
+        `;
+
+        //vamos a desplegar el formulario para que el usuario pueda pagar... (simular que va a realizar un pago con ayuda de su cedula)
+        let pagoTotal = document.querySelector(".informacion_pagoFinal");
+        pagoTotal.innerHTML = ` <p>Total a pagar <span>USD ${informacionVuelo[0].PrecioVuelo}</span></p>`;
+
+        //el formulario para realizar el pago...
+        let formulario = document.querySelector(".formulario_final");
+        formulario.style.display='block';
+
+        //la funcion se encargara de gestionar y verificar cuando el usuario le de click al boton de cancelar.
+        //En base al boton de "pagar vuelo" como se trata de un <form> el "action" va hacer que me redireccione automaticamente
+        //a la direccion que le estoy dando... por eso, pienso que no voy a leer el boton de "pagar vuelo"... en el backend
+        //es mas probable que me sirva y pueda obtener los datos para poder hacer una verficacion y validacion respectiva.
+        let botonCancelar = document.querySelector(".formulario_informacion .informacion_facturacion #cancelar");
+        botonCancelar.addEventListener("click", (e) => {
+            e.preventDefault();
+            window.location.href="/ReservaDeVuelos";
         });
-    });
-}
 
-function FormularioFinal(){
-    //vamos a generar el script para poder introducirlo dentro de nuestro formulario...
-    let vueloIda = document.querySelector(".vuelo_ida");
-    vueloIda.innerHTML = `
-    <ul>
-        <li class="vuelo_info"><box-icon type='solid' name='plane-take-off'><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAZlJREFUSEvt1D1rVFEQxvHfakAQO0mRKBjBb2FjIIKkMGBjY2HpZ7AQhIiFdWwENUYRsRcCgdionY2VosQXiJVpYqPEFwbOhruH+7K77rpb7MAt7r3nzH+e58yZlhFFa0RcE/B/c35idW71QVzEFl4N8hzqrD6L2ziVgG+xmp7tfy2iDnwEt3Alg/zBBh7gKX5UFHEAp3EeJ3Edb9pru2muedzDiRLAdzxKRbzEISzgApZwtLBnHed6AcfaKvXFWj5gBocrHPhcLL4bxcU8oT4sPt7HGd/E1SrF0/iG3zWJQ/0TLHYB/4VnWEFYvR9FxcfwAntYTsryAqJJruESpmrAr1P3P8RO2boiOJonwFFAxHvcSAXEvybg19Rod/CuyY38jOcSfLaw8QviPYZJHj/TlYrODivrjqhjb1lz5crLio+rE8PkMXab1DVZXfxfBv+ENdxNI7QfXmlz5YnC9rAvZnRcoU3E1BpI9HqPBwKNJGMDDnsvD0xWZ6L7+Nj+lCs+k85yGOwYt8/HDjwMpaU5x6a5JoqH5sBfXZNFHxeyvKAAAAAASUVORK5CYII="/></box-icon><p>${informacionVuelo[0].PaisSalida} a ${informacionVuelo[0].PaisLlegada}</p></li>
-        <li class="vuelo_fecha">
-            <p class="fecha_ida">${informacionVuelo[0].FechaDisponible}</p>
-            <p class="clase_ida">${informacionVuelo[0].Clase}</p>
-        </li>
-        <li class="vuelo_hora">
-            <p class="hora_salida"><span>Hora Salida: </span>${informacionVuelo[0].HoraSalida}</p>
-            <p class="hora_llegada"><span>Hora Llegada: </span>${informacionVuelo[0].HoraLlegada}</p>
-        </li>
-    </ul>
-    `;
-    
-    //vamos a desplegar el formulario para que el usuario pueda pagar... (simular que va a realizar un pago con ayuda de su cedula)
-    let pagoTotal = document.querySelector(".informacion_pagoFinal");
-    pagoTotal.innerHTML = ` <p>Total a pagar <span>USD ${informacionVuelo[0].PrecioVuelo}</span></p>`;
-    
-    //el formulario para realizar el pago...
-    let formulario = document.querySelector(".formulario_final");
-    formulario.style.display='block';
-    
-    //la funcion se encargara de gestionar y verificar cuando el usuario le de click al boton de cancelar.
-    //En base al boton de "pagar vuelo" como se trata de un <form> el "action" va hacer que me redireccione automaticamente
-    //a la direccion que le estoy dando... por eso, pienso que no voy a leer el boton de "pagar vuelo"... en el backend
-    //es mas probable que me sirva y pueda obtener los datos para poder hacer una verficacion y validacion respectiva.
-    let botonCancelar = document.querySelector(".formulario_informacion .informacion_facturacion #cancelar");
-    botonCancelar.addEventListener("click", (e) => {
-        e.preventDefault();
-        window.location.href="/ReservaDeVuelos";
-    });
-         
-    IncluirFechas(); //es un campo simulado.
-    
-    //vamos a incluir un evento para nuestro boton checkbox y asi poder verificar si debemos introducir los datos de nuestro primer
-    //cliente o que el usuario pueda introducir sus propios datos. 
-    CargarDatos();
-    
-    
-//    PagarVuelo();
-//    cancelarVuelo();
-//    EscucharEntradas();
+        IncluirFechas(); //es un campo simulado.
 
+        //vamos a incluir un evento para nuestro boton checkbox y asi poder verificar si debemos introducir los datos de nuestro primer
+        //cliente o que el usuario pueda introducir sus propios datos. 
+        CargarDatos();
 
-    ValidarCamposFormularioPago();
-    GenerarPagoBoton();
+        ValidarCamposFormularioPago();
+        GenerarPagoBoton();
+    }
 }
 
 
-let SalvarDatos = [];
+let guardarDatos = [];
 //esta funcion esta relacionado con la seccion "DATOS DE FACTURACION" de nuestro formulario final.
 //el proposito era escuchar por un checkbox... si existe el visto cargamos datos obtenidos automaticamente
 //caso contrario los campos quedan en blanco para que el cliente introduzca sus propios datos. 
 function CargarDatos(){
     const botonCheckbox = document.querySelector("input[type=checkbox]#cajaCheck");
-   
+    let cambiar = false;
+    
+    const validarCheckBox = (e, flag=false) => {
+        let radio = "";
+        
+        if(flag){
+            radio = e;
+        }else{
+            radio = e.target;
+        }
+            
+        const nombreCampo = document.getElementById('nombre');
+        const emailCampo = document.getElementById('correo');
+
+        if(!radio.checked){
+            nombreCampo.disabled = false;
+            emailCampo.disabled = false;
+            
+            nombreCampo.classList.remove("bloquear-estilo");
+            emailCampo.classList.remove("bloquear-estilo");
+            
+            nombreCampo.value = "";
+            emailCampo.value = "";
+            
+        }else{
+            if(cambiar){
+                nombreCampo.disabled = true;
+                emailCampo.disabled = true;
+                
+                nombreCampo.classList.add("bloquear-estilo");
+                emailCampo.classList.add("bloquear-estilo");
+                        
+                nombreCampo.value = guardarDatos[0].nombreTitular;
+                emailCampo.value = guardarDatos[0].correo;
+
+            }else{            
+                guardarDatos.push({"nombreTitular" : nombreCampo.value, "correo" : emailCampo.value});
+                cambiar = true;
+            }
+        }
+
+        ValidarCamposFormularioPago();
+    };
+    
+    botonCheckbox.addEventListener("input", validarCheckBox);
+    validarCheckBox(botonCheckbox, true);
 }
 
 function IncluirFechas(){
@@ -540,7 +550,6 @@ function GenerarPagoBoton(){
         }
     });
 }
-
 
 
 })();

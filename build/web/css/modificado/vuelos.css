@@ -664,6 +664,16 @@ div#retorno{
     color:rgb(255, 255, 255);
 }
 
+.informacion_facturacion .informacion_facturacion--checkbox p > input[type=checkbox]{
+    margin-right: 2rem;
+}
+
+.bloquear-estilo{
+    background-color: rgb(255 255 255 / 38%);
+    
+}
+
+
 .secciones{
     display:flex;
     margin:3rem 1.2rem;
@@ -817,11 +827,9 @@ div#retorno{
     font-size: 1rem;
     padding: 0rem;
     margin: 0rem;
-    
 }
 
 /* Estilos para las descripciones de cada uno de los campos. */
-
 .formulario__input-error {
 	font-size: 12px;
 	margin-bottom: 0;
