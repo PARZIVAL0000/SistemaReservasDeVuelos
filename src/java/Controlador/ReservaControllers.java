@@ -474,7 +474,6 @@ public class ReservaControllers extends HttpServlet {
                         String VueloIda_horaLlegada = request.getParameter("VueloIda_horaLlegada");
                         String VueloIda_aerolinea = request.getParameter("VueloIda_aerolinea");
                         
-                        
                         //vamos a traernos el identificador del pais que terminanos seleccionando...
                         Aerolineas aerolinea_ida = new Aerolineas();
                         aerolinea_ida.setId(0);

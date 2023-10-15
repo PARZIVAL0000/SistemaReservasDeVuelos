@@ -252,8 +252,8 @@
                     </div>
                 </div>
             </div>
-            <div class="mensaje_alerta" >
-                <div class="mensaje">
+            <div class="mensaje_alerta">
+                <div class="mensaje_alerta--mensaje">
                     <h2 class="mensaje_titulo">!ERROR</h2>
                     <p class="mensaje_parrafo">Para completar el proceso debes escoger una aerolínea</p>
                     <button type="button" id="errorAlerta" class="mensaje_botonCerrar">Cerrar</button>

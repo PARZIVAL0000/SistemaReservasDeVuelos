@@ -1,4 +1,4 @@
-( () => {
+//( () => {
 
 //Nuestra lista guardara un objeto con informacion recolectada de todo lo que hace el cliente.
 //con eso podemos analizar acciones y mostrar resultados.
@@ -52,7 +52,15 @@ function cambiarAccesoInputRadio(estado){
     
     if(estado === "accesible"){
         //desactivamos inputs (en general)
-        opcionRadio.forEach(radio => {radio.checked=false; radio.style.cursor='default'; });
+        opcionRadio.forEach(radio => {
+            radio.disabled=false; 
+            radio.style.cursor='default'; 
+            if(radio.value === 'false'){
+                radio.checked=true;
+            }else{
+                radio.checked=false;
+            }
+        });
     }else if(estado === "inaccesible"){
         //desactivamos los input[radio] solo de la opcion que el usuario eligio...
         opcionRadio.forEach(radio => {radio.disabled = true; radio.style.cursor='no-drop';});
@@ -197,6 +205,7 @@ function verificaryGuardarInfo(keyFormulario, key, value, validacion, idMensaje,
     }
 }
 
+//[*]
 function CerrarVentanaEmergente(){
     let botonMensajeAlerta = document.querySelector("#errorAlerta");
     
@@ -206,6 +215,11 @@ function CerrarVentanaEmergente(){
            contenedor.style.display='none';
         });
     }
+}
+
+function GenerarVentanaEmergente(){
+    let mensaje = document.getElementsByClassName("mensaje_alerta")[0];
+    mensaje.style.display='block';
 }
 
 function introducirMensajeError(estado,idMensaje, idCampo=[]){
@@ -257,18 +271,13 @@ function introducirMensajeError(estado,idMensaje, idCampo=[]){
 }
 
 function almacenarInformacion(key='',value=''){
-    
     if(informacionVuelo.length !== 0){
         if(informacionVuelo[0].registro === 1){
             informacionVuelo[0][`${key}`] = value;
-        }
-        
+        }   
         return;
     }
-    
-    
     informacionVuelo.push( {"registro" : 1} );
-    
 }
 
 function actualizarCarritoCompra(valor){
@@ -278,21 +287,31 @@ function actualizarCarritoCompra(valor){
 
 function ReservaVueloDeIda(){
     almacenarInformacion();
-    
     const inputsRadio = document.querySelectorAll("input[type=radio]");
     
-    const verificarAerolinea = (e) => {
-        const input = e.target;
-        const name = e.target.name;
-        const value = e.target.value;
+    const verificarAerolinea = (e, flag=false) => {
+        let name = "";
+        let value = "";
+        let input = "";
+        if(flag){
+            input = e;
+            name = e.name;
+            value = e.value;
+        }else{
+            input = e.target;
+            name = e.target.name;
+            value = e.target.value;
+        }
         
-        if(value === "true"){
-            const id = name.split("-")[1];
+        const id = name.split("-")[1];
+        const botonConfirmar = document.querySelector(`#id_${id} .boton_confirmar`);
+        
+        botonConfirmar.addEventListener("click", (e) => {
+            const botonVuelo = e.target;
             
-            const botonConfirmar = document.querySelector(`#id_${id} .boton_confirmar`);
-            botonConfirmar.addEventListener("click", (e) => {
-                const botonVuelo = e.target;
-                
+            if(value === "true" && input.checked){
+                console.log(informacionVuelo);
+          
                 almacenarInformacion("Aerolinea", document.querySelector(`#id_${id} #MiAerolinea`).textContent);
                 almacenarInformacion("NumeroPasajeros", parseInt(document.querySelector(".numeroPasajeros").textContent.split(":")[1]));
                 almacenarInformacion("PrecioVuelo", parseFloat(document.querySelector(`#id_${id} #tarifa-${id}`).textContent));
@@ -316,14 +335,18 @@ function ReservaVueloDeIda(){
                 
                 //verificamos cuando el usuario quiera cancelar la opcion que eligio.
                 BotonCancelar(id);
-            });
             
-        }
+            }else if(value === "false" && input.checked){
+                GenerarVentanaEmergente();
+            }
+        });
         
     };
     
     inputsRadio.forEach(radio => {
         radio.addEventListener("click", verificarAerolinea);
+        
+        verificarAerolinea(radio, true);
     });
 }
 
@@ -331,7 +354,6 @@ function ReservaVueloDeIda(){
 //esta funcion nos despliega la clase de vuelo, y el cliente debe escogerlo.
 function FormularioClaseVuelos(id){
     const formulario = document.querySelector(`#id_${id} .listado_claseVuelo`);
-   
     //mostramos clase de vuelos
     formulario.style.display='block';
 
@@ -378,10 +400,12 @@ function BotonCancelar(id){
         claseVuelo(false, id);
        
         //cambiamos a nuestro boton de confirmar
-        cambiarTipoBoton("confirmar", e.target);
+        cambiarTipoBoton("confirmar", e);
         
         //reseteamos nuestra lista que captura la informacion.
-        informacionVuelo = [];
+        informacionVuelo[0] = {"registro":1};
+        
+        actualizarCarritoCompra('0.0');
         
         //accemos accesible todos nuestros input radios
         cambiarAccesoInputRadio("accesible");
@@ -552,4 +576,4 @@ function GenerarPagoBoton(){
 }
 
 
-})();
+//})();
