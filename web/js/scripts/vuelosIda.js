@@ -285,33 +285,23 @@ function actualizarCarritoCompra(valor){
     parrafoCarrito.textContent = valor;
 }
 
+const seleccionAerolinea = {
+    "inputRadio" : false,
+    "botonConfirmar" : false
+};
+
 function ReservaVueloDeIda(){
     almacenarInformacion();
-    const inputsRadio = document.querySelectorAll("input[type=radio]");
+    const buttonConfirm = document.querySelectorAll(".boton_confirmar");
     
-    const verificarAerolinea = (e, flag=false) => {
-        let name = "";
-        let value = "";
-        let input = "";
-        if(flag){
-            input = e;
-            name = e.name;
-            value = e.value;
-        }else{
-            input = e.target;
-            name = e.target.name;
-            value = e.target.value;
-        }
-        
-        const id = name.split("-")[1];
-        const botonConfirmar = document.querySelector(`#id_${id} .boton_confirmar`);
-        
-        botonConfirmar.addEventListener("click", (e) => {
-            const botonVuelo = e.target;
+    const verificarConfirmacion = (e) => {
+        const botonVuelo = e.target;
+        const id = e.target.parentNode.id;
+        const inputsRadio = document.querySelectorAll(`#id_${id} input[type=radio]`); 
+        inputsRadio.forEach(input => {
+            const value = input.value;
             
-            if(value === "true" && input.checked){
-                console.log(informacionVuelo);
-          
+            if(value.trim() === "true" && input.checked){
                 almacenarInformacion("Aerolinea", document.querySelector(`#id_${id} #MiAerolinea`).textContent);
                 almacenarInformacion("NumeroPasajeros", parseInt(document.querySelector(".numeroPasajeros").textContent.split(":")[1]));
                 almacenarInformacion("PrecioVuelo", parseFloat(document.querySelector(`#id_${id} #tarifa-${id}`).textContent));
@@ -335,18 +325,15 @@ function ReservaVueloDeIda(){
                 
                 //verificamos cuando el usuario quiera cancelar la opcion que eligio.
                 BotonCancelar(id);
-            
-            }else if(value === "false" && input.checked){
+            }else if(value.trim() === "false" && input.checked){
                 GenerarVentanaEmergente();
             }
+            
         });
-        
     };
     
-    inputsRadio.forEach(radio => {
-        radio.addEventListener("click", verificarAerolinea);
-        
-        verificarAerolinea(radio, true);
+    buttonConfirm.forEach(button => {
+        button.addEventListener("click", verificarConfirmacion);
     });
 }
 
@@ -356,7 +343,6 @@ function FormularioClaseVuelos(id){
     const formulario = document.querySelector(`#id_${id} .listado_claseVuelo`);
     //mostramos clase de vuelos
     formulario.style.display='block';
-
     //escuchamos datos de nuestro formulario.
     let botonesReserva = formulario.querySelectorAll(".botonClase");
 
@@ -368,13 +354,13 @@ function FormularioClaseVuelos(id){
 
             //cuando se encuentren iguales....
            if(tipoBoton.id === "boton-claseTurista"){
-                    organizarTipoClaseVuelo(key=["Clase", "PrecioClase"], value=["turista", 100]);      
+                organizarTipoClaseVuelo(key=["Clase", "PrecioClase"], value=["turista", 100]);      
 
             }else if(tipoBoton.id === "boton-clasePrimera"){
-                    organizarTipoClaseVuelo(key=["Clase", "PrecioClase"], value=["primera", 350]);
+                organizarTipoClaseVuelo(key=["Clase", "PrecioClase"], value=["primera", 350]);
 
             }else if(tipoBoton.id === "boton-claseEjecutiva"){
-                    organizarTipoClaseVuelo(key=["Clase", "PrecioClase"], value=["ejecutiva", 200]);
+                organizarTipoClaseVuelo(key=["Clase", "PrecioClase"], value=["ejecutiva", 200]);
             }
 
             actualizarCarritoCompra(informacionVuelo[0].PrecioVuelo);
@@ -386,9 +372,11 @@ function FormularioClaseVuelos(id){
 function organizarTipoClaseVuelo(key=[], value=[]){
     almacenarInformacion(key[0], value[0]);
     almacenarInformacion(key[1], value[1]);
-    informacionVuelo[0].PrecioVuelo += (informacionVuelo[0].PrecioClase*informacionVuelo[0].NumeroPasajeros);
+    
+    const resultado = informacionVuelo[0].PrecioVuelo + (informacionVuelo[0].PrecioClase*informacionVuelo[0].NumeroPasajeros);
+    informacionVuelo[0].PrecioVuelo = resultado;
 
-    let ventana1 = document.querySelector("#collapseOne");
+    const ventana1 = document.querySelector("#collapseOne");
     ventana1.classList.remove("show");
 }
 
