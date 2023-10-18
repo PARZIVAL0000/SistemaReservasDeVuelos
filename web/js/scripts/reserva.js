@@ -8,9 +8,7 @@ function App(){
     VerificarBotonEnviar();
 }
 
-const copiaEstados = [];
-let estadoFiltrado = []; //aqui se guarda los estados que corresponde solamente al pais especifico (el que fue seleccionado)
-
+let copiaEstados = [];
 
 //captura lo que escribe la persona.
 let entrada = [];
@@ -48,8 +46,7 @@ const expresiones = {
     apellido: /^[a-zA-ZÀ-ÿ\s]{1,40}$/, // Letras y espacios, pueden llevar acentos.
     cedula : /^[0-9]{10,10}$/,
     correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-    celular: /^\d{10,10}$/ // 7 a 14 numeros.
-    
+    celular: /^[0-9]{10,10}$/ // 7 a 14 numeros.
 };
 
 const formPasajero = {
@@ -86,44 +83,40 @@ function sacarId(e, flag){
 }
 
 function CopiaEstados(){
-    const select = document.getElementById('ciudad_desde');
     const options = document.querySelectorAll('#ciudad_desde > option');
-    //copia de nodos...
-    for(let i = 0; i < options.length; i++){
-        copiaEstados.push(options[i]);
-    }
+    const options2 = document.querySelectorAll('#ciudad_a > option');
+   
+    copiaEstados = [...options, ...options2];
 }
+
 
 //Introducimos los estados filtrados... en pocas solamente mostramos los estados que tengan relacion con el pais seleccionado.
-function IntroducirEstados(id,tipo){
-    if(id !== ""){
-        let select = "";
-        if(tipo === "from"){
-            select = document.getElementById('ciudad_desde');
-        }else if(tipo === "to"){
-            select = document.getElementById('ciudad_a');
-        }
-        
-        //filtrado de nodos...
-        for(let i = 0; i < copiaEstados.length; i++){
-
-            if(parseInt(copiaEstados[i].id) === parseInt(id)){
-                estadoFiltrado.push(copiaEstados[i]);
-            }
-        }
-
-        //limpieza de html...
-        select.innerHTML = '';
-
-        //insercion de nuevo html...
-        estadoFiltrado.forEach(estado => {
-            select.appendChild(estado);
-        });
-
-        //limpiarFiltrado
-        estadoFiltrado = [];
+function IntroducirEstados(id,tipo){ 
+    if(tipo === "to"){
+        agregarNodos(document.getElementById('ciudad_a'), id, "Miestado--a");
+    }else if(tipo === "from"){
+        agregarNodos(document.getElementById('ciudad_desde'), id, "Miestado--desde");
     }
 }
+
+
+function agregarNodos(contenedor, id, clase){
+    contenedor.innerHTML = '';
+    let copia = [];
+    for(let i = 0; i < copiaEstados.length; i++){
+        
+        if(clase === copiaEstados[i].classList[0]){
+            
+            if(parseInt(copiaEstados[i].id) === parseInt(id)){
+                contenedor.options.add(copiaEstados[i]);
+            }
+        }
+        
+    }
+    
+    
+}
+
 
 function ValidacionCamposFormulario(){
     const selects = document.querySelectorAll("select");
@@ -145,12 +138,12 @@ function ValidacionCamposFormulario(){
             value = e.target.value;
             id = sacarId(e,flag);
         }
-        
+       
         switch(name){
             case "from":
                 if(value.trim() !== ''){
                     form_reserva.desde = true;
-                    FiltrarEstados(id, "from");
+                    IntroducirEstados(id,"from");
                     mostrarAlerta(false, 'mensaje_desde', 'from');
                 }else{
                     form_reserva.desde = false;
@@ -161,7 +154,7 @@ function ValidacionCamposFormulario(){
             case "to":
                 if(value.trim() !== ''){
                     form_reserva.a = true;
-                    FiltrarEstados(id, "to");
+                    IntroducirEstados(id, "to");
                     mostrarAlerta(false, 'mensaje_a', 'to');
                 }else{
                     form_reserva.a = false;
@@ -258,12 +251,10 @@ function ValidacionCamposFormulario(){
     };
     
     selects.forEach(select => {
-        select.addEventListener("blur", validarSelect);
         select.addEventListener("input", validarSelect);
         
         validarSelect(select, true);
     });
-    
     
     inputs.forEach(input => {
         input.addEventListener("keyup", validarInput);
@@ -274,22 +265,6 @@ function ValidacionCamposFormulario(){
     });
 }
 
-
-
-function FiltrarEstados(id, tipo){
-    switch(tipo){
-        case "from":
-            IntroducirEstados(id,tipo);
-            break;
-            
-        case "to":
-            IntroducirEstados(id,tipo);
-            break;
-            
-        default:
-            break;
-    }
-}
 
 
 function ValidacionFormularioCliente(nFormularios){
@@ -352,12 +327,20 @@ function ValidacionFormularioCliente(nFormularios){
                 case `Cedula-${i+1}`:
                     if(value.trim() !== ''){
                         if(expresiones.cedula.test(value)){
+                            const resp = comprobarCedula(value);
+                            resp.then(respuesta => {
+                                if(respuesta){
+                                    
+                                    formPasajero[`${i+1}`][2] = true;
+                                    guardarInformacion(i,value, "Cedula");
+                                    mostrarAlerta(false, `cedulaCliente-${i+1}`, `Cedula-${i+1}`);
+                                    
+                                }else{
+                                    formPasajero[`${i+1}`][2] = false;
+                                    mostrarAlerta(true, `cedulaCliente-${i+1}`, `Cedula-${i+1}`)
+                                }
+                            });
                             
-                            formPasajero[`${i+1}`][2] = true;
-                            
-                            guardarInformacion(i,value, "Cedula");
-                            
-                            mostrarAlerta(false, `cedulaCliente-${i+1}`, `Cedula-${i+1}`);
                         }else{
                             formPasajero[`${i+1}`][2] = false;
                             mostrarAlerta(true, `cedulaCliente-${i+1}`, `Cedula-${i+1}`);
@@ -365,23 +348,6 @@ function ValidacionFormularioCliente(nFormularios){
                     }else{
                         formPasajero[`${i+1}`][2] = false;
                         mostrarAlerta(true, `cedulaCliente-${i+1}`, `Cedula-${i+1}`);
-                    }
-                    break;
-                    
-                case `Email-${i+1}`:
-                    if(value.trim() !== ''){
-                        
-                        mostrarAlerta(false, `emailCliente-${i+1}`, `Eml-${i+1}`);
-                    }else{
-                        mostrarAlerta(true, `emailCliente-${i+1}`, `Eml-${i+1}`);
-                    }
-                    break;
-                    
-                case `Celular-${i+1}`:
-                    if(value.trim() !== ''){
-                        mostrarAlerta(false, `celularCliente-${i+1}`, `Cel-${i+1}`);
-                    }else{
-                        mostrarAlerta(true, `celularCliente-${i+1}`, `Cel-${i+1}`);
                     }
                     break;
                     
@@ -446,8 +412,20 @@ function ValidacionFormularioCliente(nFormularios){
         
         validarSelects(select, true);
     });
-    
-    
+}
+
+async function comprobarCedula(numeroCedula){
+    try{
+        const url = `http://127.0.0.1:3333/cedula/${numeroCedula}`;  
+        const conexion = await fetch(url, {
+            method: 'POST' 
+        });
+        const respuesta = await conexion.text();
+
+        return respuesta.trim() === "Correcto";
+    }catch(error){
+        //control de error....
+    }
 }
 
 
@@ -488,9 +466,7 @@ function validacionOtrosCampos(i){
                 
             case `Celular-${i}`:
                 if(value.trim() !== ""){
-                    value = parseInt(value);
                     
-                   
                     if(expresiones.celular.test(value)){
                         guardarInformacion(i-1,value, "Celular");
                         mostrarAlerta(false, `celularCliente-${i}`, `Cel-${i}`);

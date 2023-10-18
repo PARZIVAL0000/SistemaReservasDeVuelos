@@ -13,6 +13,7 @@
     	<title>Flight - Travel and Tour</title>
     
         <meta name="description" content="">
+    <a href="reserva.jsp"></a>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
@@ -102,7 +103,7 @@
                          <!--final de la inclusion de nuestros paises... -->
                         <div class="col-md-6 campo_vuelo">
                             <label for="from">Desde:</label>
-                            <select name='from' onchange='this.form.()' id="from" class="form-select" aria-label="Default select example">
+                            <select name='from' id="from" class="form-select" aria-label="Default select example">
 
                                 <%
                                     for(Pais j : paises){
@@ -121,7 +122,7 @@
                         </div>
                         <div class="col-md-6 campo_vuelo">
                             <label for="to">A:</label>
-                            <select name='to' onchange='this.form.()' id="to" class="form-select" aria-label="Default select example">
+                            <select name='to' id="to" class="form-select" aria-label="Default select example">
                                 <%
                                     for(Pais j : paises){
                                         if(j.getPaisNombre().equals(datos.get(2))){ %>
@@ -141,9 +142,9 @@
                         <!-- .vamos a incluir tambien la ciudad el cual el usuario desea viajar... -->
                         <div class="col-md-6 campo_vuelo">
                             <label for="to">Estado Desde:</label>
-                            <select id="ciudad_desde" name='ciudad_from' onchange='this.form.()' class="form-select" aria-label="Default select example">
+                            <select id="ciudad_desde" name='ciudad_from' class="form-select" aria-label="Default select example">
                                 <% for(Estado i : ciudades){ %>
-                                    <option id="<%= i.getUbicacionPais() %>" value="<%= i.getEstadoNombre() %>"><%= i.getEstadoNombre() %></option>
+                                    <option class="Miestado--desde" id="<%= i.getUbicacionPais() %>" value="<%= i.getEstadoNombre() %>"><%= i.getEstadoNombre() %></option>
                                 <% } %>
                             </select>
                             <div class="mensaje ocultar" id="mensaje_estadoDesde">
@@ -152,9 +153,9 @@
                         </div>
                         <div class="col-md-6 campo_vuelo">
                             <label for="to">Estado A:</label>
-                            <select id="ciudad_a" name='ciudad_to' onchange='this.form.()' class="form-select" aria-label="Default select example">
+                            <select id="ciudad_a" name='ciudad_to' class="form-select" aria-label="Default select example">
                                <% for(Estado i : ciudades){ %>
-                                    <option id="<%= i.getUbicacionPais() %>" value="<%= i.getEstadoNombre() %>"><%= i.getEstadoNombre() %></option>
+                                    <option class="Miestado--a" id="<%= i.getUbicacionPais() %>" value="<%= i.getEstadoNombre() %>"><%= i.getEstadoNombre() %></option>
                                 <% } %>
                             </select>
                             <div class="mensaje ocultar" id="mensaje_estadoA">

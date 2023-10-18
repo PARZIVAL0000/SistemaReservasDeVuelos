@@ -154,6 +154,7 @@ public class ReservaControllers extends HttpServlet {
                         datos.add(fecha_llegada);
                     }
                     
+                    
                     redireccionar = "Pages/Reserva/reserva.jsp";
                     request.setAttribute("datos", datos);
                 }
