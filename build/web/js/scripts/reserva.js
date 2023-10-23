@@ -416,7 +416,7 @@ function ValidacionFormularioCliente(nFormularios){
 
 async function comprobarCedula(numeroCedula){
     try{
-        const url = `http://127.0.0.1:3333/cedula/${numeroCedula}`;  
+        const url = `http://127.0.0.1:8888/cedula/${numeroCedula}`;  
         const conexion = await fetch(url, {
             method: 'POST' 
         });

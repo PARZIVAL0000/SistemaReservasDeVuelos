@@ -34,6 +34,25 @@ function VuelosIDA(){
     CerrarVentanaEmergente();
 }
 
+
+async function comprobarCedula(numeroCedula){
+    const url = `http://127.0.0.1:8888/cedula/${numeroCedula}`; 
+    const conexion = await fetch(url, {
+        method: 'POST',
+        headers: {"Content-Type":"text/plain"}
+    });
+      
+    const resultado = await conexion.text();
+   
+    return resultado === "Correcto";
+}
+
+function EnviarFormulario(informacion){    
+    const nodo = document.getElementById("resultadoFinal");
+    nodo.value = informacion;
+    
+}
+
 //este cambia dos estados de boton (Confirmar) y (Cancelar)
 function cambiarTipoBoton(boton, botonVuelo){
     if(boton === "confirmar"){
@@ -80,8 +99,6 @@ function cambiarAccesoBotonConfirmar(estado){
 
 function ValidarCamposFormularioPago(){
     const inputs = document.querySelectorAll(".formulario_final input");
-    almacenarInformacion("InformacionPago", {"id" : 1});
-    
     const selects = document.querySelectorAll(".formulario_final select");
     
     const validarEntradasInput = (e, flag=false) => {
@@ -164,7 +181,7 @@ function ValidarCamposFormularioPago(){
 function verificarPartesFecha(value, key){
     if(value.trim() !== ""){
         selectFecha[`${key}`] = true;
-        informacionVuelo[0].InformacionPago[`${key}`] = value;
+        almacenarInformacion(key,value,true);
     }else{
         selectFecha[`${key}`] = false;
     }
@@ -188,20 +205,46 @@ function verificarFechaCompleta(){
     return false;
 }
 
-function verificaryGuardarInfo(keyFormulario, key, value, validacion, idMensaje, idCampo=[]){
-    
-    if(value.trim() !== ""){
-        if(expresion[`${validacion}`].test(value)){                    
-            informacionVuelo[0].InformacionPago[`${key}`] = value;
-            introducirMensajeError(false,idMensaje, idCampo);
-            formularioFinal[`${keyFormulario}`] = true;
-        }else{
-            introducirMensajeError(true,idMensaje, idCampo);
-            formularioFinal[`${keyFormulario}`] = false;
-        }
+function ProcesaryAlmacenar(estado, idMensaje, idCampo, keyFormulario, value=''){
+    if(estado){
+        almacenarInformacion(keyFormulario,value,true);
+        introducirMensajeError(false,idMensaje, idCampo);
+        formularioFinal[`${keyFormulario}`] = true;
     }else{
         introducirMensajeError(true,idMensaje, idCampo);
         formularioFinal[`${keyFormulario}`] = false;
+    }
+}
+
+function verificaryGuardarInfo(keyFormulario, key, value, validacion, idMensaje, idCampo=[]){
+    if(value.trim() !== ""){
+        if(key === "dniCompra"){
+            if(expresion[`${validacion}`].test(value)){
+                const comprobacion = comprobarCedula(value);
+                comprobacion.then(respuesta => {
+                   
+                    if(respuesta){
+                        ProcesaryAlmacenar(true, idMensaje, idCampo, keyFormulario, value);
+                    }else{
+                        ProcesaryAlmacenar(false, idMensaje, idCampo, keyFormulario);
+                    }
+
+                });
+                
+                
+            }else{
+               ProcesaryAlmacenar(false, idMensaje, idCampo, keyFormulario);
+            }
+        }else{
+            if(expresion[`${validacion}`].test(value)){                    
+                ProcesaryAlmacenar(true, idMensaje, idCampo, keyFormulario, value);
+            }else{
+                ProcesaryAlmacenar(false, idMensaje, idCampo, keyFormulario);
+            }
+        }
+        
+    }else{
+        ProcesaryAlmacenar(false, idMensaje, idCampo, keyFormulario);
     }
 }
 
@@ -270,10 +313,16 @@ function introducirMensajeError(estado,idMensaje, idCampo=[]){
     }
 }
 
-function almacenarInformacion(key='',value=''){
+function almacenarInformacion(key='',value='',flag=false){
     if(informacionVuelo.length !== 0){
         if(informacionVuelo[0].registro === 1){
-            informacionVuelo[0][`${key}`] = value;
+            if(!flag){
+                informacionVuelo[0][`${key}`] = value;
+            }else{
+                if(informacionVuelo[0]['InformacionPago']['id'] === 1 ){
+                    informacionVuelo[0]['InformacionPago'][`${key}`] = value;
+                }
+            }
         }   
         return;
     }
@@ -341,6 +390,8 @@ function ReservaVueloDeIda(){
 //esta funcion nos despliega la clase de vuelo, y el cliente debe escogerlo.
 function FormularioClaseVuelos(id){
     const formulario = document.querySelector(`#id_${id} .listado_claseVuelo`);
+    //crear nuestro contenedor de informacion de pago
+    almacenarInformacion("InformacionPago", {"id" : 1});
     //mostramos clase de vuelos
     formulario.style.display='block';
     //escuchamos datos de nuestro formulario.
@@ -354,13 +405,21 @@ function FormularioClaseVuelos(id){
 
             //cuando se encuentren iguales....
            if(tipoBoton.id === "boton-claseTurista"){
-                organizarTipoClaseVuelo(key=["Clase", "PrecioClase"], value=["turista", 100]);      
+               almacenarInformacion("Clase", "turista", true);
+               almacenarInformacion("PrecioClase", 100, true);
+               organizarTipoClaseVuelo();      
 
             }else if(tipoBoton.id === "boton-clasePrimera"){
-                organizarTipoClaseVuelo(key=["Clase", "PrecioClase"], value=["primera", 350]);
+               almacenarInformacion("Clase", "primera", true);
+               almacenarInformacion("PrecioClase", 350, true);
+               organizarTipoClaseVuelo();
+               
 
             }else if(tipoBoton.id === "boton-claseEjecutiva"){
-                organizarTipoClaseVuelo(key=["Clase", "PrecioClase"], value=["ejecutiva", 200]);
+               almacenarInformacion("Clase", "ejecutiva", true);
+               almacenarInformacion("PrecioClase", 200, true);
+               organizarTipoClaseVuelo();
+                
             }
 
             actualizarCarritoCompra(informacionVuelo[0].PrecioVuelo);
@@ -369,10 +428,7 @@ function FormularioClaseVuelos(id){
     });
 }
 
-function organizarTipoClaseVuelo(key=[], value=[]){
-    almacenarInformacion(key[0], value[0]);
-    almacenarInformacion(key[1], value[1]);
-    
+function organizarTipoClaseVuelo(){   
     const resultado = informacionVuelo[0].PrecioVuelo + (informacionVuelo[0].PrecioClase*informacionVuelo[0].NumeroPasajeros);
     informacionVuelo[0].PrecioVuelo = resultado;
 
@@ -559,6 +615,9 @@ function GenerarPagoBoton(){
         
         if(!formularioFinal.NumeroCedula || !formularioFinal.FechaVencimiento || !formularioFinal.NombreTitular || !formularioFinal.CorreoElectronico){
             e.preventDefault();
+        }else{
+            
+            EnviarFormulario(informacionVuelo);
         }
     });
 }

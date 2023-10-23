@@ -6,8 +6,8 @@ import Modelo.Origen;
 import Modelo.Pais;
 import Modelo.Pasajeros;
 import Modelo.Provincia;
-import Modelo.Usuario_Destino;
-import Modelo.Usuario_Origen;
+import Modelo.Pasajeros_Destino;
+import Modelo.Pasajeros_Origen;
 import Modelo.Usuario_Perfil;
 import Modelo.Usuarios;
 import ModeloDAO.AerolineasDAO;
@@ -15,12 +15,11 @@ import ModeloDAO.DestinoDAO;
 import ModeloDAO.OrigenDAO;
 import ModeloDAO.PaisDAO;
 import ModeloDAO.ProvinciaDAO;
-import ModeloDAO.Usuario_DestinoDAO;
-import ModeloDAO.Usuario_OrigenDAO;
+import ModeloDAO.Pasajeros_DestinoDAO;
+import ModeloDAO.Pasajeros_OrigenDAO;
 import ModeloDAO.Usuario_PerfilDAO;
 import ModeloDAO.UsuariosDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -30,12 +29,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Date;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.HashMap;
+import org.json.JSONObject;
+import com.google.gson.*;
+import java.io.PrintWriter;
+
 /**
  *
  * @author denni
  */
-@WebServlet(name = "ReservaControllers", urlPatterns = {"/ReservaControllers"})
+@WebServlet(name = "ReservaControllers", urlPatterns = {"/ReservaControllers", "/informacion"})
 public class ReservaControllers extends HttpServlet {
     
     private final List<List> almacenar;
@@ -58,10 +65,11 @@ public class ReservaControllers extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        String redireccionar = "index.jsp";
+        
         if(request.getRequestURI().equals("/ReservaDeVuelos/ReservaControllers")){
           
             String accion = request.getParameter("accion");
-            String redireccionar = "index.jsp";
             
             if(accion.equals("reservar")){
                 
@@ -89,7 +97,7 @@ public class ReservaControllers extends HttpServlet {
             }
             
             request.getRequestDispatcher(redireccionar).forward(request, response);
-        }   
+        }
     }
 
     /**
@@ -104,9 +112,9 @@ public class ReservaControllers extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
        
+        String redireccionar = "";
         if(request.getRequestURI().equals("/ReservaDeVuelos/ReservaControllers")){
             String accion = request.getParameter("accion");
-            String redireccionar = "";
             
             
             PaisDAO pd = null;
@@ -115,8 +123,8 @@ public class ReservaControllers extends HttpServlet {
             OrigenDAO od = null;
             DestinoDAO dd = null;
             UsuariosDAO ud = null;
-            Usuario_OrigenDAO uod = null;
-            Usuario_DestinoDAO udd = null;
+            Pasajeros_OrigenDAO uod = null;
+            Pasajeros_DestinoDAO udd = null;
             AerolineasDAO ad = null;
             try {
                 pd = new PaisDAO();
@@ -125,8 +133,8 @@ public class ReservaControllers extends HttpServlet {
                 od = new OrigenDAO();
                 dd = new DestinoDAO();
                 ud = new UsuariosDAO();
-                uod = new Usuario_OrigenDAO();
-                udd = new Usuario_DestinoDAO();
+                uod = new Pasajeros_OrigenDAO();
+                udd = new Pasajeros_DestinoDAO();
                 ad = new AerolineasDAO();
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(ReservaControllers.class.getName()).log(Level.SEVERE, null, ex);
@@ -365,7 +373,7 @@ public class ReservaControllers extends HttpServlet {
                                         boolean introducirDatos = ud.registrarUsuario(us); //registramos nuestros usuarios...
                                         
                                         //vamos a introducir dentro de nuestra tabla de usuario_origen
-                                        Usuario_Origen uo = new Usuario_Origen();
+                                        Pasajeros_Origen uo = new Pasajeros_Origen();
                                         List<Usuarios> usuario = ud.filtrarRegistro(us);
                                         
                                         uo.setId(0);
@@ -377,7 +385,7 @@ public class ReservaControllers extends HttpServlet {
                                         //                        //vamos a introducirlo dentro de la tabla..
                                         boolean registroId = uod.introducirRegistro(uo);
                                         //
-                                        Usuario_Origen uo2 = new Usuario_Origen();
+                                        Pasajeros_Origen uo2 = new Pasajeros_Origen();
                                         uo2.setId(0);
                                         List<Usuarios> usuario2 = ud.filtrarRegistro(us);
                                         uo2.setUsuario_id(usuario2.get(0).getId());
@@ -387,7 +395,7 @@ public class ReservaControllers extends HttpServlet {
                                         boolean registroId2 = uod.introducirRegistro(uo2);
                                         
                                         //a continuacion vamos a introducir los datos para nuestra tabla intermedia usuario_destino
-                                        Usuario_Destino u_d = new Usuario_Destino();
+                                        Pasajeros_Destino u_d = new Pasajeros_Destino();
                                         u_d.setId(0);
                                         u_d.setUsuario_id(usuario.get(0).getId());
                                         List<Destino> listadoRegistroDestino = dd.filtroRegistro(dst1);
@@ -395,7 +403,7 @@ public class ReservaControllers extends HttpServlet {
                                         
                                         boolean registrarUsuarioDestino = udd.introducirDato(u_d);
                                         
-                                        Usuario_Destino u_d2 = new Usuario_Destino();
+                                        Pasajeros_Destino u_d2 = new Pasajeros_Destino();
                                         u_d2.setId(0);
                                         u_d2.setUsuario_id(usuario.get(0).getId());
                                         List<Destino> listadoRegistroDestino2 = dd.filtroRegistro(dst2);
@@ -458,143 +466,75 @@ public class ReservaControllers extends HttpServlet {
                         
                     }
                 }
-                case "pagarIda" -> {
-                    //vamos a obtener las partes de la fecha de vencimiento de la cedula del usuario
-                    //nombre del comprador titular....
-                    String cedulaCompra = (request.getParameter("dniCompra") == null) ? "" : request.getParameter("dniCompra");
-                    String nombreTitular = ( request.getParameter("Names") == null) ? "" : request.getParameter("Names");
-                    String correoTitular = ( request.getParameter("Emails") == null) ? "" : request.getParameter("Emails");
-                    if(!cedulaCompra.isEmpty() && !nombreTitular.isEmpty() && !correoTitular.isEmpty()){
-                        //vamos a listar nuestra estructura de vuelo
-                        //desde a -> vuelo ida
-                        String VueloIda_desde = request.getParameter("VueloIda_desde");
-                        String VueloIda_a = request.getParameter("VueloIda_a");
-                        //nos traeremos las fecha y hora de vuelos de ida.
-                        String VueloIda_fecha = request.getParameter("VueloIda_fecha");
-                        String VueloIda_horaSalida = request.getParameter("VueloIda_horaSalida");
-                        String VueloIda_horaLlegada = request.getParameter("VueloIda_horaLlegada");
-                        String VueloIda_aerolinea = request.getParameter("VueloIda_aerolinea");
-                        
-                        //vamos a traernos el identificador del pais que terminanos seleccionando...
-                        Aerolineas aerolinea_ida = new Aerolineas();
-                        aerolinea_ida.setId(0);
-                        aerolinea_ida.setNombre(VueloIda_aerolinea.toLowerCase());
-                        aerolinea_ida.setEstado(1);
-                        
-                        List<Aerolineas> id_vueloIda = ad.filtrarRegistro(aerolinea_ida);
-                        
-                        //vamos a introducir la informacin en la tabla de origen... los viajes de origen del usuario..
-                        List<Pais> p1 = pd.tipoPais(VueloIda_desde);
-                        
-                        
-                        //==========================================================================================
-                        Origen org1 = new Origen();
-                        
-                        org1.setId(0);
-                        org1.setFecha(VueloIda_fecha);
-                        org1.setHora_salida(VueloIda_horaSalida);
-                        org1.setHora_llegada(VueloIda_horaLlegada);
-                        org1.setPais_id(p1.get(0).getId());
-                        org1.setAerolinea_id(id_vueloIda.get(0).getId());
-                        
-                        boolean introducirOrigen1 = od.insertarDatos(org1);
-                        
-                        List<Pais> p_1 = pd.tipoPais(VueloIda_a);
-                        
-                        Destino dst1 = new Destino();
-                        
-                        dst1.setId(0);
-                        dst1.setFecha(VueloIda_fecha);
-                        dst1.setHora_salida(VueloIda_horaSalida);
-                        dst1.setHora_llegada(VueloIda_horaLlegada);
-                        dst1.setPais_id(p_1.get(0).getId());
-                        dst1.setAerolinea_id(id_vueloIda.get(0).getId()); // Actualizar id
-                        
-                        
-                        boolean introducirDestino1 = dd.insertarDatos(dst1);
-                        
-                        //----------------------------------------------------------------------------------------
-                        //vamos a obtener los datos de cada uno de nuestros usuarios el cual se encuentra ocultos..
-                        int n = Integer.parseInt(request.getParameter("NumeroPasajeros"));
-                        
-                        
-                        for(int i = 0; i < n; i++){
-                            int indice = i+1;
-                            Usuarios us = new Usuarios();
-                            us.setNombre(request.getParameter("Nombres-"+indice));
-                            us.setApellido(request.getParameter("Apellidos-"+indice));
-                            us.setCorreo(request.getParameter("Correo-"+indice));
-                            us.setCelular(request.getParameter("Telefono-"+indice));
-                            us.setCedula(request.getParameter("Cedula-"+indice));
+                
+                case "pagarIda" -> {    
+                    //informacion...
+                    String registro = (String) request.getAttribute("informacion");
+                    registro = registro.replace("[{", "");
+                    registro = registro.replace("}}]", "");
+                    String[] datos = registro.split(",");
+                    
+                    Destino destinoVuelo = new Destino();
+                    Pasajeros pasajero = new Pasajeros();
+                    Usuarios titular = new Usuarios();
+                    
+                    for(String j : datos){
+                        String[] dato = j.split(":");
+                        String value = dato[1];
                             
-                            //estas dos de aqui abajo representa datos personales de la person a y el numero es el id unico de
-                            //un registro que se encuentra en otra tabla...
-                            if(request.getParameter("Pasajeros-"+indice).toLowerCase().equals("hombre")){
-                                //dentro de este punto lo que vamos a realizar a continuacion es generar un identificador
-                                us.setPasajeroId(1);
-                            }else if(request.getParameter("Pasajeros-"+indice).toLowerCase().equals("mujer")){
-                                us.setPasajeroId(2);
-                            }else if(request.getParameter("Pasajeros-"+indice).toLowerCase().equals("niño")){
-                                us.setPasajeroId(3);
-                            }
+                        switch(dato[0]){
+                            case "HoraSalida":
+                                destinoVuelo.setId(0);
+                                destinoVuelo.setHora_salida(value);
+                                break;
+                                
+                            case "HoraLlegada":
+                                destinoVuelo.setHora_llegada(value);
+                                break;
                             
-                            //el genero de la persona.
-                            if(request.getParameter("Genero-"+indice).toLowerCase().equals("masculino")){
-                                us.setGeneroId(1);
-                            }else if(request.getParameter("Genero-"+indice).toLowerCase().equals("femenino")){
-                                us.setGeneroId(2);
-                            }else if(request.getParameter("Genero-"+indice).toLowerCase().equals("otro")){
-                                us.setGeneroId(3);
-                            }
+                            case "FechaDisponible":
+                                destinoVuelo.setFecha(value);
+                                break;
+                                
+                            case "PaisLlegada":
+                                 List<Pais> r_pais = pd.tipoPais(value);
+                                destinoVuelo.setPais_id(r_pais.get(0).getId());
+                                break;
+                                
+                            case "Aerolinea":
+                                Aerolineas ar = new Aerolineas();
+                                ar.setNombre(dato[1]);
+
+                                List<Aerolineas> r_aerolinea =  ad.filtrarRegistro(ar);
+                                destinoVuelo.setAerolinea_id(r_aerolinea.get(0).getId());
+                                break;
                             
-                            boolean introducirDatos = ud.registrarUsuario(us); //registramos nuestros usuarios...
-                            
-                            //vamos a introducir dentro de nuestra tabla de usuario_origen
-                            Usuario_Origen uo = new Usuario_Origen();
-                            List<Usuarios> usuario = ud.filtrarRegistro(us);
-                            
-                            uo.setId(0);
-                            uo.setUsuario_id(usuario.get(0).getId());
-                            //vamos a filtrar por la fecha... no importa mucho por ello ya que es un valor que puede obtenerlo muchas personas.
-                            List<Origen> listadoRegistroOrigen = od.filtroRegistro(org1);
-                            //vamos a actualizar nuestro respectivo dato....
-                            uo.setOrigen_id(listadoRegistroOrigen.get(0).getId());
-                            //                        //vamos a introducirlo dentro de la tabla..
-                            boolean registroId = uod.introducirRegistro(uo);
-                            
-                            //a continuacion vamos a introducir los datos para nuestra tabla intermedia usuario_destino
-                            Usuario_Destino u_d = new Usuario_Destino();
-                            u_d.setId(0);
-                            u_d.setUsuario_id(usuario.get(0).getId());
-                            List<Destino> listadoRegistroDestino = dd.filtroRegistro(dst1);
-                            u_d.setDestino_id(listadoRegistroDestino.get(0).getId());
-                            
-                            boolean registrarUsuarioDestino = udd.introducirDato(u_d);
+                            case "NombreTitular":
+                                titular.setNombre(value.split(" ")[0]);
+                                titular.setApellido(value.split(" ")[1]);
+                                break;
+                                
+                            case "CorreoElectronico":
+                                titular.setCorreo(value);
+                                
+                                
+                                titular.setCelular("9999999999");
+                                titular.setTipoPasajero("1");
+                                titular.setGenero("1");
+                                titular.setProvincia("1");
+                            case "NumeroCedula":
+                                titular.setCedula(value);
+                                break;
+                                
+                            default:
+                                break;
                         }
                         
-                        //ahora lo que debemos hacer como paso final es introducir a nuestro titular...
-                        //creandole un perfil para que de ese modo pueda logearse...
-                        Usuarios usTitular = new Usuarios();
-                        usTitular.setCedula(cedulaCompra);
-                        List<Usuarios> titularRegistro = ud.filtrarRegistro(usTitular); //esta es la informacion de ese titular que realizo la compra...
-                        
-                        //cuando tengamos el registro de nuestro titular lo que haremos es tomar su id y colocarlo dentro de la
-                        //tabla usuario_perfil
-                        Usuario_Perfil usuarioPerfilTitular = new Usuario_Perfil();
-                        usuarioPerfilTitular.setUsuario_id(titularRegistro.get(0).getId());
-                        usuarioPerfilTitular.setPerfil_id(3);
-                        
-                        boolean registroSalida = upd.insertarRegistro(usuarioPerfilTitular);
-                        //--------------------------------------------------------------------------------------------------------------
-                        //vamos a realizar el mismo proceso para nuestro destino.
-                        List<Pais> paises = pd.listarPaises();
-                        request.setAttribute("paises", paises);
-                        redireccionar = "Pages/Mensajes/exito.jsp";
-                        
-                    }else{
-//                    redireccionar = "Pages/Reserva/vuelosIda.jsp";
                     }
+                    
+                    redireccionar = "/";
                 }
+                
                 case "login" -> System.out.println(this.getAlmacenar());
 //                redireccionar = "Pages/Reserva/reserva.jsp";
                 default -> {
@@ -602,7 +542,19 @@ public class ReservaControllers extends HttpServlet {
             }
             
             request.getRequestDispatcher(redireccionar).forward(request, response);
+        }else if(request.getRequestURI().equals("/ReservaDeVuelos/informacion")){
+            String contenido = request.getParameter("resultadoFinal");
+            
+            //definimos nuestras cabeceras...
+            response.setHeader("Access-Control-Allow-Methods", "POST");
+            response.setHeader("Content-Type", "application/json");
+
+            //redireccionamos a otro apartado.
+            redireccionar = "ReservaControllers?accion=pagarIda";
+            request.setAttribute("informacion", contenido);
+            request.getRequestDispatcher(redireccionar).forward(request, response);
         }
+        
     }
     
     

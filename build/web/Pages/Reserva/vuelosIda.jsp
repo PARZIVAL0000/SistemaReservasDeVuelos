@@ -267,7 +267,7 @@
             <div class="informacion">
                 <h2 id="titulo_info">Pagar y Confirmar Reserva</h2>
                 
-                <form class="formulario_informacion" id="form" method="POST" action="ReservaControllers?accion=pagarIda">
+                <form class="formulario_informacion" action="informacion" id="form" method="POST">
                     <div class="secciones">
                         
                         <div class="seccion1">
@@ -400,6 +400,7 @@
                         </div>
                         
                     </div><!-- .secciones -->
+                    <input type="hidden" name="resultadoFinal" id="resultadoFinal" value=""/>
                 </form>
             </div>
         </div><!-- podemos desplegar este formulario de manera mucho mas animada. -->

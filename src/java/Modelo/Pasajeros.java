@@ -9,130 +9,105 @@ package Modelo;
  * @author denni
  */
 public class Pasajeros {
-    private int id;
-    private String nombre;
-    private String apellido;
-    private String correo;
-    private String celular;
-    private String cedula;
-    private String tipo_pasajero;
-    private String genero;
-    
+    private int pasajeros_id;
+    private String pasajeros_nombre;
+    private String pasajeros_apellido;
+    private String pasajeros_correo;
+    private String pasajeros_celular;
+    private String pasajeros_cedula;
+    private int tipoPasajeroId;
+    private int generoId;
+    private int precioVueloFinalId;
+
     public Pasajeros(){
-        
-    }
-
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the nombre
-     */
-    public String getNombre() {
-        return nombre;
-    }
-
-    /**
-     * @param nombre the nombre to set
-     */
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    /**
-     * @return the apellido
-     */
-    public String getApellido() {
-        return apellido;
-    }
-
-    /**
-     * @param apellido the apellido to set
-     */
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    /**
-     * @return the correo
-     */
-    public String getCorreo() {
-        return correo;
-    }
-
-    /**
-     * @param correo the correo to set
-     */
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-
-    /**
-     * @return the celular
-     */
-    public String getCelular() {
-        return celular;
-    }
-
-    /**
-     * @param celular the celular to set
-     */
-    public void setCelular(String celular) {
-        this.celular = celular;
-    }
-
-    /**
-     * @return the cedula
-     */
-    public String getCedula() {
-        return cedula;
-    }
-
-    /**
-     * @param cedula the cedula to set
-     */
-    public void setCedula(String cedula) {
-        this.cedula = cedula;
-    }
-
-    /**
-     * @return the tipo_pasajero
-     */
-    public String getTipo_pasajero() {
-        return tipo_pasajero;
-    }
-
-    /**
-     * @param tipo_pasajero the tipo_pasajero to set
-     */
-    public void setTipo_pasajero(String tipo_pasajero) {
-        this.tipo_pasajero = tipo_pasajero;
-    }
-
-    /**
-     * @return the genero
-     */
-    public String getGenero() {
-        return genero;
-    }
-
-    /**
-     * @param genero the genero to set
-     */
-    public void setGenero(String genero) {
-        this.genero = genero;
     }
     
+    public Pasajeros(int pasajeros_id, String pasajeros_nombre, String pasajeros_apellidos, String pasajeros_correo, String pasajeros_celular,
+            String pasajeros_cedula, int tipoPasajeroId, int generoId, int precioVueloFinalId){
+        this.pasajeros_id = pasajeros_id;
+        this.pasajeros_nombre = pasajeros_nombre;
+        this.pasajeros_apellido = pasajeros_apellidos;
+        this.pasajeros_correo = pasajeros_correo;
+        this.pasajeros_celular = pasajeros_celular;
+        this.pasajeros_cedula = pasajeros_cedula;
+        this.tipoPasajeroId = tipoPasajeroId;
+        this.generoId = generoId;
+        this.precioVueloFinalId = precioVueloFinalId;
+    }
+    
+    public int getPasajeros_id() {
+        return pasajeros_id;
+    }
+
+    public void setPasajeros_id(int pasajeros_id) {
+        this.pasajeros_id = pasajeros_id;
+    }
+
+    public String getPasajeros_nombre() {
+        return pasajeros_nombre;
+    }
+
+    public void setPasajeros_nombre(String pasajeros_nombre) {
+        this.pasajeros_nombre = pasajeros_nombre;
+    }
+
+    public String getPasajeros_apellido() {
+        return pasajeros_apellido;
+    }
+
+    public void setPasajeros_apellido(String pasajeros_apellido) {
+        this.pasajeros_apellido = pasajeros_apellido;
+    }
+
+    public String getPasajeros_correo() {
+        return pasajeros_correo;
+    }
+
+    public void setPasajeros_correo(String pasajeros_correo) {
+        this.pasajeros_correo = pasajeros_correo;
+    }
+
+    public String getPasajeros_celular() {
+        return pasajeros_celular;
+    }
+
+    public void setPasajeros_celular(String pasajeros_celular) {
+        this.pasajeros_celular = pasajeros_celular;
+    }
+
+    public String getPasajeros_cedula() {
+        return pasajeros_cedula;
+    }
+
+    public void setPasajeros_cedula(String pasajeros_cedula) {
+        this.pasajeros_cedula = pasajeros_cedula;
+    }
+
+    public int getTipoPasajeroId() {
+        return tipoPasajeroId;
+    }
+
+    public void setTipoPasajeroId(int tipoPasajeroId) {
+        this.tipoPasajeroId = tipoPasajeroId;
+    }
+
+    public int getGeneroId() {
+        return generoId;
+    }
+
+    public void setGeneroId(int generoId) {
+        this.generoId = generoId;
+    }
+
+    public int getPrecioVueloFinalId() {
+        return precioVueloFinalId;
+    }
+
+    public void setPrecioVueloFinalId(int precioVueloFinalId) {
+        this.precioVueloFinalId = precioVueloFinalId;
+    }
+    
+    
+
     
 }
