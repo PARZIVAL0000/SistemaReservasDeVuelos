@@ -52,7 +52,6 @@
             List<Pais> paises = pd.listarPaises();
             //vamos a incluir nuestra ciudad...
             List<Estado> ciudades = ed.listarEstados();
-            
         %>
 
         <section class="banner" id="top">

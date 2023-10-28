@@ -46,13 +46,11 @@ public class PaisControllers extends HttpServlet {
         }
         
         if(request.getRequestURI().equals("/ReservaDeVuelos/")){
-            
             //vamos a traernos los datos de paises...
             List<Pais> paises = pd.listarPaises();
             request.setAttribute("paises", paises);
             accion = "index.jsp";
         }else if(request.getRequestURI().equals("/ReservaDeVuelos/login")){
-            
             accion = "Pages/Login/login.jsp";
         }
         
@@ -86,15 +84,5 @@ public class PaisControllers extends HttpServlet {
         }
         request.getRequestDispatcher(accion).forward(request, response);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
 
 }

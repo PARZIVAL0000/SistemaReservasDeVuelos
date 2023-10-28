@@ -44,7 +44,6 @@ public class PasajerosDAO implements PasajerosInterface{
                 pasajero.setPasajeros_celular(this.getRS().getString("pasajeros_celular"));
                 pasajero.setPasajeros_cedula(this.getRS().getString("pasajeros_cedula"));
                 pasajero.setTipoPasajeroId(this.getRS().getInt("tipoPasajeroId"));
-                pasajero.setGeneroId(this.getRS().getInt("generoId"));
                 pasajero.setPrecioVueloFinalId(this.getRS().getInt("precioVueloFinalId"));
                 
                 listadoPasajeros.add(pasajero);
@@ -79,7 +78,6 @@ public class PasajerosDAO implements PasajerosInterface{
                 pasajero.setPasajeros_celular(this.getRS().getString("pasajeros_celular"));
                 pasajero.setPasajeros_cedula(this.getRS().getString("pasajeros_cedula"));
                 pasajero.setTipoPasajeroId(this.getRS().getInt("tipoPasajeroId"));
-                pasajero.setGeneroId(this.getRS().getInt("generoId"));
                 pasajero.setPrecioVueloFinalId(this.getRS().getInt("precioVueloFinalId"));
                 
                 listadoPasajeros.add(pasajero);
@@ -117,7 +115,7 @@ public class PasajerosDAO implements PasajerosInterface{
     @Override
     public boolean actualizarPasajero(Pasajeros pasajero) {
         try{
-            String sql = "UPDATE pasajeros SET pasajeros_nombre = ?, pasajeros_apellido = ?, pasajeros_correo = ?, pasajeros_celular = ?, pasajeros_cedula = ?, tipoPasajeroId = ?, generoId = ?, precioVueloFinalId = ? WHERE pasajeros_id = ?";
+            String sql = "UPDATE pasajeros SET pasajeros_nombre = ?, pasajeros_apellido = ?, pasajeros_correo = ?, pasajeros_celular = ?, pasajeros_cedula = ?, tipoPasajeroId = ?, precioVueloFinalId = ? WHERE pasajeros_id = ?";
             PreparedStatement ps = this.getConexion().prepareStatement(sql);
             ps.setString(1, pasajero.getPasajeros_nombre());
             ps.setString(2, pasajero.getPasajeros_apellido());
@@ -125,7 +123,6 @@ public class PasajerosDAO implements PasajerosInterface{
             ps.setString(4, pasajero.getPasajeros_celular());
             ps.setString(5, pasajero.getPasajeros_cedula());
             ps.setInt(6, pasajero.getTipoPasajeroId());
-            ps.setInt(7, pasajero.getGeneroId());
             ps.setInt(8, pasajero.getPrecioVueloFinalId());
             ps.setInt(9, pasajero.getPasajeros_id());
             
@@ -145,7 +142,7 @@ public class PasajerosDAO implements PasajerosInterface{
     @Override
     public boolean crearPasajero(List<Pasajeros> pasajero) {
         try{
-            String sql = "INSERT INTO pasajeros(pasajeros_nombre, pasajeros_apellido, pasajeros_correo, pasajeros_celular, pasajeros_cedula, tipoPasajeroId, generoId, precioVueloFinalId) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO pasajeros(pasajeros_nombre, pasajeros_apellido, pasajeros_correo, pasajeros_celular, pasajeros_cedula, tipoPasajeroId, precioVueloFinalId) VALUES(?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement ps = this.getConexion().prepareStatement(sql);
             for(Pasajeros p : pasajero){
                 ps.setString(1, p.getPasajeros_nombre());
@@ -154,7 +151,6 @@ public class PasajerosDAO implements PasajerosInterface{
                 ps.setString(4, p.getPasajeros_celular());
                 ps.setString(5, p.getPasajeros_cedula());
                 ps.setInt(6, p.getTipoPasajeroId());
-                ps.setInt(7, p.getGeneroId());
                 ps.setInt(8, p.getPrecioVueloFinalId());
 
                 ps.execute();

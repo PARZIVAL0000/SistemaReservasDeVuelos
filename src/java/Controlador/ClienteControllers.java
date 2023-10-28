@@ -5,6 +5,7 @@
 package Controlador;
 
 import Modelo.Genero;
+import Modelo.Pasajeros;
 import Modelo.Provincia;
 import Modelo.TipoPasajeros;
 import Modelo.Usuarios;
@@ -60,6 +61,7 @@ public class ClienteControllers extends HttpServlet {
                 //cuando terminemos de obtener el valor lo que vamos a realizar a continuacion es sacarnos la informacion de la db
                 int id = Integer.parseInt(request.getParameter("id"));
                 Usuarios usr = new Usuarios();
+                Pasajeros pasajero = new Pasajeros();
                 usr.setId(id);
                 
                 List<Usuarios> registro = usd.filtrarRegistro(usr);

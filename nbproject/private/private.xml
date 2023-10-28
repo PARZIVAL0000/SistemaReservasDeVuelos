@@ -3,9 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/denni/Desktop/ProyectosWeb/ReservaDeVuelos/ReservaDeVuelos/src/java/Modelo/Pasajeros_Destino.java</file>
-            <file>file:/C:/Users/denni/Desktop/ProyectosWeb/ReservaDeVuelos/ReservaDeVuelos/src/java/Interfaces/Pasajeros_DestinoInterface.java</file>
-            <file>file:/C:/Users/denni/Desktop/ProyectosWeb/ReservaDeVuelos/ReservaDeVuelos/src/java/ModeloDAO/Pasajeros_DestinoDAO.java</file>
+            <file>file:/C:/Users/denni/Desktop/ProyectosWeb/ReservaDeVuelos/ReservaDeVuelos/web/Pages/Reserva/vuelosIda.jsp</file>
+            <file>file:/C:/Users/denni/Desktop/ProyectosWeb/ReservaDeVuelos/ReservaDeVuelos/src/java/Controlador/ReservaControllers.java</file>
+            <file>file:/C:/Users/denni/Desktop/ProyectosWeb/ReservaDeVuelos/ReservaDeVuelos/src/java/Modelo/Pasajeros.java</file>
+            <file>file:/C:/Users/denni/Desktop/ProyectosWeb/ReservaDeVuelos/ReservaDeVuelos/src/java/Modelo/TipoPasajeros.java</file>
+            <file>file:/C:/Users/denni/Desktop/ProyectosWeb/ReservaDeVuelos/ReservaDeVuelos/src/java/ModeloDAO/TipoPasajerosDAO.java</file>
         </group>
     </open-files>
 </project-private>

@@ -8,6 +8,7 @@
 <%@page import="ModeloDAO.PaisDAO"%>
 <%@page import="Modelo.Vuelos"%>
 <%@page import="ModeloDAO.VuelosDAO"%>
+<%@page import="ModeloDAO.TipoPasajerosDAO"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="Modelo.Pais"%>
@@ -65,6 +66,8 @@
                     }
                 }
             }
+            
+            TipoPasajerosDAO tpd = new TipoPasajerosDAO();
         %>
         
         <section class="banner" id="top">
@@ -309,12 +312,29 @@
                                 </div>
                                 <% 
                                     for(Pasajeros pasajero : infoPasajeros){ 
-                                        if(!pasajero.getTipo_pasajero().equals("nino")){
+                                        //el 3-> significa que es un menor de edad.
+                                        if(pasajero.getTipoPasajeroId() != 3){
+                                            String titular = "";
+                                            String nombres = pasajero.getPasajeros_nombre();
+                                            String apellidos = pasajero.getPasajeros_apellido();
+                                            
+                                            if(nombres.split(" ").length == 1){
+                                                titular += nombres;
+                                            }else if(nombres.split(" ").length > 1){
+                                                titular += nombres.split(" ")[0];
+                                            }
+                                            
+                                            if(apellidos.split(" ").length == 1){
+                                                titular += apellidos;
+                                            }else if(apellidos.split(" ").length > 1){
+                                                titular += apellidos.split(" ")[0];
+                                            }
+                                            
                                 %>
                                 
                                 <div class="campo" id="nombreTitular">     
                                     <label for="nombre">Nombre del titular de la tarjeta: </label>
-                                    <input type="text" id="nombre" class="ver bloquear-estilo" name="Names" value="<%= pasajero.getNombre() %>" placeholder="Nombres Del Titular" disabled/>
+                                    <input type="text" id="nombre" class="ver bloquear-estilo" name="Names" value="<%= titular %>" placeholder="Nombres Del Titular" disabled/>
                                 
                                     <div class="mensaje ocultar" id="NombreTitularMensaje">
                                         Debes introducir el nombre de un propietario para el pago de tu vuelo.
@@ -323,7 +343,7 @@
 
                                 <div class="campo" id="emailTitular">
                                     <label for="correo">Correo Electronico: </label>
-                                    <input type="email" id="correo" class="ver bloquear-estilo" name="Emails" value="<%= pasajero.getCorreo() %>" placeholder="Dirección Email" disabled/>
+                                    <input type="email" id="correo" class="ver bloquear-estilo" name="Emails" value="<%= pasajero.getPasajeros_correo() %>" placeholder="Dirección Email" disabled/>
                                 
                                     <div class="mensaje ocultar" id="CorreoMensaje">
                                         El correo es obligatorio para el recibo de notificaciones a futuro.
@@ -369,14 +389,17 @@
                                                 for(Pasajeros j : infoPasajeros){ 
                                             %>
                                             <p>Pasajero <%= i %></p>
-                                            <p>Nombres: <%= j.getNombre() %> <%= j.getApellido() %></p>
-                                            <p>Cedula: <%= j.getCedula() %></p>
+                                            <p>Nombres: <%= j.getPasajeros_nombre() %> <%= j.getPasajeros_apellido() %></p>
+                                            <p>Cedula: <%= j.getPasajeros_cedula() %></p>
                                             <%
-                                                if(!j.getTipo_pasajero().equals("nino")){
+                                                if(j.getTipoPasajeroId() != 3){
+                                                    System.out.println("numero: ",j.getTipoPasajeroId());
+                                                    
+                                                    List<TipoPasajeros> pasajero = tpd.listadoRegistro(j.getTipoPasajeroId());
                                             %>
-                                            <p>Tipo Pasajero: <%= j.getTipo_pasajero() %></p>
-                                            <p>Email: <%= j.getCorreo() %></p>
-                                            <p>Celular: <%= j.getCelular() %> </p>
+                                            <p>Tipo Pasajero: <%= pasajero.getNombre() %></p>
+                                            <p>Email: <%= j.getPasajeros_correo() %></p>
+                                            <p>Celular: <%= j.getPasajeros_celular() %> </p>
                                             <%
                                                 }else{
                                             %>

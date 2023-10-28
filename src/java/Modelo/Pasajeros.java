@@ -16,14 +16,13 @@ public class Pasajeros {
     private String pasajeros_celular;
     private String pasajeros_cedula;
     private int tipoPasajeroId;
-    private int generoId;
     private int precioVueloFinalId;
 
     public Pasajeros(){
     }
     
     public Pasajeros(int pasajeros_id, String pasajeros_nombre, String pasajeros_apellidos, String pasajeros_correo, String pasajeros_celular,
-            String pasajeros_cedula, int tipoPasajeroId, int generoId, int precioVueloFinalId){
+            String pasajeros_cedula, int tipoPasajeroId, int precioVueloFinalId){
         this.pasajeros_id = pasajeros_id;
         this.pasajeros_nombre = pasajeros_nombre;
         this.pasajeros_apellido = pasajeros_apellidos;
@@ -31,7 +30,6 @@ public class Pasajeros {
         this.pasajeros_celular = pasajeros_celular;
         this.pasajeros_cedula = pasajeros_cedula;
         this.tipoPasajeroId = tipoPasajeroId;
-        this.generoId = generoId;
         this.precioVueloFinalId = precioVueloFinalId;
     }
     
@@ -91,14 +89,6 @@ public class Pasajeros {
         this.tipoPasajeroId = tipoPasajeroId;
     }
 
-    public int getGeneroId() {
-        return generoId;
-    }
-
-    public void setGeneroId(int generoId) {
-        this.generoId = generoId;
-    }
-
     public int getPrecioVueloFinalId() {
         return precioVueloFinalId;
     }
@@ -107,7 +97,5 @@ public class Pasajeros {
         this.precioVueloFinalId = precioVueloFinalId;
     }
     
-    
-
     
 }
