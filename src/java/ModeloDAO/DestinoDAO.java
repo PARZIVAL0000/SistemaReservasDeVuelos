@@ -1,8 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package ModeloDAO;
+
 import Config.Conexion;
 import Modelo.Destino;
 import java.sql.Connection;
@@ -17,32 +14,31 @@ import Interfaces.DestinoInterface;
  * @author denni
  */
 public class DestinoDAO implements DestinoInterface{
-    Connection conexion;
-    PreparedStatement ps;
-    ResultSet rs;
-    
-    
+    private Connection conexion;
+    private PreparedStatement ps;
+    private ResultSet rs;
+
     public DestinoDAO() throws ClassNotFoundException{
-        Conexion n = new Conexion();
-        conexion = n.getConexion();
+        Conexion cn = new Conexion();
+        this.setConexion(cn.getConexion());
     }
 
     @Override
     public List<Destino> listadoDatos(){
-        List<Destino> listado = new ArrayList<>();
-        String sql = "SELECT * FROM destino";
         try{
-            ps = conexion.prepareStatement(sql);
-            rs = ps.executeQuery();
+            List<Destino> listado = new ArrayList<>();
+            String sql = "SELECT * FROM destino";
+            this.setPs(this.getConexion().prepareStatement(sql));
+            this.setRs(this.getPs().executeQuery());
             
-            while(rs.next()){
+            while(this.getRs().next()){
                 Destino dst = new Destino();
-                dst.setId(rs.getInt("id"));
-                dst.setFecha(rs.getString("fecha"));
-                dst.setHora_salida(rs.getTime("hora_salida").toString());
-                dst.setHora_llegada(rs.getTime("hora_llegada").toString());
-                dst.setPais_id(rs.getInt("pais_id"));
-                dst.setAerolinea_id(rs.getInt("aerolinea_id"));
+                dst.setId(this.getRs().getInt("id"));
+                dst.setFecha(this.getRs().getString("fecha"));
+                dst.setHora_salida(this.getRs().getTime("hora_salida").toString());
+                dst.setHora_llegada(this.getRs().getTime("hora_llegada").toString());
+                dst.setPais_id(this.getRs().getInt("pais_id"));
+                dst.setAerolinea_id(this.getRs().getInt("aerolinea_id"));
                 
                 listado.add(dst);
             }
@@ -57,49 +53,71 @@ public class DestinoDAO implements DestinoInterface{
     }
     
     public List<Destino> listadoDatosInner(){
-       try{
+        try{
            List<Destino> datos = new ArrayList<>();
            String sql = "SELECT destino.id, fecha, hora_salida, hora_llegada, destino.pais_id, p.paisnombre, aerolineas.aero_nombre FROM DESTINO INNER JOIN pais as p ON DESTINO.pais_id = p.id INNER JOIN aerolineas ON destino.aerolinea_id = aerolineas.aero_id";
-           ps = conexion.prepareStatement(sql);
-           rs = ps.executeQuery();
-           while(rs.next()){
+           this.setPs(this.getConexion().prepareStatement(sql));
+           this.setRs(this.getPs().executeQuery());
+           
+            while(this.getRs().next()){
                 Destino dst = new Destino();
-                dst.setId(rs.getInt("id"));
-                dst.setFecha(rs.getString("fecha"));
-                dst.setHora_salida(rs.getTime("hora_salida").toString());
-                dst.setHora_llegada(rs.getTime("hora_llegada").toString());
-                dst.setPais_id(rs.getInt("pais_id"));
-                dst.setPaisnombre(rs.getString("paisnombre"));
-                dst.setAero_nombre(rs.getString("aero_nombre"));
+                dst.setId(this.getRs().getInt("id"));
+                dst.setFecha(this.getRs().getString("fecha"));
+                dst.setHora_salida(this.getRs().getTime("hora_salida").toString());
+                dst.setHora_llegada(this.getRs().getTime("hora_llegada").toString());
+                dst.setPais_id(this.getRs().getInt("pais_id"));
+                dst.setPaisnombre(this.getRs().getString("paisnombre"));
+                dst.setAero_nombre(this.getRs().getString("aero_nombre"));
                 
                 datos.add(dst);
-           }
+            }
            return datos;
-       }catch(SQLException e){
+        }catch(SQLException e){
            System.out.println("Error: " + e.getMessage());
            System.out.println("Estado: " + e.getSQLState());
            System.out.println("***** ERROR EN LISTAR DATOS *****");
            return null;
-       }
+        }
     }
     
     
     @Override
     public boolean insertarDatos(Destino destino) {
-        String sql = "INSERT INTO destino(fecha, hora_salida, hora_llegada, pais_id, aerolinea_id) VALUES('"+destino.getFecha()+"','"+destino.getHora_salida()+"','"+destino.getHora_llegada()+"','"+destino.getPais_id()+"', '"+destino.getAerolinea_id()+"')";
-        
         try{
             List<Destino> verificar = this.filtroRegistro(destino);
-            if(verificar.size() == 0){
-                ps = conexion.prepareStatement(sql);
-                ps.execute();
-                return true;
-            }else{
-                return false;
-            }
+            String sql = "INSERT INTO destino(fecha, hora_salida, hora_llegada, pais_id, aerolinea_id) VALUES(?, ?, ?, ?, ?)";
+            this.setPs(this.getConexion().prepareStatement(sql));
+            this.getPs().setString(1, destino.getFecha());
+            this.getPs().setString(2, destino.getHora_salida());
+            this.getPs().setString(3, destino.getHora_llegada());
+            this.getPs().setInt(4, destino.getPais_id());
+            this.getPs().setInt(5, destino.getAerolinea_id());
             
+            this.getPs().execute();
+            
+            return true;
         }catch(SQLException e){
             return false;
+        }
+    }
+    
+    public Destino idDestino(){
+        try{
+            Destino destino = new Destino();
+            String sql = "SELECT * FROM destino ORDER BY id DESC LIMIT 1";
+            this.setPs(this.getConexion().prepareStatement(sql));
+            this.setRs(this.getPs().executeQuery());
+            
+            while(this.getRs().next()){
+                destino.setId(this.getRs().getInt("id"));
+            }
+        
+            return destino;
+        }catch(SQLException e){
+            System.out.println("dentro de la funcion 'listadoDatos()' de DestinoDAO");
+            System.out.println("Error: " + e.getMessage());
+            System.out.println("Estado: " + e.getSQLState());
+            return null;
         }
     }
     
@@ -133,5 +151,30 @@ public class DestinoDAO implements DestinoInterface{
         }
         
         return registro;
+    }
+    
+    
+    public Connection getConexion() {
+        return conexion;
+    }
+
+    public void setConexion(Connection conexion) {
+        this.conexion = conexion;
+    }
+
+    public PreparedStatement getPs() {
+        return ps;
+    }
+
+    public void setPs(PreparedStatement ps) {
+        this.ps = ps;
+    }
+
+    public ResultSet getRs() {
+        return rs;
+    }
+
+    public void setRs(ResultSet rs) {
+        this.rs = rs;
     }
 }

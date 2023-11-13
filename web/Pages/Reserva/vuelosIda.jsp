@@ -54,7 +54,6 @@
             informacion.remove(0);
             List<Pasajeros> infoPasajeros = (ArrayList) informacion;
             
-            
             VuelosDAO vd = new VuelosDAO();
             List<CarteleraViajes> cv = vd.listadoCarteleraViajes();
             List<CarteleraViajes> viajesIda = new ArrayList<>();
@@ -388,24 +387,27 @@
                                             <%  int i = 1;
                                                 for(Pasajeros j : infoPasajeros){ 
                                             %>
-                                            <p>Pasajero <%= i %></p>
-                                            <p>Nombres: <%= j.getPasajeros_nombre() %> <%= j.getPasajeros_apellido() %></p>
-                                            <p>Cedula: <%= j.getPasajeros_cedula() %></p>
-                                            <%
-                                                if(j.getTipoPasajeroId() != 3){
-                                                    System.out.println("numero: ",j.getTipoPasajeroId());
-                                                    
-                                                    List<TipoPasajeros> pasajero = tpd.listadoRegistro(j.getTipoPasajeroId());
-                                            %>
-                                            <p>Tipo Pasajero: <%= pasajero.getNombre() %></p>
-                                            <p>Email: <%= j.getPasajeros_correo() %></p>
-                                            <p>Celular: <%= j.getPasajeros_celular() %> </p>
-                                            <%
-                                                }else{
-                                            %>
-                                            <p>Tipo Pasajero: Niño</p>
-                                            <% } %>
-                                            <hr/>
+                                            <div class="informacionPasajero">
+                                                
+                                                <p class="info-Pasajero-<%= i %>">Pasajero <%= i %></p>
+                                                <p class="info-Nombres-<%= i %>">Nombres: <%= j.getPasajeros_nombre() %> <%= j.getPasajeros_apellido() %></p>
+                                                <p class="info-Cedula-<%= i %>">Cedula: <%= j.getPasajeros_cedula() %></p>
+                                                <%
+                                                    if(j.getTipoPasajeroId() != 3){
+
+                                                        String tp =  tpd.listadoRegistro(j.getTipoPasajeroId()).getNombre();
+
+                                                %>
+                                                <p class="info-TipoPasajero-<%= i %>">Tipo Pasajero: <%= tp %></p>
+                                                <p class="info-Email-<%= i %>">Email: <%= j.getPasajeros_correo() %></p>
+                                                <p class="info-Celular-<%= i %>">Celular: <%= j.getPasajeros_celular() %> </p>
+                                                <%
+                                                    }else{
+                                                %>
+                                                <p class="info-TipoPasajero-<%= i %>">Tipo Pasajero: Niño</p>
+                                                <% } %>
+                                                <hr/>
+                                            </div>
                                             <% 
                                                 i++;
                                             } 
@@ -446,7 +448,6 @@
                         </ul>
                     </div>
 
-                    </div>
                 </div>
             </div>
         </footer>

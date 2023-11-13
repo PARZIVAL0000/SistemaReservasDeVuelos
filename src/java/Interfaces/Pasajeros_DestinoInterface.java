@@ -17,5 +17,5 @@ public interface Pasajeros_DestinoInterface {
     public List<Pasajeros_Destino> listarPasajeroDestino(int pasajeroDestinoId);
     public boolean actualizarPasajerosDestino(Pasajeros_Destino pasajeroDestino);
     public boolean eliminarPasajerosDestino(int pasajeroDestinoId);
-    public boolean crearPasajerosDestino(List<Pasajeros_Destino> pasajeros);
+    public boolean crearPasajerosDestino(Pasajeros_Destino pasajeros);
 }

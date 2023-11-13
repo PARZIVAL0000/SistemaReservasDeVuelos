@@ -1,4 +1,4 @@
-//( () => {
+( () => {
 
 //Nuestra lista guardara un objeto con informacion recolectada de todo lo que hace el cliente.
 //con eso podemos analizar acciones y mostrar resultados.
@@ -34,7 +34,6 @@ function VuelosIDA(){
     CerrarVentanaEmergente();
 }
 
-
 async function comprobarCedula(numeroCedula){
     const url = `http://127.0.0.1:8888/cedula/${numeroCedula}`; 
     const conexion = await fetch(url, {
@@ -49,8 +48,139 @@ async function comprobarCedula(numeroCedula){
 
 function EnviarFormulario(informacion){    
     const nodo = document.getElementById("resultadoFinal");
-    nodo.value = informacion;
+    const resultado = filtrarInformacionDeVuelo(informacion); 
+    nodo.value = JSON.stringify(resultado[0]);
+}
+
+function filtrarInformacionDeVuelo(informacion){
+    const keys =  Object.keys(informacion[0]);
     
+    for(let i = 0; i < keys.length; i++){
+        switch(keys[i]){
+            case "InformacionPago":
+                const keysPago = Object.keys(informacion[0][keys[i]]);
+                for(let j = 0; j < keysPago.length; j++){
+                    if(keysPago[j] === "PrecioClase"){
+                        cambiarTipoDato(informacion, keys[i], keysPago[j]);
+                    }else if(keysPago[j] === "id"){
+                        cambiarTipoDato(informacion, keys[i], keysPago[j]);
+                    }
+                }
+                break;
+            case "PasajerosInfo":
+                cambiarTipoDato(informacion, key="PasajerosInfo", key2='', tipo=false);
+                formatearInformacionPasajeros(informacion);
+                break;
+            case "registro":
+                const sub_keys = Object.keys(informacion[0][keys[i]]);
+              
+                for(let j = 0; j < sub_keys.length; j++){
+                    
+                    if(sub_keys[i] === "NumeroPasajeros"){
+                        cambiarTipoDato(informacion, keys[i], sub_keys[j]);
+                    }else if(sub_keys[i] === "PrecioVuelo"){
+                        cambiarTipoDato(informacion, keys[i], sub_keys[j]);
+                    }else if(sub_keys[i] === "id"){
+                        cambiarTipoDato(informacion, keys[i], sub_keys[j]);
+                    }
+                }
+                
+                break;
+            default:
+                break;
+        }
+    }
+    
+    return informacion;
+}
+
+function formatearInformacionPasajeros(informacion){
+    const keys = Object.keys(informacion[0]["PasajerosInfo"]);
+    
+    for(let i = 0; i < keys.length; i++){
+        if(keys[i] !== "id" && keys[i] !== "registros"){
+            const keysInfo = Object.keys(informacion[0]["PasajerosInfo"][keys[i]]);
+            keysInfo.pop(); //eliminar el ultimo elemento.
+            const nuevoRegistro = {};
+            
+            for(let j = 0; j < keysInfo.length; j++){
+                const key = keysInfo[j];
+                const value = informacion[0]["PasajerosInfo"][keys[i]][key];
+                
+                nuevoRegistro[key] = value;
+            }
+            
+            informacion[0]["PasajerosInfo"][keys[i]] = nuevoRegistro;
+        }
+    }
+}
+
+function cambiarTipoDato(informacion='', key='', key2='' ,tipo=true){
+    if(tipo){
+        const value = informacion[0][key][key2].toString();
+        informacion[0][key][key2] = value;
+    }else{
+        if(key !== "PasajerosInfo"){
+            const value = informacion[0][key].toString();
+            informacion[0][key] = value;
+            return;
+        }
+        
+        const keysPasajeros = Object.keys(informacion[0][key]);
+        for(let i = 0; i < keysPasajeros.length; i++){
+            const indice = keysPasajeros[i];
+            
+            if(indice !== "id" && indice !== "registros"){
+                const registro = informacion[0][key][`${indice}`];
+                
+                const keysInfoPasajeros = Object.keys(registro);
+                for(let i = 0; i < keysInfoPasajeros.length; i++){
+                    const value = informacion[0][key][`${indice}`][`${keysInfoPasajeros[i]}`].toString();
+                    informacion[0][key][`${indice}`][`${keysInfoPasajeros}`] = value;
+                }
+            }else{
+                const value = informacion[0][key][`${indice}`].toString();
+                informacion[0][key][`${indice}`] = value;
+            }
+        }
+    }
+}
+
+//esta funcion se ejecuta al mostrar formulario final
+function recolectarInformacionPasajeros(){
+    const informacionVuelos =  document.getElementsByClassName("informacionPasajero");
+    
+    for(let i = 0; i < informacionVuelos.length; i++){
+        const registro = { };
+        
+        registro[`Nombres-${i+1}`] = "";
+        registro[`Cedula-${i+1}`] = "";
+        registro[`TipoPasajero-${i+1}`] = "";
+        registro[`Email-${i+1}`] = "";
+        registro[`Celular-${i+1}`] = "";
+        
+        almacenarInformacion(`registro-${i+1}`, registro, true, 2);
+    }
+    
+    for(let i = 0; i < informacionVuelos.length; i++){
+        introducirDatosInfoPasajeros(`Nombres`, i, informacionVuelos);
+        introducirDatosInfoPasajeros(`Cedula`, i,  informacionVuelos);
+        const resultado = introducirDatosInfoPasajeros(`TipoPasajero`, i, informacionVuelos);
+
+        if(resultado !== "Niño"){
+            introducirDatosInfoPasajeros("Email", i, informacionVuelos);
+            introducirDatosInfoPasajeros("Celular", i, informacionVuelos);
+        }        
+    }
+}
+
+function introducirDatosInfoPasajeros(tipo, i, informacionVuelos){
+    const resultado = informacionVuelos[i].querySelector(`.info-${tipo}-${i+1}`).textContent.split(":")[1].trim();
+    almacenarInformacion(tipo, resultado, true, 2, i+1);
+    
+    if(tipo === "TipoPasajero"){
+        return resultado;
+    }
 }
 
 //este cambia dos estados de boton (Confirmar) y (Cancelar)
@@ -198,7 +328,6 @@ function verificarPartesFecha(value, key){
 function verificarFechaCompleta(){
     if(selectFecha.dia && selectFecha.mes && selectFecha.ano){
         formularioFinal.FechaVencimiento = true;
-        
         return true;
     }
     
@@ -313,20 +442,36 @@ function introducirMensajeError(estado,idMensaje, idCampo=[]){
     }
 }
 
-function almacenarInformacion(key='',value='',flag=false){
+
+function almacenarInformacion(key='',value='',flag=false, id=1, registro=0){
     if(informacionVuelo.length !== 0){
-        if(informacionVuelo[0].registro === 1){
+        if(informacionVuelo[0].registro.id === 1){
             if(!flag){
-                informacionVuelo[0][`${key}`] = value;
+                informacionVuelo[0]['registro'][`${key}`] = value;
             }else{
-                if(informacionVuelo[0]['InformacionPago']['id'] === 1 ){
-                    informacionVuelo[0]['InformacionPago'][`${key}`] = value;
+                
+                if(id === 3){
+                    informacionVuelo[0][`${key}`] = value;
+                }else{
+                    if(informacionVuelo[0]['InformacionPago']['id'] === id){
+                        informacionVuelo[0]['InformacionPago'][`${key}`] = value;
+                    }else if(informacionVuelo[0]['PasajerosInfo']['id'] === id){
+                        if(registro !== 0){  
+                            informacionVuelo[0]['PasajerosInfo'][`registro-${registro}`][`${key}-${registro}`] = value;
+                        }else{
+                            informacionVuelo[0]['PasajerosInfo'][`${key}`] = value;
+
+                            //vamos incrementando el numero de regsitros que se va introduciendo.
+                            informacionVuelo[0]['PasajerosInfo']['registros'] += 1;
+                        }
+                    }
                 }
+                
             }
         }   
         return;
     }
-    informacionVuelo.push( {"registro" : 1} );
+    informacionVuelo.push( {"registro" : { "id": 1 } } );
 }
 
 function actualizarCarritoCompra(valor){
@@ -361,7 +506,7 @@ function ReservaVueloDeIda(){
                 almacenarInformacion("PaisLlegada", document.querySelector(`#id_${id} .hora #paisLlegada`).textContent);
                 
                 //vamos a cambiar el valor del carrito de motod de interfaz.
-                actualizarCarritoCompra(informacionVuelo[0].PrecioVuelo);
+                actualizarCarritoCompra(informacionVuelo[0]["registro"].PrecioVuelo);
                 
                 cambiarAccesoInputRadio("inaccesible");
                      
@@ -386,12 +531,11 @@ function ReservaVueloDeIda(){
     });
 }
 
-
 //esta funcion nos despliega la clase de vuelo, y el cliente debe escogerlo.
 function FormularioClaseVuelos(id){
     const formulario = document.querySelector(`#id_${id} .listado_claseVuelo`);
     //crear nuestro contenedor de informacion de pago
-    almacenarInformacion("InformacionPago", {"id" : 1});
+    almacenarInformacion("InformacionPago", {"id" : 1}, true, 3);
     //mostramos clase de vuelos
     formulario.style.display='block';
     //escuchamos datos de nuestro formulario.
@@ -413,24 +557,23 @@ function FormularioClaseVuelos(id){
                almacenarInformacion("Clase", "primera", true);
                almacenarInformacion("PrecioClase", 350, true);
                organizarTipoClaseVuelo();
-               
-
+  
             }else if(tipoBoton.id === "boton-claseEjecutiva"){
                almacenarInformacion("Clase", "ejecutiva", true);
                almacenarInformacion("PrecioClase", 200, true);
                organizarTipoClaseVuelo();
-                
             }
 
-            actualizarCarritoCompra(informacionVuelo[0].PrecioVuelo);
+            actualizarCarritoCompra(informacionVuelo[0]["registro"].PrecioVuelo);
             FormularioFinal();
         });
+        
     });
 }
 
 function organizarTipoClaseVuelo(){   
-    const resultado = informacionVuelo[0].PrecioVuelo + (informacionVuelo[0].PrecioClase*informacionVuelo[0].NumeroPasajeros);
-    informacionVuelo[0].PrecioVuelo = resultado;
+    const resultado = informacionVuelo[0]["registro"].PrecioVuelo + (informacionVuelo[0]["InformacionPago"].PrecioClase*informacionVuelo[0]["registro"].NumeroPasajeros);
+    informacionVuelo[0]["registro"].PrecioVuelo = resultado;
 
     const ventana1 = document.querySelector("#collapseOne");
     ventana1.classList.remove("show");
@@ -447,7 +590,7 @@ function BotonCancelar(id){
         cambiarTipoBoton("confirmar", e);
         
         //reseteamos nuestra lista que captura la informacion.
-        informacionVuelo[0] = {"registro":1};
+        informacionVuelo[0] = {"registro" : { "id": 1 } };
         
         actualizarCarritoCompra('0.0');
         
@@ -468,29 +611,34 @@ function claseVuelo(accion = true, id){
 
 function FormularioFinal(accion = true){
     if(accion){
+        almacenarInformacion("PasajerosInfo",{"id":2, "registros":0}, true, 3);
+        
         //vamos a generar el script para poder introducirlo dentro de nuestro formulario...
         let vueloIda = document.querySelector(".vuelo_ida");
         vueloIda.innerHTML = `
         <ul>
-            <li class="vuelo_info"><box-icon type='solid' name='plane-take-off'><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAZlJREFUSEvt1D1rVFEQxvHfakAQO0mRKBjBb2FjIIKkMGBjY2HpZ7AQhIiFdWwENUYRsRcCgdionY2VosQXiJVpYqPEFwbOhruH+7K77rpb7MAt7r3nzH+e58yZlhFFa0RcE/B/c35idW71QVzEFl4N8hzqrD6L2ziVgG+xmp7tfy2iDnwEt3Alg/zBBh7gKX5UFHEAp3EeJ3Edb9pru2muedzDiRLAdzxKRbzEISzgApZwtLBnHed6AcfaKvXFWj5gBocrHPhcLL4bxcU8oT4sPt7HGd/E1SrF0/iG3zWJQ/0TLHYB/4VnWEFYvR9FxcfwAntYTsryAqJJruESpmrAr1P3P8RO2boiOJonwFFAxHvcSAXEvybg19Rod/CuyY38jOcSfLaw8QviPYZJHj/TlYrODivrjqhjb1lz5crLio+rE8PkMXab1DVZXfxfBv+ENdxNI7QfXmlz5YnC9rAvZnRcoU3E1BpI9HqPBwKNJGMDDnsvD0xWZ6L7+Nj+lCs+k85yGOwYt8/HDjwMpaU5x6a5JoqH5sBfXZNFHxeyvKAAAAAASUVORK5CYII="/></box-icon><p>${informacionVuelo[0].PaisSalida} a ${informacionVuelo[0].PaisLlegada}</p></li>
+            <li class="vuelo_info"><box-icon type='solid' name='plane-take-off'><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAZlJREFUSEvt1D1rVFEQxvHfakAQO0mRKBjBb2FjIIKkMGBjY2HpZ7AQhIiFdWwENUYRsRcCgdionY2VosQXiJVpYqPEFwbOhruH+7K77rpb7MAt7r3nzH+e58yZlhFFa0RcE/B/c35idW71QVzEFl4N8hzqrD6L2ziVgG+xmp7tfy2iDnwEt3Alg/zBBh7gKX5UFHEAp3EeJ3Edb9pru2muedzDiRLAdzxKRbzEISzgApZwtLBnHed6AcfaKvXFWj5gBocrHPhcLL4bxcU8oT4sPt7HGd/E1SrF0/iG3zWJQ/0TLHYB/4VnWEFYvR9FxcfwAntYTsryAqJJruESpmrAr1P3P8RO2boiOJonwFFAxHvcSAXEvybg19Rod/CuyY38jOcSfLaw8QviPYZJHj/TlYrODivrjqhjb1lz5crLio+rE8PkMXab1DVZXfxfBv+ENdxNI7QfXmlz5YnC9rAvZnRcoU3E1BpI9HqPBwKNJGMDDnsvD0xWZ6L7+Nj+lCs+k85yGOwYt8/HDjwMpaU5x6a5JoqH5sBfXZNFHxeyvKAAAAAASUVORK5CYII="/></box-icon><p>${informacionVuelo[0]["registro"].PaisSalida} a ${informacionVuelo[0]["registro"].PaisLlegada}</p></li>
             <li class="vuelo_fecha">
-                <p class="fecha_ida">${informacionVuelo[0].FechaDisponible}</p>
-                <p class="clase_ida">${informacionVuelo[0].Clase}</p>
+                <p class="fecha_ida">${informacionVuelo[0]["registro"].FechaDisponible}</p>
+                <p class="clase_ida">${informacionVuelo[0]["InformacionPago"].Clase}</p>
             </li>
             <li class="vuelo_hora">
-                <p class="hora_salida"><span>Hora Salida: </span>${informacionVuelo[0].HoraSalida}</p>
-                <p class="hora_llegada"><span>Hora Llegada: </span>${informacionVuelo[0].HoraLlegada}</p>
+                <p class="hora_salida"><span>Hora Salida: </span>${informacionVuelo[0]["registro"].HoraSalida}</p>
+                <p class="hora_llegada"><span>Hora Llegada: </span>${informacionVuelo[0]["registro"].HoraLlegada}</p>
             </li>
         </ul>
         `;
 
         //vamos a desplegar el formulario para que el usuario pueda pagar... (simular que va a realizar un pago con ayuda de su cedula)
         let pagoTotal = document.querySelector(".informacion_pagoFinal");
-        pagoTotal.innerHTML = ` <p>Total a pagar <span>USD ${informacionVuelo[0].PrecioVuelo}</span></p>`;
+        pagoTotal.innerHTML = ` <p>Total a pagar <span>USD ${informacionVuelo[0]["registro"].PrecioVuelo}</span></p>`;
 
         //el formulario para realizar el pago...
         let formulario = document.querySelector(".formulario_final");
         formulario.style.display='block';
+
+        
+        recolectarInformacionPasajeros();
 
         //la funcion se encargara de gestionar y verificar cuando el usuario le de click al boton de cancelar.
         //En base al boton de "pagar vuelo" como se trata de un <form> el "action" va hacer que me redireccione automaticamente
@@ -612,7 +760,7 @@ function IncluirFechas(){
 function GenerarPagoBoton(){
     const botonPago = document.getElementById('pagar');
     botonPago.addEventListener("click", (e) => {
-        
+      
         if(!formularioFinal.NumeroCedula || !formularioFinal.FechaVencimiento || !formularioFinal.NombreTitular || !formularioFinal.CorreoElectronico){
             e.preventDefault();
         }else{
@@ -623,4 +771,4 @@ function GenerarPagoBoton(){
 }
 
 
-//})();
+})();

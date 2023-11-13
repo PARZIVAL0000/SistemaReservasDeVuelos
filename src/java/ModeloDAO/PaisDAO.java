@@ -14,28 +14,27 @@ import Config.Conexion;
 import java.sql.Connection;
 
 public class PaisDAO implements PaisInterface{
-    PreparedStatement ps;
-    ResultSet rs;
-    Connection conexion;
-    
+    private PreparedStatement ps;
+    private ResultSet rs;
+    private Connection conexion;
+
     public PaisDAO() throws ClassNotFoundException{
         Conexion con = new Conexion();
-        conexion = con.getConexion();
+        this.setConexion(con.getConexion());
     }
     
     @Override
     public List<Pais> listarPaises() {
-        List<Pais> paises = new ArrayList<>();
-        
-        String cmd = "SELECT * FROM pais";
         try{
-            ps = conexion.prepareStatement(cmd);
-            rs = ps.executeQuery();
+            List<Pais> paises = new ArrayList<>();
+            String sql = "SELECT * FROM pais";
+            this.setPs(this.getConexion().prepareStatement(sql));
+            this.setRs(this.getPs().executeQuery());
             
-            while(rs.next()){
+            while(this.getRs().next()){
                 Pais pais = new Pais();
-                pais.setId(rs.getInt("id"));
-                pais.setPaisNombre(rs.getString("paisnombre"));
+                pais.setId(this.getRs().getInt("id"));
+                pais.setPaisNombre(this.getRs().getString("paisnombre"));
                 paises.add(pais);
             }
  
@@ -46,6 +45,24 @@ public class PaisDAO implements PaisInterface{
         
     }
     
+    public Pais buscarPorNombre(String nombre){
+        try{
+            String sql = "SELECT * FROM pais WHERE paisnombre = ?";
+            this.setPs(this.getConexion().prepareStatement(sql));
+            this.getPs().setString(1, nombre);
+            this.setRs(this.getPs().executeQuery());
+            Pais registro = new Pais();
+            
+            while(this.getRs().next()){
+                registro.setId(this.getRs().getInt("id"));
+                registro.setPaisNombre(this.getRs().getString("paisnombre"));
+            }
+            
+            return registro;
+        }catch(SQLException e){
+            return null;
+        }
+    }
     
     public List<Pais> tipoPais(String nombre){
         List<Pais> pais = new ArrayList<>();
@@ -58,6 +75,31 @@ public class PaisDAO implements PaisInterface{
         }
         
         return pais;
+    }
+    
+    /* Setter y Getter */
+    public PreparedStatement getPs() {
+        return ps;
+    }
+
+    public void setPs(PreparedStatement ps) {
+        this.ps = ps;
+    }
+
+    public ResultSet getRs() {
+        return rs;
+    }
+
+    public void setRs(ResultSet rs) {
+        this.rs = rs;
+    }
+
+    public Connection getConexion() {
+        return conexion;
+    }
+
+    public void setConexion(Connection conexion) {
+        this.conexion = conexion;
     }
     
 }

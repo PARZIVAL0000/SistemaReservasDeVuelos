@@ -1,4 +1,3 @@
-
 package ModeloDAO;
 
 import java.sql.Connection;
@@ -18,6 +17,7 @@ public class Pasajero_ClaseDAO implements Pasajero_ClaseInterface{
     private Connection conexion;
     private PreparedStatement ps;
     private ResultSet rs;
+
     
     public Pasajero_ClaseDAO() throws ClassNotFoundException{
         Conexion cn = new Conexion();
@@ -29,14 +29,14 @@ public class Pasajero_ClaseDAO implements Pasajero_ClaseInterface{
         try{
             List<Pasajero_Clase> registros = new ArrayList<>();
             String sql = "SELECT * FROM pasajero_clase";
-            this.setPS(sql);
-            this.setRS(this.getPS());
+            this.setPs(this.getConexion().prepareStatement(sql));
+            this.setRs(this.getPs().executeQuery());
             
-            while(this.getRS().next()){
+            while(this.getRs().next()){
                 Pasajero_Clase pasajero = new Pasajero_Clase();
-                pasajero.setClaseId(this.getRS().getInt("pasajero_clase_id"));
-                pasajero.setPasajeroId(this.getRS().getInt("pasajeroId"));
-                pasajero.setPasajero_clase_id(this.getRS().getInt("claseId"));
+                pasajero.setClaseId(this.getRs().getInt("pasajero_clase_id"));
+                pasajero.setPasajeroId(this.getRs().getInt("pasajeroId"));
+                pasajero.setPasajero_clase_id(this.getRs().getInt("claseId"));
                 
                 registros.add(pasajero);
             }
@@ -53,14 +53,16 @@ public class Pasajero_ClaseDAO implements Pasajero_ClaseInterface{
         try{
             List<Pasajero_Clase> registros = new ArrayList<>();
             String sql = "SELECT * FROM pasajero_clase WHERE pasajero_clase_id = ?";
-            this.setPS(sql, pasajeroClaseId);
-            this.setRS(this.getPS());
+            this.setPs(this.getConexion().prepareStatement(sql));
+            this.getPs().setInt(1, pasajeroClaseId);
             
-            while(this.getRS().next()){
+            this.setRs(this.getPs().executeQuery());
+            
+            while(this.getRs().next()){
                 Pasajero_Clase pasajero = new Pasajero_Clase();
-                pasajero.setClaseId(this.getRS().getInt("pasajero_clase_id"));
-                pasajero.setPasajeroId(this.getRS().getInt("pasajeroId"));
-                pasajero.setPasajero_clase_id(this.getRS().getInt("claseId"));
+                pasajero.setClaseId(this.getRs().getInt("pasajero_clase_id"));
+                pasajero.setPasajeroId(this.getRs().getInt("pasajeroId"));
+                pasajero.setPasajero_clase_id(this.getRs().getInt("claseId"));
                 
                 registros.add(pasajero);
             }
@@ -76,8 +78,9 @@ public class Pasajero_ClaseDAO implements Pasajero_ClaseInterface{
     public boolean eliminarPasajeroClase(int pasajeroClaseId) {
         try{
             String sql = "DELETE FROM pasajero_clase WHERE pasajero_clase_id = ?";
-            this.setPS(sql, pasajeroClaseId);
-            this.setRS(this.getPS(),true);
+            this.setPs(this.getConexion().prepareStatement(sql));
+            this.getPs().setInt(1, pasajeroClaseId);
+            this.getPs().execute();
             
             return true;
         }catch(SQLException e){
@@ -90,11 +93,12 @@ public class Pasajero_ClaseDAO implements Pasajero_ClaseInterface{
     public boolean actualizarPasajeroClase(Pasajero_Clase pasajeroClase) {
         try{
             String sql = "UPDATE pasajero_clase SET pasajeroId = ?, claseId = ? WHERE pasajero_clase_id = ?";
-            PreparedStatement ps = this.getConexion().prepareStatement(sql);
-            ps.setInt(1, pasajeroClase.getPasajeroId());
-            ps.setInt(2, pasajeroClase.getClaseId());
-            ps.setInt(3, pasajeroClase.getPasajero_clase_id());
-            this.setRS(ps,true);
+            this.setPs(this.getConexion().prepareStatement(sql));
+           
+            this.getPs().setInt(1, pasajeroClase.getPasajeroId());
+            this.getPs().setInt(2, pasajeroClase.getClaseId());
+            this.getPs().setInt(3, pasajeroClase.getPasajero_clase_id());
+            this.getPs().execute();
             
             return true;
         }catch(SQLException e){
@@ -107,12 +111,12 @@ public class Pasajero_ClaseDAO implements Pasajero_ClaseInterface{
     public boolean crearPasajeroClase(List<Pasajero_Clase> pasajeroClase) {
         try{
             String sql = "INSERT INTO pasajero_clase(pasajeroId, claseId) VALUES(?, ?)";
-            PreparedStatement ps = this.getConexion().prepareStatement(sql);
+            this.setPs(this.getConexion().prepareStatement(sql));
             
             for(Pasajero_Clase pc : pasajeroClase){
-                ps.setInt(1, pc.getPasajeroId());
-                ps.setInt(2, pc.getClaseId());
-                this.setRS(ps,true);
+                this.getPs().setInt(1, pc.getPasajeroId());
+                this.getPs().setInt(2, pc.getClaseId());
+                this.getPs().execute();
             }
             
             return true;
@@ -122,17 +126,6 @@ public class Pasajero_ClaseDAO implements Pasajero_ClaseInterface{
         }
     }
     
-    
-    /* Getter y Setter */
-    
-    public void setConexion(Connection cn){
-        this.conexion = cn;
-    }
-    public Connection getConexion(){
-        return conexion;
-    }
-    
-    /* Preparacion y Resultado */
     public void message(SQLException e){
         System.out.println("***** ERROR EN LA CONEXION A LA BASE DE DATOS *****");
         System.out.println("* Mensaje: " + e.getMessage());
@@ -140,31 +133,29 @@ public class Pasajero_ClaseDAO implements Pasajero_ClaseInterface{
         System.out.println("* Estado" + e.getSQLState());
     }
     
-    public void setPS(String sql) throws SQLException{
-        this.ps = this.getConexion().prepareStatement(sql);
+    /* Getter y Setter */
+    public Connection getConexion() {
+        return conexion;
     }
-    
-    public void setPS(String sql, int pasajeroId) throws SQLException{
-        this.ps = this.getConexion().prepareStatement(sql);
-        this.ps.setInt(1, pasajeroId);
+
+    public void setConexion(Connection conexion) {
+        this.conexion = conexion;
     }
-    
-    public PreparedStatement getPS(){
+
+    public PreparedStatement getPs() {
         return ps;
     }
-    
-    public void setRS(PreparedStatement ps) throws SQLException{
-        this.rs = ps.executeQuery();
+
+    public void setPs(PreparedStatement ps) {
+        this.ps = ps;
     }
-    
-    public void setRS(PreparedStatement ps, boolean flag) throws SQLException{
-        if(flag){
-            ps.execute();
-        }
-    }
-    
-    public ResultSet getRS(){
+
+    public ResultSet getRs() {
         return rs;
     }
 
+    public void setRs(ResultSet rs) {
+        this.rs = rs;
+    }
+    
 }

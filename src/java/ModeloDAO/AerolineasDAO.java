@@ -17,25 +17,24 @@ import java.util.List;
  * @author denni
  */
 public class AerolineasDAO implements AerolineaInterface{
-    PreparedStatement ps;
-    ResultSet rs;
-    Connection conexion;
+    private PreparedStatement ps;
+    private ResultSet rs;
+    private Connection conexion;
     
     public AerolineasDAO() throws ClassNotFoundException{
         Conexion con = new Conexion();
-        conexion = con.getConexion();
+        this.setConexion(con.getConexion());
     }
     
     @Override
     public List<Aerolineas> listarAerolineas() {
-        List<Aerolineas> aerolineas = new ArrayList<>();
-        
-        String cmd = "SELECT * FROM aerolineas";
         try{
-            ps = conexion.prepareStatement(cmd);
-            rs = ps.executeQuery();
+            List<Aerolineas> aerolineas = new ArrayList<>();
+            String sql = "SELECT * FROM aerolineas";
+            this.setPs(this.getConexion().prepareStatement(sql));
+            this.setRs(this.getPs().executeQuery());
             
-            while(rs.next()){
+            while(this.getRs().next()){
                 Aerolineas aerolinea = new Aerolineas();
                 aerolinea.setId(rs.getInt("aero_id"));
                 aerolinea.setNombre(rs.getString("aero_nombre"));
@@ -43,12 +42,31 @@ public class AerolineasDAO implements AerolineaInterface{
                 
                 aerolineas.add(aerolinea);
             }
- 
             return aerolineas;
         }catch(SQLException e){
+            this.mensaje(e);
             return null;
         }
+    }
+    
+    public Aerolineas buscarPorNombre(String aerolinea){
+        try{
+            String sql = "SELECT * FROM aerolineas WHERE aero_nombre = ?";
+            this.setPs(this.getConexion().prepareStatement(sql));
+            this.getPs().setString(1, aerolinea);
+            this.setRs(this.getPs().executeQuery());
+            Aerolineas registro = new Aerolineas();
+            while(this.getRs().next()){
+                registro.setId(this.getRs().getInt("aero_id"));
+                registro.setNombre(this.getRs().getString("aero_nombre"));
+                registro.setEstado(this.getRs().getInt("aero_estado"));
+            }
         
+            return registro;
+        }catch(SQLException e){
+            this.mensaje(e);
+            return null;
+        }
     }
     
     public List<Aerolineas> filtrarRegistro(Aerolineas aerolinea){
@@ -62,5 +80,37 @@ public class AerolineasDAO implements AerolineaInterface{
         }
         
         return registro;
+    }
+    
+    public void mensaje(SQLException e){
+        System.out.println("***** ERROR EN LA CONEXION A LA BASE DE DATOS *****");
+        System.out.println("* Mensaje: " + e.getMessage());
+        System.out.println("* Causa: " + e.getCause());
+        System.out.println("* Estado: " + e.getErrorCode());
+    }
+    
+    /* Getter y Setter */
+    public PreparedStatement getPs() {
+        return ps;
+    }
+
+    public void setPs(PreparedStatement ps) {
+        this.ps = ps;
+    }
+
+    public ResultSet getRs() {
+        return rs;
+    }
+
+    public void setRs(ResultSet rs) {
+        this.rs = rs;
+    }
+
+    public Connection getConexion() {
+        return conexion;
+    }
+
+    public void setConexion(Connection conexion) {
+        this.conexion = conexion;
     }
 }

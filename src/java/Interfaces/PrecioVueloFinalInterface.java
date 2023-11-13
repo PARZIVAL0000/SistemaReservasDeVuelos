@@ -17,5 +17,7 @@ public interface PrecioVueloFinalInterface {
     public List<PrecioVueloFinal> listarPrecioVueloFinal(int precioVueloFinalId);
     public boolean eliminarPrecioVueloFinal(int precioVueloFinalId);
     public boolean actualizarPrecioVueloFinal(PrecioVueloFinal precio_vuelo_final);
-    public boolean crearPrecioVueloFinal(List<PrecioVueloFinal> precio_vuelo_final);
+    public boolean crearPrecioVueloFinal(PrecioVueloFinal precio_vuelo_final);
+    public PrecioVueloFinal buscarPorPrecio(PrecioVueloFinal registro);
+    public PrecioVueloFinal buscarUltimoPrecio();
 }

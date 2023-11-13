@@ -15,5 +15,5 @@ public interface Pasajeros_OrigenInterface {
     public List<Pasajeros_Origen> listadoPasajeroOrigen(int pasajeroOrigenId);
     public boolean actualizarPasajeroOrigen(Pasajeros_Origen pasajeroOrigen);
     public boolean eliminarPasajeroOrigen(int pasajeroOrigenId);
-    public boolean crearPasajeroOrigen(List<Pasajeros_Origen> pasajeros);
+    public boolean crearPasajeroOrigen(Pasajeros_Origen pasajeros);
 }
