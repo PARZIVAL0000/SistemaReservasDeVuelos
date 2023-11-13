@@ -6,11 +6,11 @@
         "pasajeros" : false,
         "fechaIda" : false,
         "ida":{
-            "estado" : false,
+            "estado" : false
         },
         "idaRegreso":{
             "estado" : false,
-            "fechaRegreso" : false,
+            "fechaRegreso" : false
         }
     };
     

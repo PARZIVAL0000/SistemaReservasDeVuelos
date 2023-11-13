@@ -635,14 +635,16 @@ function introducirValue(i){
 
 //esta funcion hara que el campo "Fecha Vuelta" se muestre o se oculte en base al tipo de vuelo.
 /**
- * ValidacionCamposFormulario()
+ * ValidacionCamposFormulario(campo)
  */
 function PermitirCampo(campo){
-    if(form_reserva.vueloIda.estado){
+    if(form_reserva.vueloIda.estado && !form_reserva.vueloIdaRegreso.estado){
         campo.parentNode.parentNode.classList.add('hidden');
         campo.disabled=true;
     } 
+
 }
+
 
 function Redireccionar(){
     window.location.href='#formulario_reserva';

@@ -193,10 +193,22 @@ public class ReservaControllers extends HttpServlet {
                     }
                     
                     if(tipoVuelo.equals("Ida") || tipoVuelo.equals("Ida-Regreso")){
-                        
                         try{
-                            List<Object> informacion = InformacionFormulario(request, tipoVuelo);                   
-                            request.setAttribute("InformacionPasajeros", informacion);
+                            List<Object> informacion = InformacionFormulario(request, tipoVuelo);  
+                            
+                            if(tipoVuelo.equals("Ida-Regreso")){
+                                List<String> vuelo = (List<String>) informacion.get(0);
+                                informacion.remove(0);
+                                List<Pasajeros> pasajero = new ArrayList<>();
+                                for(Object p : informacion){
+                                    pasajero.add((Pasajeros) p);
+                                }
+
+                                request.setAttribute("vuelo", vuelo);
+                                request.setAttribute("pasajero", pasajero);
+                            }else{
+                                request.setAttribute("InformacionPasajeros", informacion);
+                            }
                         }catch(ClassNotFoundException e){
                             System.out.println("[!] Error no pudimos encontrar la clase....");
                         }catch(IndexOutOfBoundsException e){
@@ -205,7 +217,6 @@ public class ReservaControllers extends HttpServlet {
                             System.out.println("Localizar Mensaje: " + e.getLocalizedMessage());
                             System.out.println("[!] Uff existe un error por el momento, vuelve intentarlo mas tarde...  ");
                         }
-                        
                     }
                 }
                 
@@ -309,7 +320,7 @@ public class ReservaControllers extends HttpServlet {
             }
             
             case "Ida-Regreso" -> {
-                String fechaRegreso = request.getParameter("deparure");
+                String fechaRegreso = request.getParameter("return");
                 infoVuelo.add(fechaRegreso);
                 informacion.add(infoVuelo);
                 

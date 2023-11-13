@@ -39,56 +39,44 @@
     <body>
 
         <%
+            List<String> vuelo = (List<String>) request.getAttribute("vuelo");
+            List<Pasajeros> pasajero = (List<Pasajeros>) request.getAttribute("pasajero");
             
+            //desglose informacion
+            String paisOrigen = vuelo.get(0);
+            String paisDestino = vuelo.get(1);
+            String estadoOrigen = vuelo.get(2);
+            String estadoDestino = vuelo.get(3);
+            int numeroPasajeros = Integer.parseInt(vuelo.get(4));
+            String fechaIda = vuelo.get(5);
+            String fechaRegreso = vuelo.get(6);
             
-            //la parte de nuestro analisis es saber si en el request.setAttribute();
-            //podemos definir varios de ellos con varios valoresl...
-            //esta es la informacion de cada uno de los pasajeros.
-            ArrayList<Pasajeros> infoPasajeros = (ArrayList) request.getAttribute("info_pasajeros");
+            //obtencion meses
+            int mesIda = Integer.parseInt(fechaIda.split("/")[0]);
+            int mesRegreso = Integer.parseInt(fechaRegreso.split("/")[0]);
             
-            //informacion que nos da el usuario...
-            //esta es la informacion de vuelo que se obtiene en los campos del formulario.
-            ArrayList<String> info = (ArrayList) request.getAttribute("info"); //mes-dia-year...
-            
-            //vamos a ordenar los datos
-            String paisOrigen = info.get(0);
-            String paisDestino = info.get(1);
-            String ciudadOrigen = info.get(2);
-            String ciudadDestino = info.get(3);
-            String fechaIda = info.get(4);
-            String fechaRetorno = info.get(5);
-            String pTotal = info.get(6);
-            
-            String mesIda = info.get(4).split("/")[0];
-            String mesRegreso = info.get(5).split("/")[0];
             
             //vamos a traernos la mayoria de los datos de nuestros vuelos...
             VuelosDAO vd = new VuelosDAO();
             ArrayList<CarteleraViajes> cv = (ArrayList) vd.listadoCarteleraViajes();
             ArrayList<CarteleraViajes> viajesIda = new ArrayList<>();
-            
             ArrayList<CarteleraViajes> viajesRetorno = new ArrayList<>();
             
             for(CarteleraViajes j : cv){
              
-                if(Integer.parseInt(j.getFecha().split("-")[1]) == Integer.parseInt(mesIda)){
+                if(Integer.parseInt(j.getFecha().split("-")[1]) == mesIda){
                     if(j.getPaisOrigen().equals(paisOrigen) && j.getPaisDestino().equals(paisDestino)){
                         viajesIda.add(j);
                     }
                 }
                 
-                if(Integer.parseInt(j.getFecha().split("-")[1]) == Integer.parseInt(mesRegreso)){
+                if(Integer.parseInt(j.getFecha().split("-")[1]) == mesRegreso){
                     if(j.getPaisOrigen().equals(paisDestino) && j.getPaisDestino().equals(paisOrigen)){
                         viajesRetorno.add(j);
                     }
                 }
             }
          
-            
-            //esta seccion lo que haremos es procesar dos tipos de atributos
-            String mensaje = (request.getAttribute("mensaje") == null) ? "" : (String) request.getAttribute("mensaje");
-            String accion = (request.getAttribute("accion") == null) ? "" : (String) request.getAttribute("accion");
-            
         %>
 
         <section class="banner" id="top">
@@ -144,7 +132,7 @@
                                 <ul class="listado_info">
                                     <li><box-icon type='solid' name='plane-take-off'><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAZlJREFUSEvt1D1rVFEQxvHfakAQO0mRKBjBb2FjIIKkMGBjY2HpZ7AQhIiFdWwENUYRsRcCgdionY2VosQXiJVpYqPEFwbOhruH+7K77rpb7MAt7r3nzH+e58yZlhFFa0RcE/B/c35idW71QVzEFl4N8hzqrD6L2ziVgG+xmp7tfy2iDnwEt3Alg/zBBh7gKX5UFHEAp3EeJ3Edb9pru2muedzDiRLAdzxKRbzEISzgApZwtLBnHed6AcfaKvXFWj5gBocrHPhcLL4bxcU8oT4sPt7HGd/E1SrF0/iG3zWJQ/0TLHYB/4VnWEFYvR9FxcfwAntYTsryAqJJruESpmrAr1P3P8RO2boiOJonwFFAxHvcSAXEvybg19Rod/CuyY38jOcSfLaw8QviPYZJHj/TlYrODivrjqhjb1lz5crLio+rE8PkMXab1DVZXfxfBv+ENdxNI7QfXmlz5YnC9rAvZnRcoU3E1BpI9HqPBwKNJGMDDnsvD0xWZ6L7+Nj+lCs+k85yGOwYt8/HDjwMpaU5x6a5JoqH5sBfXZNFHxeyvKAAAAAASUVORK5CYII="/></box-icon><p><span>Fecha de Ida:</span> <%= fechaIda %></p></li>
                                     
-                                    <li><box-icon name='male-female'><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAclJREFUSEvt179LlWEUB/CPOITQYA5FW2ODDYnYIlRD5BC52qTgn+DQ0FAt4uDemLRUY0ERLtXQkpGDs5Q4RZA5FoJyLveFh9f31+2+cRE8cLmX5z3n+T7v93y/5+EOGVAMDQhXFfBdXMUmXvdwwEVcxDt8KasrA36IR0lR/H7cAPwV4sBZ3MGboroy4D2MJgW/ca4GeBIbuZxgavZEAA+M6mAnejWBr/9bXNHvKxir6OUvbOEwl3MGUxguqN3Gbn49FdccnjdQ7j28yOWFdW6X1P7FZXxLn6fAYZnobV2ErVKrhfqDiaqZ8ADLbQM3YeoTptsGfoqFGppCEzEH9rO8Nqj+gfN1/UEw87It4PGuyhvgeob5toCXsNoEFT9xIbNiv1Sv41ZD4EgLr3fmeb/A9zGCGVyrOMAK/uAtPueBQ5mZOq8XbPKxu7aG+KTxAUU1Wc4NZPWdtTLT50diVW6My7BJfJfFsfu8DeB4m/c1fQ5GbpYNkHS9lzduMmqjv2dxUGSnfwWOwRCXwKXUp93NdhI9PEEMm9Z6nAooT3kIKlpxLNro8SlwSmvPVKcXfbZR0VoKEuLKX4/fC4ZNpbhqbNn/44H9dzoCcmBpH84v/EIAAAAASUVORK5CYII="/></box-icon><p id="<%= pTotal %>" class="numeroPasajeros"><span>Número de Pasajeros:</span><%= pTotal %></p></li>
+                                    <li><box-icon name='male-female'><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAclJREFUSEvt179LlWEUB/CPOITQYA5FW2ODDYnYIlRD5BC52qTgn+DQ0FAt4uDemLRUY0ERLtXQkpGDs5Q4RZA5FoJyLveFh9f31+2+cRE8cLmX5z3n+T7v93y/5+EOGVAMDQhXFfBdXMUmXvdwwEVcxDt8KasrA36IR0lR/H7cAPwV4sBZ3MGboroy4D2MJgW/ca4GeBIbuZxgavZEAA+M6mAnejWBr/9bXNHvKxir6OUvbOEwl3MGUxguqN3Gbn49FdccnjdQ7j28yOWFdW6X1P7FZXxLn6fAYZnobV2ErVKrhfqDiaqZ8ADLbQM3YeoTptsGfoqFGppCEzEH9rO8Nqj+gfN1/UEw87It4PGuyhvgeob5toCXsNoEFT9xIbNiv1Sv41ZD4EgLr3fmeb/A9zGCGVyrOMAK/uAtPueBQ5mZOq8XbPKxu7aG+KTxAUU1Wc4NZPWdtTLT50diVW6My7BJfJfFsfu8DeB4m/c1fQ5GbpYNkHS9lzduMmqjv2dxUGSnfwWOwRCXwKXUp93NdhI9PEEMm9Z6nAooT3kIKlpxLNro8SlwSmvPVKcXfbZR0VoKEuLKX4/fC4ZNpbhqbNn/44H9dzoCcmBpH84v/EIAAAAASUVORK5CYII="/></box-icon><p id="<%= numeroPasajeros %>" class="numeroPasajeros"><span>Número de Pasajeros:</span><%= numeroPasajeros %></p></li>
                                     <li>
                                         <div class="carrito_total">
                                             <p><box-icon type='solid' name='cart'><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAblJREFUSEvN1j1oFGEQxvFfxEbBIAhiKViJTZqQJo1WFmKhSRM7QRPBlIJpjKm0sBLEj8bKVLFMqSnEQtBCCCRFTKGIgo0kpIgBDQO7sC738e7tnufANbcz8995ZuZ9d8iAbGhAXP8F+CTiF7aND/1Uo1jxXcwXYBs4j0/9eIFO4OB9xEi/wUWpL2E2A47jbdPwdsN1DN9xEIu48q/AwXmBKfzCRezWhH/GZp6j0zqFxG9qwsrhE3gZf3bb41WcaRB+Fc9TwNN40hB4D8fxMwV8GN8w3AB8CZMpPc59HhZWqw7/ApargE8hTrE69gMn8LsKOHxf4VwN8gPcKsZ3m+rc9zKiR73aaaz3Aj6Ar5lcVeHvMVoOSq044u5goSoVN/GoDjiG40t2fqfy/9rdXqTOY57hWioVTzHTyr+K1BEfvY5+HUqA7yD6+6cJcOS4jqN4nH0ilfMewY3saAyFWlrViu/hdpZppc1uv8bZzOc+5pqouJg0JAzpyxanU15Qu5frei2Wk4bMMTBhIWPcXmWL5+EXFs9byl1V6kgWp1DcVu86DNgYtrDWVI8ThjnNpZeK0zJ38RoYeB9k9EEfWOi2dAAAAABJRU5ErkJggg=="/></box-icon><span>USD</span></p>
@@ -160,7 +148,7 @@
                                         <p class="mensaje_vuelos">Sin vuelos disponibles...</p>
                                    </div>
                                    <div class="regresar">
-                                        <a class="btn btn-primary rgrs" href="ReservaControllers?accion=reservar&from=<%= paisOrigen %>&to=<%= paisDestino %>&deparure=<%= fechaIda %>&return=<%= fechaRetorno %>&pasajeros=<%= pTotal %>" role="button">Regresar</a>
+                                        <a class="btn btn-primary rgrs" href="ReservaControllers?accion=reservar&from=<%= paisOrigen %>&to=<%= paisDestino %>&deparure=<%= fechaIda %>&return=<%= fechaRegreso %>&pasajeros=<%= numeroPasajeros %>" role="button">Regresar</a>
                                    </div>
                                 <% }else{ %>
                                     <% for(CarteleraViajes j : viajesIda){ %>
@@ -168,12 +156,12 @@
                                     <div class="vuelo" id="id_<%= j.getId() %>">
                                         <section class="seccion1">
                                             <div class="boton-confirmar" id="<%= j.getId() %>">
-                                                <button class="boton boton_confirmar fly-from" id="vuelo_desde_<%= pTotal %>">Confirmar Vuelo</button>
+                                                <button class="boton boton_confirmar fly-from" id="vuelo_desde_<%= numeroPasajeros %>">Confirmar Vuelo</button>
                                                 <button class="boton boton_cancelar" id="<%= j.getId() %>">Cancelar Vuelo</button>
                                             </div>
                                             <div class="hora">
-                                                <p class="fecha_salida"><%= j.getHoraSalida().split(":")[0] %>:<%= j.getHoraSalida().split(":")[1] %><span><%= j.getPaisOrigen() %></span><span style="font-weight:lighter;font-size:1.4rem;display:block;text-align:center;">Ciudad: <strong><%= ciudadOrigen %></strong></span></p>
-                                                <p class="fecha_llegada"><%= j.getHoraLlegada().split(":")[0] %>:<%= j.getHoraLlegada().split(":")[1] %><span><%= j.getPaisDestino() %></span><span style="font-weight:lighter;font-size:1.4rem;display:block;text-align:center;">Ciudad: <strong><%= ciudadDestino %></strong></span></p>
+                                                <p class="fecha_salida"><%= j.getHoraSalida().split(":")[0] %>:<%= j.getHoraSalida().split(":")[1] %><span><%= j.getPaisOrigen() %></span><span style="font-weight:lighter;font-size:1.4rem;display:block;text-align:center;">Ciudad: <strong><%= estadoOrigen %></strong></span></p>
+                                                <p class="fecha_llegada"><%= j.getHoraLlegada().split(":")[0] %>:<%= j.getHoraLlegada().split(":")[1] %><span><%= j.getPaisDestino() %></span><span style="font-weight:lighter;font-size:1.4rem;display:block;text-align:center;">Ciudad: <strong><%= estadoDestino %></strong></span></p>
                                             </div>
                                             <div class="fecha">
                                                 <p>Fecha Disponible <span><%= j.getFecha() %></span></p>
@@ -289,8 +277,8 @@
                             <div class="barra_informacion info">
                                 <h2 class="barra_informacion--titulo"><%= paisDestino %> a <%= paisOrigen %></h2>
                                 <ul class="listado_info">
-                                    <li><box-icon name='plane-land' type='solid' ><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAa9JREFUSEvt1E9LVkEUx/GPEIktI1qXRVRaVO6jCNtE9A6i6FUEGkmbWgatIkLBl9AiqEgEd+0KooiIcGFoK1cS/eHIKLdhHpj7XMoHauBy4dy5v+/vnDlzhuzQGtohrv/gv1b52lJPYh5f8BAPujqsBQfnLY7iB85iqQu8BB7Fx4LoDTxK8RWcxGq/8Bz8HgcxjneZ6DCWsS/FXyCO4Gc/8Bz8HBfwDBcLgjO41YjfRsRarxx8B1NJ5TKeZIr78RmRfazINoy+bEvOwZcasA84jm+Z6GNcb8S+Yix1fDU/B+9FCG2te41rtJYyjPN/nREWcT51fBW81NXRVEcKf39PXRx3+Rh2Z3vuYxrrNeQSeA5Xa37uYe4VouPjibu+UdIqgQ/hCs6kJ4ZGm0HT5AT0KW6mAbT9rUZwD05hIhmJd5R6V4uqvMGJ5v4acEk/rtPphpEwFpOsl5lPaTC1yrg2sWi2yCqOaKs6YSZM3k3l/iPgksERHEaU+rfR2m+pa6vQc9/AgA/gWud0ygKziCbbXHnG5/oZ+JVGY6QuDBy40nz3bQPTXN1TqVT49zL+BQp7RB/Nm3UpAAAAAElFTkSuQmCC"/></box-icon><p><span>Fecha de Regreso:</span> <%= fechaRetorno %></p></li>
-                                    <li><box-icon name='male-female'><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAclJREFUSEvt179LlWEUB/CPOITQYA5FW2ODDYnYIlRD5BC52qTgn+DQ0FAt4uDemLRUY0ERLtXQkpGDs5Q4RZA5FoJyLveFh9f31+2+cRE8cLmX5z3n+T7v93y/5+EOGVAMDQhXFfBdXMUmXvdwwEVcxDt8KasrA36IR0lR/H7cAPwV4sBZ3MGboroy4D2MJgW/ca4GeBIbuZxgavZEAA+M6mAnejWBr/9bXNHvKxir6OUvbOEwl3MGUxguqN3Gbn49FdccnjdQ7j28yOWFdW6X1P7FZXxLn6fAYZnobV2ErVKrhfqDiaqZ8ADLbQM3YeoTptsGfoqFGppCEzEH9rO8Nqj+gfN1/UEw87It4PGuyhvgeob5toCXsNoEFT9xIbNiv1Sv41ZD4EgLr3fmeb/A9zGCGVyrOMAK/uAtPueBQ5mZOq8XbPKxu7aG+KTxAUU1Wc4NZPWdtTLT50diVW6My7BJfJfFsfu8DeB4m/c1fQ5GbpYNkHS9lzduMmqjv2dxUGSnfwWOwRCXwKXUp93NdhI9PEEMm9Z6nAooT3kIKlpxLNro8SlwSmvPVKcXfbZR0VoKEuLKX4/fC4ZNpbhqbNn/44H9dzoCcmBpH84v/EIAAAAASUVORK5CYII="/></box-icon><p id="<%= pTotal %>" class="numeroPasajeros2"><span>Numero de Pasajeros:</span> <%= pTotal %></p></li>
+                                    <li><box-icon name='plane-land' type='solid' ><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAa9JREFUSEvt1E9LVkEUx/GPEIktI1qXRVRaVO6jCNtE9A6i6FUEGkmbWgatIkLBl9AiqEgEd+0KooiIcGFoK1cS/eHIKLdhHpj7XMoHauBy4dy5v+/vnDlzhuzQGtohrv/gv1b52lJPYh5f8BAPujqsBQfnLY7iB85iqQu8BB7Fx4LoDTxK8RWcxGq/8Bz8HgcxjneZ6DCWsS/FXyCO4Gc/8Bz8HBfwDBcLgjO41YjfRsRarxx8B1NJ5TKeZIr78RmRfazINoy+bEvOwZcasA84jm+Z6GNcb8S+Yix1fDU/B+9FCG2te41rtJYyjPN/nREWcT51fBW81NXRVEcKf39PXRx3+Rh2Z3vuYxrrNeQSeA5Xa37uYe4VouPjibu+UdIqgQ/hCs6kJ4ZGm0HT5AT0KW6mAbT9rUZwD05hIhmJd5R6V4uqvMGJ5v4acEk/rtPphpEwFpOsl5lPaTC1yrg2sWi2yCqOaKs6YSZM3k3l/iPgksERHEaU+rfR2m+pa6vQc9/AgA/gWud0ygKziCbbXHnG5/oZ+JVGY6QuDBy40nz3bQPTXN1TqVT49zL+BQp7RB/Nm3UpAAAAAElFTkSuQmCC"/></box-icon><p><span>Fecha de Regreso:</span> <%= fechaRegreso %></p></li>
+                                    <li><box-icon name='male-female'><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAclJREFUSEvt179LlWEUB/CPOITQYA5FW2ODDYnYIlRD5BC52qTgn+DQ0FAt4uDemLRUY0ERLtXQkpGDs5Q4RZA5FoJyLveFh9f31+2+cRE8cLmX5z3n+T7v93y/5+EOGVAMDQhXFfBdXMUmXvdwwEVcxDt8KasrA36IR0lR/H7cAPwV4sBZ3MGboroy4D2MJgW/ca4GeBIbuZxgavZEAA+M6mAnejWBr/9bXNHvKxir6OUvbOEwl3MGUxguqN3Gbn49FdccnjdQ7j28yOWFdW6X1P7FZXxLn6fAYZnobV2ErVKrhfqDiaqZ8ADLbQM3YeoTptsGfoqFGppCEzEH9rO8Nqj+gfN1/UEw87It4PGuyhvgeob5toCXsNoEFT9xIbNiv1Sv41ZD4EgLr3fmeb/A9zGCGVyrOMAK/uAtPueBQ5mZOq8XbPKxu7aG+KTxAUU1Wc4NZPWdtTLT50diVW6My7BJfJfFsfu8DeB4m/c1fQ5GbpYNkHS9lzduMmqjv2dxUGSnfwWOwRCXwKXUp93NdhI9PEEMm9Z6nAooT3kIKlpxLNro8SlwSmvPVKcXfbZR0VoKEuLKX4/fC4ZNpbhqbNn/44H9dzoCcmBpH84v/EIAAAAASUVORK5CYII="/></box-icon><p id="<%= numeroPasajeros %>" class="numeroPasajeros2"><span>Numero de Pasajeros:</span> <%= numeroPasajeros %></p></li>
                                     <li>
                                         <div class="carrito_total" id="carrito2">
                                             <p><box-icon type='solid' name='cart'><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAblJREFUSEvN1j1oFGEQxvFfxEbBIAhiKViJTZqQJo1WFmKhSRM7QRPBlIJpjKm0sBLEj8bKVLFMqSnEQtBCCCRFTKGIgo0kpIgBDQO7sC738e7tnufANbcz8995ZuZ9d8iAbGhAXP8F+CTiF7aND/1Uo1jxXcwXYBs4j0/9eIFO4OB9xEi/wUWpL2E2A47jbdPwdsN1DN9xEIu48q/AwXmBKfzCRezWhH/GZp6j0zqFxG9qwsrhE3gZf3bb41WcaRB+Fc9TwNN40hB4D8fxMwV8GN8w3AB8CZMpPc59HhZWqw7/ApargE8hTrE69gMn8LsKOHxf4VwN8gPcKsZ3m+rc9zKiR73aaaz3Aj6Ar5lcVeHvMVoOSq044u5goSoVN/GoDjiG40t2fqfy/9rdXqTOY57hWioVTzHTyr+K1BEfvY5+HUqA7yD6+6cJcOS4jqN4nH0ilfMewY3saAyFWlrViu/hdpZppc1uv8bZzOc+5pqouJg0JAzpyxanU15Qu5frei2Wk4bMMTBhIWPcXmWL5+EXFs9byl1V6kgWp1DcVu86DNgYtrDWVI8ThjnNpZeK0zJ38RoYeB9k9EEfWOi2dAAAAABJRU5ErkJggg=="/></box-icon><span>USD</span></p>
@@ -308,7 +296,7 @@
                                </div>
 
                                <div class="regresar">
-                                    <a class="btn btn-primary rgrs" id="btn-retorno" href="ReservaControllers?accion=reservar&from=<%= paisOrigen %>&to=<%= paisDestino %>&deparure=<%= fechaIda %>&return=<%= fechaRetorno %>&pasajeros=<%= pTotal %>" role="button">Regresar</a>
+                                    <a class="btn btn-primary rgrs" id="btn-retorno" href="ReservaControllers?accion=reservar&from=<%= paisOrigen %>&to=<%= paisDestino %>&deparure=<%= fechaIda %>&return=<%= fechaRegreso %>&pasajeros=<%= numeroPasajeros %>" role="button">Regresar</a>
                                </div>
 
                             <% }else{ %>
@@ -321,8 +309,8 @@
                                             <button class="boton boton_cancelar" id="<%= j.getId() %>">Cancelar Vuelo</button>
                                         </div>
                                         <div class="hora">
-                                            <p class="fecha_salida"><%= j.getHoraSalida().split(":")[0] %>:<%= j.getHoraSalida().split(":")[1] %><span><%= j.getPaisOrigen() %></span><span style="font-weight:lighter;font-size:1.4rem;display:block;text-align:center;">Ciudad: <strong><%= ciudadDestino %></strong></span></p>
-                                            <p class="fecha_llegada"><%= j.getHoraLlegada().split(":")[0] %>:<%= j.getHoraLlegada().split(":")[1] %><span><%= j.getPaisDestino() %></span><span style="font-weight:lighter;font-size:1.4rem;display:block;text-align:center;">Ciudad: <strong><%= ciudadOrigen %></strong></span></p>
+                                            <p class="fecha_salida"><%= j.getHoraSalida().split(":")[0] %>:<%= j.getHoraSalida().split(":")[1] %><span><%= j.getPaisOrigen() %></span><span style="font-weight:lighter;font-size:1.4rem;display:block;text-align:center;">Ciudad: <strong><%= estadoDestino %></strong></span></p>
+                                            <p class="fecha_llegada"><%= j.getHoraLlegada().split(":")[0] %>:<%= j.getHoraLlegada().split(":")[1] %><span><%= j.getPaisDestino() %></span><span style="font-weight:lighter;font-size:1.4rem;display:block;text-align:center;">Ciudad: <strong><%= estadoOrigen %></strong></span></p>
                                         </div>
                                         <div class="fecha">
                                             <p>Fecha Disponible <span><%= j.getFecha() %></span></p>
@@ -437,7 +425,7 @@
         </section>
                         
         <!-- Lo que haremos dentro de este apartado es verificar por nuestro fomulario final -->      
-        <div class="formulario_final <%= (accion.toLowerCase().equals("show_form") && (mensaje.equals("cedula_incorrecta") || mensaje.equals("entradas_incorrecta") ) ) ? mensaje : "" %>" style="<%= accion.toLowerCase().equals("show_form") ? "display:block" : "" %>">
+        <div class="formulario_final">
             <div class="informacion">
                 <h2 id="titulo_info">Pagar y Confirmar Reserva</h2>
                 
@@ -476,12 +464,12 @@
                                 
                                 <div class="campo" id="nombreTitular">     
                                     <label for="nombre">Nombre del titular de la tarjeta: </label>
-                                    <input type="text" id="nombre" class="ver" name="Names" value="<%= infoPasajeros.get(0).getNombre() %>" placeholder="Nombres Del Titular"/>
+                                    <input type="text" id="nombre" class="ver" name="Names" value="" placeholder="Nombres Del Titular"/>
                                 </div>
 
                                 <div class="campo" id="emailTitular">
                                     <label for="correo">Correo Electronico: </label>
-                                    <input type="email" id="correo" class="ver" name="Emails" value="<%= infoPasajeros.get(0).getCorreo() %>" placeholder="Dirección Email"/>
+                                    <input type="email" id="correo" class="ver" name="Emails" value="" placeholder="Dirección Email"/>
                                 </div>
                                 
                                 <div class="acciones">
@@ -517,12 +505,12 @@
                                       <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
                                         <div class="accordion-body inf">
                                             
-                                            <p>Numero de Pasajeros: <%= pTotal %></p>
+                                            <p>Numero de Pasajeros: <%= numeroPasajeros %></p>
                                             <hr/>
-                                            <% for(Pasajeros j : infoPasajeros){ %>
-                                            <p>Pasajero <%= j.getId() %></p>
-                                            <p>Nombres: <%= j.getNombre() %> <%= j.getApellido() %></p>
-                                            <p>Cedula: <%= j.getCedula() %></p>
+                                            <% for(Pasajeros j : pasajero){ %>
+                                            <p>Pasajero <%= j.getPasajeros_id() %></p>
+                                            <p>Nombres: <%= j.getPasajeros_nombre()  %> <%= j.getPasajeros_apellido() %></p>
+                                            <p>Cedula: <%= j.getPasajeros_cedula() %></p>
                                             <hr/>
                                             <% } %>
                                            
@@ -535,33 +523,7 @@
                             <div class="informacion_pagoFinal">
                                
                             </div>
-                        </div>
-                        
-                        <div class="listadoPasajerosExtra">
-                            <input type="hidden" name="NumeroPasajeros" value="<%= pTotal %>" />
-                            <% for(Pasajeros j : infoPasajeros){ %>
-                            <input type="hidden" name="Nombres-<%=j.getId() %>" value="<%= j.getNombre() %>"/>
-                            <input type="hidden" name="Apellidos-<%= j.getId() %>" value="<%= j.getApellido() %>"/>
-                            <input type="hidden" name="Correo-<%= j.getId() %>" value="<%= j.getCorreo() %>"/>
-                            <input type="hidden" name="Telefono-<%= j.getId() %>" value="<%= j.getCelular() %>"/>
-                            <input type="hidden" name="Cedula-<%= j.getId() %>" value="<%= j.getCedula() %>"/>
-                            <input type="hidden" name="Pasajeros-<%= j.getId() %>" value="<%= j.getTipo_pasajero() %>"/>
-                            <input type="hidden" name="Genero-<%= j.getId() %>" value="<%= j.getGenero() %>"/>
-                            <% } %>
-                        </div>
-                        
-                        <div class="listadoVuelos">
-                            
-                            <input type="hidden" name="PaisOrigen" value="<%= paisOrigen %>" />
-                            <input type="hidden" name="PaisDestino" value="<%= paisDestino %>" />
-                            <input type="hidden" name="ciudadOrigen" value="<%= ciudadOrigen %>" />
-                            <input type="hidden" name="ciudadDestino" value="<%= ciudadDestino %>" />
-                            <input type="hidden" name="fechaIda" value="<%= fechaIda %>" />
-                            <input type="hidden" name="fechaRetorno" value="<%= fechaRetorno %>" />
-                            <input type="hidden" name="pTotal" value="<%= pTotal %>" />
-                        </div>
-                        
-                        
+                        </div>   
                     </div><!-- .secciones -->
                 </form>
             </div>
