@@ -34,6 +34,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
         <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
         <link rel="stylesheet" href="css/modificado/vuelos.css"/>
+        <link href="css/modificado/style.css" rel="stylesheet"/>
     </head>
 
     <body>
@@ -131,10 +132,9 @@
                                 <h2 class="barra_informacion--titulo"><%= paisOrigen %> a <%= paisDestino %></h2>
                                 <ul class="listado_info">
                                     <li><box-icon type='solid' name='plane-take-off'><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAZlJREFUSEvt1D1rVFEQxvHfakAQO0mRKBjBb2FjIIKkMGBjY2HpZ7AQhIiFdWwENUYRsRcCgdionY2VosQXiJVpYqPEFwbOhruH+7K77rpb7MAt7r3nzH+e58yZlhFFa0RcE/B/c35idW71QVzEFl4N8hzqrD6L2ziVgG+xmp7tfy2iDnwEt3Alg/zBBh7gKX5UFHEAp3EeJ3Edb9pru2muedzDiRLAdzxKRbzEISzgApZwtLBnHed6AcfaKvXFWj5gBocrHPhcLL4bxcU8oT4sPt7HGd/E1SrF0/iG3zWJQ/0TLHYB/4VnWEFYvR9FxcfwAntYTsryAqJJruESpmrAr1P3P8RO2boiOJonwFFAxHvcSAXEvybg19Rod/CuyY38jOcSfLaw8QviPYZJHj/TlYrODivrjqhjb1lz5crLio+rE8PkMXab1DVZXfxfBv+ENdxNI7QfXmlz5YnC9rAvZnRcoU3E1BpI9HqPBwKNJGMDDnsvD0xWZ6L7+Nj+lCs+k85yGOwYt8/HDjwMpaU5x6a5JoqH5sBfXZNFHxeyvKAAAAAASUVORK5CYII="/></box-icon><p><span>Fecha de Ida:</span> <%= fechaIda %></p></li>
-                                    
                                     <li><box-icon name='male-female'><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAclJREFUSEvt179LlWEUB/CPOITQYA5FW2ODDYnYIlRD5BC52qTgn+DQ0FAt4uDemLRUY0ERLtXQkpGDs5Q4RZA5FoJyLveFh9f31+2+cRE8cLmX5z3n+T7v93y/5+EOGVAMDQhXFfBdXMUmXvdwwEVcxDt8KasrA36IR0lR/H7cAPwV4sBZ3MGboroy4D2MJgW/ca4GeBIbuZxgavZEAA+M6mAnejWBr/9bXNHvKxir6OUvbOEwl3MGUxguqN3Gbn49FdccnjdQ7j28yOWFdW6X1P7FZXxLn6fAYZnobV2ErVKrhfqDiaqZ8ADLbQM3YeoTptsGfoqFGppCEzEH9rO8Nqj+gfN1/UEw87It4PGuyhvgeob5toCXsNoEFT9xIbNiv1Sv41ZD4EgLr3fmeb/A9zGCGVyrOMAK/uAtPueBQ5mZOq8XbPKxu7aG+KTxAUU1Wc4NZPWdtTLT50diVW6My7BJfJfFsfu8DeB4m/c1fQ5GbpYNkHS9lzduMmqjv2dxUGSnfwWOwRCXwKXUp93NdhI9PEEMm9Z6nAooT3kIKlpxLNro8SlwSmvPVKcXfbZR0VoKEuLKX4/fC4ZNpbhqbNn/44H9dzoCcmBpH84v/EIAAAAASUVORK5CYII="/></box-icon><p id="<%= numeroPasajeros %>" class="numeroPasajeros"><span>Número de Pasajeros:</span><%= numeroPasajeros %></p></li>
-                                    <li>
-                                        <div class="carrito_total">
+                                    <li class="carrito_total">
+                                        <div class="carrito_total--dinero">
                                             <p><box-icon type='solid' name='cart'><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAblJREFUSEvN1j1oFGEQxvFfxEbBIAhiKViJTZqQJo1WFmKhSRM7QRPBlIJpjKm0sBLEj8bKVLFMqSnEQtBCCCRFTKGIgo0kpIgBDQO7sC738e7tnufANbcz8995ZuZ9d8iAbGhAXP8F+CTiF7aND/1Uo1jxXcwXYBs4j0/9eIFO4OB9xEi/wUWpL2E2A47jbdPwdsN1DN9xEIu48q/AwXmBKfzCRezWhH/GZp6j0zqFxG9qwsrhE3gZf3bb41WcaRB+Fc9TwNN40hB4D8fxMwV8GN8w3AB8CZMpPc59HhZWqw7/ApargE8hTrE69gMn8LsKOHxf4VwN8gPcKsZ3m+rc9zKiR73aaaz3Aj6Ar5lcVeHvMVoOSq044u5goSoVN/GoDjiG40t2fqfy/9rdXqTOY57hWioVTzHTyr+K1BEfvY5+HUqA7yD6+6cJcOS4jqN4nH0ilfMewY3saAyFWlrViu/hdpZppc1uv8bZzOc+5pqouJg0JAzpyxanU15Qu5frei2Wk4bMMTBhIWPcXmWL5+EXFs9byl1V6kgWp1DcVu86DNgYtrDWVI8ThjnNpZeK0zJ38RoYeB9k9EEfWOi2dAAAAABJRU5ErkJggg=="/></box-icon><span>USD</span></p>
                                             <p id="tarifa">0.0</p>
                                         </div>
@@ -153,7 +153,7 @@
                                 <% }else{ %>
                                     <% for(CarteleraViajes j : viajesIda){ %>
 
-                                    <div class="vuelo" id="id_<%= j.getId() %>">
+                                    <div class="vuelo vueloIda" id="id_<%= j.getId() %>">
                                         <section class="seccion1">
                                             <div class="boton-confirmar" id="<%= j.getId() %>">
                                                 <button class="boton boton_confirmar fly-from" id="vuelo_desde_<%= numeroPasajeros %>">Confirmar Vuelo</button>
@@ -171,13 +171,13 @@
                                             </div>
                                             <div class="seleccion">
                                                 <div class="form-check">
-                                                    <input class="form-check-input fly_from" type="radio" name="aerolineaIda-<%= j.getId() %>" value="<%= j.getId() %>" id="flexRadioDefault1" >
+                                                    <input class="form-check-input fly_from" type="radio" name="aerolineaIda-<%= j.getId() %>" value="<%= j.getAerolinea() %>" id="flexRadioDefault1" >
                                                     <label class="form-check-label" for="flexRadioDefault1">
                                                         <p>Quiero <%= j.getAerolinea() %></p>
                                                     </label>
                                                 </div>
                                                 <div class="form-check">
-                                                    <input class="form-check-input fly_from" type="radio" name="aerolineaIda-<%= j.getId() %>" value="<%= j.getId() %>" id="flexRadioDefault2" checked>
+                                                    <input class="form-check-input fly_from" type="radio" name="aerolineaIda-<%= j.getId() %>" value="false" id="flexRadioDefault2" checked>
                                                     <label class="form-check-label" for="flexRadioDefault2">
                                                         <p>No Quiero <%= j.getAerolinea() %></p>
                                                     </label>
@@ -302,7 +302,7 @@
                             <% }else{ %>
                                 <% for(CarteleraViajes j : viajesRetorno){ %>
 
-                                <div class="vuelo id_<%= j.getId() %>" id="retorno">
+                                <div class="vuelo vuelo_desde id_<%= j.getId() %>" id="retorno">
                                     <section class="seccion1">
                                         <div class="boton-confirmar" id="<%= j.getId() %>">
                                             <button class="boton boton_confirmar vueloRetorno" id="vueloRetorno">Confirmar Vuelo</button>

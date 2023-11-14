@@ -1,4 +1,4 @@
-(() => {
+//(() => {
 //-------------------------------
 //No manipular objetos adaptados al codigo de abajo....
 //Si lo que quieres es manipularlo deberas cambiar partes del codigo para
@@ -50,24 +50,206 @@ let pagoVuelo = {
     "correo" : ""
 };
     
+//en ese arreglo recolectaremos toda la informacion del usuario.
+let info = []; 
+    
 document.addEventListener("DOMContentLoaded", () => {
     Vuelos();
 });
 
 function Vuelos(){
+    ValidarEntradasVuelos();
+    
+    /*
     ReservaVueloIda();
+    
     ReservaVueloRegreso();
     //-----------------
     EscucharEntradas();
     //-----------------
     CapturarTipoMensaje(); //-> este se encarga por verificar por .class que son flags que nos ayudaran a sacar tipos de mensajes de error.
     
-    
     let salida = CargarDatosSession(); //-> se encargara de cargar los datos a nivel de la session
     if(salida){
         FormularioFinal(); // -> se encarga de completar nuestro formulario final... debemos revisar cuando el formulario si inicializa por primera vez.
+    }*/
+}
+
+
+
+//*
+function AlmacenarInformacion(key = '', value = ''){
+    
+    if(info.length !== 0){
+        if(info[0].infoVuelo === 1){
+            info[0][`${key}`] = value;
+        }
+        return;
+    }
+    
+    info.push({'infoVuelo' : 1});
+}
+
+//*
+function mostrarMensajeError(texto){
+    const mensaje = document.querySelector(".mensaje_alerta");
+    mensaje.querySelector(".mensaje .mensaje_parrafo").textContent=`${texto}`;
+    mensaje.querySelector(".mensaje .mensaje_titulo").textContent="!advertencia";
+    mensaje.style.display='block';
+}
+
+//*
+function CerrarVentanaEmergente(){
+    let botonMensajeAlerta = document.querySelector("#errorAlerta");
+   
+    botonMensajeAlerta.addEventListener("click", () => {
+       let contenedor = document.querySelector(".mensaje_alerta");
+       contenedor.style.display='none';
+    });
+}
+
+//*
+function AccionarRadiosInput(tipo, accion){
+    if(tipo === "ida"){
+        const radioIda = document.querySelectorAll(".vueloIda input[type=radio]");
+       radioIda.forEach(radio => {
+           if(accion === "bloquear"){
+                radio.disabled = true;
+           }else if(accion === "desbloquear"){
+               radio.disabled = false;
+           }
+       });
     }
 }
+
+//*
+function AccionarBotonesConfirmar(tipo, id, accion){
+    if(tipo === "ida"){
+        const ContenedorConfirmar = document.querySelectorAll(".vueloIda .boton-confirmar");
+        ContenedorConfirmar.forEach(contenedor => {
+            const identificador = contenedor.id;
+            if(identificador !== id){
+                
+                if(accion === "bloquear"){
+                    contenedor.querySelector(".boton_confirmar").disabled = true;
+                    contenedor.querySelector(".boton_confirmar").classList.add("botonBloquear");
+                }else if(accion === "desbloquear"){
+                    contenedor.querySelector(".boton_confirmar").disabled = false;
+                    contenedor.querySelector(".boton_confirmar").classList.remove("botonBloquear");
+                }
+            }
+        });
+    }
+}
+
+//*
+function MostrarBotonCancelar(tipo, id, estado){
+    let botonCancelar;
+    let botonConfirmar;
+    let contenedor;
+    
+    if(tipo === "ida"){
+        contenedor = document.querySelector(`#id_${id}`);
+        botonConfirmar = contenedor.querySelector(".boton_confirmar");
+        botonCancelar = contenedor.querySelector(".boton_cancelar");
+        
+        if(estado){
+            botonCancelar.style.display='block';
+            botonConfirmar.style.display='none';
+            
+            botonCancelar.addEventListener("click", () => {
+                MostrarBotonCancelar(tipo, id, false);
+                FormularioClaseVuelos(id, tipo, false);
+            });
+            
+            /* bloquear radios*/
+            AccionarRadiosInput(tipo, "bloquear");
+            /* bloquear botones 'confirmar vuelo' */
+            AccionarBotonesConfirmar(tipo, id, "bloquear");
+     
+            return;
+        }    
+        
+        botonCancelar.style.display='none';
+        botonConfirmar.style.display='block';
+        AccionarRadiosInput(tipo, "desbloquear");
+        AccionarBotonesConfirmar(tipo, id, "desbloquear");
+        
+    }else if(tipo === "regreso"){
+        contenedor = document.querySelector(`#id_${id}`);
+        botonConfirmar = contenedor.querySelector(".boton_confirmar");
+        botonCancelar = contenedor.querySelector(".boton_cancelar");
+        
+        if(estado){
+            botonCancelar.style.display='block';
+            botonConfirmar.style.display='none';
+            
+            botonCancelar.addEventListener("click", () => {
+                MostrarBotonCancelar(tipo, id, false);
+            });
+            
+            return;
+        }    
+        
+        botonCancelar.style.display='none';
+        botonConfirmar.style.display='block';
+    }
+}
+
+//*
+function ValidarEntradasVuelos(){
+    AlmacenarInformacion();
+    const botonesIda = document.querySelectorAll(".vueloIda .boton_confirmar");
+    
+    const ValidarBotonConfirmar = (e) => {
+        const id = e.target.parentNode.id;
+        
+        const radios = document.querySelectorAll(`#id_${id} input[type=radio]`);
+        radios.forEach(radio => {
+            if(radio.checked){
+                const value = radio.value;
+                if(value !== "false"){
+                    AlmacenarInformacion("Aerolinea", value);
+                    MostrarBotonCancelar("ida", id, true);
+                    FormularioClaseVuelos(id, "ida");
+                }else{
+                    //generar alerta.
+                    mostrarMensajeError("Debes seleccionar una aerolinea");
+                    CerrarVentanaEmergente();
+                }
+            }
+        });
+    };
+    
+    botonesIda.forEach(boton => {
+        boton.addEventListener("click", ValidarBotonConfirmar);
+    });
+}
+
+//esta funcion nos despliega la clase de vuelo, y el cliente debe escogerlo.
+function FormularioClaseVuelos(id, tipoVuelo, accionar = true){
+    let formularioClase;
+    
+    if(tipoVuelo === "ida"){
+        //desplegamos un listado de formularios para cada vuelo
+        formularioClase = document.querySelectorAll(".vueloIda .listado_claseVuelo");
+    }
+    
+    formularioClase.forEach(clase => {
+        const identificador = clase.classList[1];
+        
+        if(identificador === id){
+            if(accionar){
+                clase.style.display = 'block';
+                return;
+            }
+            clase.style.display = 'none';
+        }
+    });
+}
+
+
+
 
 
 //--------------------------------
@@ -89,14 +271,7 @@ function CapturarTipoMensaje(){ //-> encargado de verificar por unas clases que 
     });
 }
 
-function CerrarVentanaEmergente(){
-    let botonMensajeAlerta = document.querySelector("#errorAlerta");
-   
-    botonMensajeAlerta.addEventListener("click", () => {
-       let contenedor = document.querySelector(".mensaje_alerta");
-       contenedor.style.display='none';
-    });
-}
+
 
 //con esta funcion escuchamos por las entradas o campos de nuestro formulario final...
 function EscucharEntradas(){
@@ -429,160 +604,6 @@ function ReservaVueloRegreso(){
     });
 }
 
-//esta funcion nos despliega la clase de vuelo, y el cliente debe escogerlo.
-function FormularioClaseVuelos(id, tipoVuelo){
-    //desplegamos un listado de formularios para cada vuelo
-    let formularios = document.querySelectorAll(".listado_claseVuelo");
-    
-    formularios.forEach(formulario => {
-        if(formulario.classList[1] === id){
-            //mostramos formulario especifico en base al identificador unico de cada ellos.
-            formulario.style.display='block';
-            
-            //escuchamos datos de nuestro formulario.
-            let botonesReserva = document.querySelectorAll(".botonClase");
-            
-            botonesReserva.forEach(botonReserva => {
-                
-                botonReserva.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    
-                    //escuchamos por los tres botones que son especificos de nuestro formulario. 
-                    if(e.target.classList[1] === id){
-                        
-                        //cuando se encuentren iguales....
-                        if(botonReserva.id === "boton-claseTurista"){
-                            if(tipoVuelo === "ida"){
-                                let numeroPersonas = document.querySelector(".numeroPasajeros");
-                                
-                                vuelos.IDA.CANTIDAD = "100";
-                                vuelos.IDA.ID = `${id}`;
-                                vuelos.IDA.CLASE = "turista";
-                                
-                                let totalPersonas = parseInt(vuelos.IDA.CANTIDAD)*parseInt(numeroPersonas.id);
-                                
-                                registro.IDA.CANTIDAD = parseFloat(registro.IDA.CANTIDAD) + parseFloat(totalPersonas);
-                                registro.TOTAL += parseInt(totalPersonas);
-                                
-                                //cuando nuesto usuario se disponga a sar un click lo que haremos es redireccionar a nuestro usuario.
-                                //vamos a cerrar el campo..
-                                let ventana1 = document.querySelector("#collapseOne");
-                                ventana1.classList.remove("show");
-                                let ventana2 = document.querySelector("#collapseTwo");
-                                ventana2.classList.add("show");
-                                window.location.href="#collapseTwo";
-                            
-                            }else if(tipoVuelo === "regreso"){
-                                let numeroPersonas2 = document.querySelector(".numeroPasajeros2");
-                                
-                                vuelos.REGRESO.CANTIDAD = "100";
-                                vuelos.REGRESO.ID = `${id}`;
-                                vuelos.REGRESO.CLASE = "turista";
-                                
-                                //esta parte de aqui calcula el dinero general de un vuelo turista y lo multiplica por el numero de pasajeros....
-                                //de esta manera vamos aumentando el costo..
-                                let numeroPasajeros = parseInt(vuelos.REGRESO.CANTIDAD)*parseInt(numeroPersonas2.id);
-                                //vamos ir aumentando nuestra cantidad....
-                                registro.REGRESO.CANTIDAD = parseFloat(registro.REGRESO.CANTIDAD) + parseFloat(numeroPasajeros);
-                                registro.TOTAL += parseFloat(numeroPasajeros);
-                                
-                                //cerramos la seccion de escoger vuelo de regreso
-                                let ventana2 = document.querySelector("#collapseTwo");
-                                ventana2.classList.remove("show");
-                                
-                                FormularioFinal();
-                            }
-                            
-                        }else if(botonReserva.id === "boton-clasePrimera"){
-                            if(tipoVuelo === "ida"){
-                                let numeroPersonas = document.querySelector(".numeroPasajeros");
-                                vuelos.IDA.CANTIDAD = "350";
-                                vuelos.IDA.ID = `${id}`;
-                                vuelos.IDA.CLASE = "primera";
-                                
-                                //vamos ir aumentando nuestra cantidad....
-                                let totalPasajeros = parseInt(vuelos.IDA.CANTIDAD)*parseInt(numeroPersonas.id);
-                                registro.IDA.CANTIDAD = parseFloat(registro.IDA.CANTIDAD) + totalPasajeros;
-                                registro.TOTAL += parseFloat(totalPasajeros);
-                                
-                                let ventana1 = document.querySelector("#collapseOne");
-                                ventana1.classList.remove("show");
-                                let ventana2 = document.querySelector("#collapseTwo");
-                                ventana2.classList.add("show");
-                                window.location.href="#collapseTwo";
-                                
-                            }else if(tipoVuelo === "regreso"){
-                                let numeroPersonas2 = document.querySelector(".numeroPasajeros2");
-                                vuelos.REGRESO.CANTIDAD = "350";
-                                vuelos.REGRESO.ID = `${id}`;
-                                vuelos.REGRESO.CLASE = "primera";
-                                
-                                //vamos ir aumentando nuestra cantidad....
-                                registro.REGRESO.CANTIDAD = parseFloat(registro.REGRESO.CANTIDAD) + parseFloat(parseInt(vuelos.REGRESO.CANTIDAD)*parseInt(numeroPersonas2.id));
-                                registro.TOTAL += parseFloat(parseInt(vuelos.REGRESO.CANTIDAD)*parseInt(numeroPersonas2.id));
-                                
-                                //cerramos la seccion de escoger vuelo de regreso
-                                let ventana2 = document.querySelector("#collapseTwo");
-                                ventana2.classList.remove("show");
-                                
-                                FormularioFinal();
-                            }
-                        }else if(botonReserva.id === "boton-claseEjecutiva"){
-                            if(tipoVuelo === "ida"){
-                                let numeroPersonas = document.querySelector(".numeroPasajeros");
-                                vuelos.IDA.CANTIDAD = "200";
-                                vuelos.IDA.ID = `${id}`;
-                                vuelos.IDA.CLASE = "ejecutiva";
-                                
-                                let totalPasajeros = parseInt(vuelos.IDA.CANTIDAD)*parseInt(numeroPersonas.id);
-                                registro.IDA.CANTIDAD = parseFloat(registro.IDA.CANTIDAD) + totalPasajeros;
-                                registro.TOTAL += parseFloat(totalPasajeros);
-                                
-                                let ventana1 = document.querySelector("#collapseOne");
-                                ventana1.classList.remove("show");
-                                let ventana2 = document.querySelector("#collapseTwo");
-                                ventana2.classList.add("show");
-                                window.location.href="#collapseTwo";
-                                
-                            }else if(tipoVuelo === "regreso"){
-                                let numeroPersonas2 = document.querySelector(".numeroPasajeros2");
-                                vuelos.REGRESO.CANTIDAD = "200";
-                                vuelos.REGRESO.ID = `${id}`;
-                                vuelos.REGRESO.CLASE = "ejecutiva";
-                                
-                                //vamos ir aumentando nuestra cantidad....
-                                registro.REGRESO.CANTIDAD = parseFloat(registro.REGRESO.CANTIDAD) + parseFloat(parseInt(vuelos.REGRESO.CANTIDAD)*parseInt(numeroPersonas2.id));
-                                registro.TOTAL += parseFloat(parseInt(vuelos.REGRESO.CANTIDAD)*parseInt(numeroPersonas2.id));
-                                
-                                //cerramos la seccion de escoger vuelo de regreso
-                                let ventana2 = document.querySelector("#collapseTwo");
-                                ventana2.classList.remove("show");
-                                
-                                FormularioFinal();
-                            }
-                        }
-                        
-                        
-                        //vamos a mostrar la cantidad de cada parte ... de ida y de vuela... 
-                        //no mostraremos el total de la suma de todos los vuelos recolectados.... 
-                        //ese total lo usaremos para el formulario final... el usuario solamente tendra que confirmar y ya estaria. 
-                        if(tipoVuelo === "ida"){
-                            //mostramos el valor de ida...
-                            let carritoIda = document.querySelector("#tarifa");
-                            carritoIda.textContent = `${registro.IDA.CANTIDAD.toString().slice(0, 6)}`;
-                        }else if(tipoVuelo === "regreso"){
-                            //mostramos el valor de regreso...  
-                            let carritoRetorno = document.querySelector("#carrito2 #tarifa2");
-                            carritoRetorno.textContent = `${registro.REGRESO.CANTIDAD.toString().slice(0, 6)}`;
-                        } 
-                    }
-                    
-                    
-                });
-            });
-        }
-    });
-}
 
 
 //el formulario final nos servira mucho porque sera la parte final de nuestra seccion de desarrollo de la reserva del vuelo.
@@ -815,43 +836,7 @@ function BotonCancelar(tipo){
                 }
             });
             
-            
-            //debemos restaurar cierta informacion a su fase inicial... debido a que el usuario cancelo su deseo de
-            //contratar o arrendar una aerolinea para poder ser llevada.
-            if(tipo === "ida"){
-                //informacion sobre nuestra salida...
-                vuelos.IDA.HORA_SALIDA = "";
-                vuelos.IDA.DESDE = "";
-                //informacion sobre nuestra llegada o destino... 
-                vuelos.IDA.HORA_LLEGADA =  "";
-                vuelos.IDA.A = ""; 
-                //lo unico que nos faltaria seria la fecha... osea la fecha disponible de nuestro viaje....
-                vuelos.IDA.FECHA_SALIDA = "";
-                
-                //volvemos a limpiar nuestro arreglo....
-                registro.IDA.CANTIDAD = "";
-                registro.IDA.ID = "";
-                
-                //la parte del carrito volvemos a establecerlo en cero....
-                let parrafoCarrito = document.querySelector("#tarifa");
-                parrafoCarrito.textContent="0.0";
-            }else if(tipo === "regreso"){
-                //informacion sobre nuestra salida...
-                vuelos.REGRESO.HORA_SALIDA = "";
-                vuelos.REGRESO.DESDE = "";
-                //informacion sobre nuestra llegada o destino... 
-                vuelos.REGRESO.HORA_LLEGADA =  "";
-                vuelos.REGRESO.A = ""; 
-                //lo unico que nos faltaria seria la fecha... osea la fecha disponible de nuestro viaje....
-                vuelos.REGRESO.FECHA_SALIDA = "";
-                
-                registro.REGRESO.CANTIDAD = "";
-                registro.REGRESO.ID = "";
-                
-                //la parte del carrito volvemos a establecerlo en cero...
-                let parrafoCarrito = document.querySelector("#carrito2 #tarifa2");
-                parrafoCarrito.textContent="0.0";
-            }
+          
         });
     });
 }
@@ -924,4 +909,4 @@ function CargarDatosSession(){
    
 }
     
-})();
+//})();

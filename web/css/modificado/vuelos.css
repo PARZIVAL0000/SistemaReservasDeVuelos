@@ -27,6 +27,7 @@
 
 .vuelos .barra_informacion .listado_info{
     display:flex;
+    align-items: center;
     gap:2rem;
 }
 
@@ -35,19 +36,28 @@
     gap:1rem;
 }
 
-.vuelos .barra_informacion .listado_info li .carrito_total{
+.vuelos .barra_informacion .listado_info .carrito_total{
+    width: 19rem;
+}
+
+.vuelos .barra_informacion .listado_info .carrito_total .carrito_total--dinero{
     border: 2px solid rgb(0, 0, 0);
     position: absolute;
     padding: 1rem;
     width: 20rem;
     border-radius: 4.2rem;
     background-color: rgb(255, 255, 255);
-    transition:background-color 260ms ease;
+    transition: background-color 260ms ease;
     display: flex;
     align-items: center;
     justify-content: space-around;
     right: 5%;
-    top: 128.5%;
+    padding-top: 2.2rem;
+    margin-top: -5.5rem;
+}
+
+.vuelos .barra_informacion .listado_info .carrito_total .carrito_total--dinero #tarifa{
+    font-size:2.2rem;
 }
 
 
@@ -235,6 +245,10 @@ div#retorno{
     margin: .6rem .6rem;
 }
 
+.botonBloquear:hover{
+    cursor:not-allowed !important;
+}
+
 .boton-confirmar .boton_confirmar:hover{
     background-color:#3260bf;
     cursor:pointer;
@@ -311,7 +325,6 @@ div#retorno{
 
 /* FORMULARIO FINAL */
 
-
 /*A continuacion vamos a generar los estilos para un mensaje de error... */
 .mensaje_alerta{
     display:none;
@@ -323,6 +336,10 @@ div#retorno{
     left: 0;
     right: 0;
     bottom: 0;
+}
+
+.mensaje_alerta .mensaje{
+    margin:26rem 49rem;
 }
 
 .mensaje_alerta--mensaje{
@@ -369,8 +386,14 @@ div#retorno{
     border-bottom-left-radius: .9rem;
     border-bottom-right-radius: .9rem;
     color:rgb(0 0 0);
+    transition:background-color 360ms ease-in;
 }
 
+.mensaje_botonCerrar:hover{
+    background-color:#ceb032;
+    color:rgb(255, 255, 255);
+    
+}
 
 /*//vamos ir modificando nuestro listado de vuelo...*/
 .listado_claseVuelo{
@@ -817,7 +840,7 @@ div#retorno{
     font-size:1.2rem;
 }
 
-/* FORMULARIO FINAL DE ENVIO */
+/* formulario final de envio */
 .accordion-body.inf{
     overflow-y: scroll;
     max-height: 25rem;
